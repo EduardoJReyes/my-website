@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TECH_ART_LABS — Alex Chen / Technical Artist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:   #CF5C36;
+      --primary-light: #e07050;
+      --secondary: #EFC88B;
+      --tertiary:  #008CA1;
+      --neutral:   #7C7C7C;
+      --bg:        #0e0e0e;
+      --bg2:       #141414;
+      --bg3:       #1a1a1a;
+      --surface:   #1f1f1f;
+      --border:    #2a2a2a;
+      --text:      #f0ede8;
+      --text-dim:  #888;
+      --font-head: 'Hanken Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-head);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CUSTOM CURSOR */
+    .cursor {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      pointer-events: none;
+    }
+    .cursor-dot {
+      width: 6px; height: 6px; background: var(--primary);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute; top: 0; left: 0;
+      transition: transform 0.1s;
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid rgba(207, 92, 54, 0.5);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute; top: 0; left: 0;
+      transition: transform 0.15s ease, width 0.2s, height 0.2s, border-color 0.2s;
+    }
+    body:has(a:hover) .cursor-ring,
+    body:has(button:hover) .cursor-ring {
+      width: 48px; height: 48px;
+      border-color: var(--primary);
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      height: 60px;
+      background: rgba(14,14,14,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex; gap: 32px; list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a.active { color: var(--primary); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-resume {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      background: transparent;
+      cursor: none;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-resume:hover { background: var(--primary); color: #fff; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(207,92,54,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: 0.2em;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.6s 0.1s forwards;
+    }
+    .hero-title {
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      opacity: 0; animation: fadeUp 0.6s 0.2s forwards;
+    }
+    .hero-title .line1 { color: var(--text); display: flex; align-items: center; gap: 12px; }
+    .hero-title .cursor-blink {
+      display: inline-block; width: 4px;
+      height: clamp(44px, 6vw, 80px);
+      background: var(--primary);
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+    .hero-title .line2 { color: var(--primary); }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero-desc {
+      max-width: 420px;
+      font-size: 14px; line-height: 1.7;
+      color: var(--text-dim);
+      padding-left: 16px;
+      border-left: 2px solid var(--primary);
+      margin-bottom: 40px;
+      opacity: 0; animation: fadeUp 0.6s 0.3s forwards;
+    }
+    .hero-actions {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.6s 0.4s forwards;
+    }
+    .btn-primary {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      background: var(--primary);
+      color: #fff; border: none; cursor: none;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); }
+    .btn-outlined {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--text); border: 1px solid var(--border); cursor: none;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outlined:hover { border-color: var(--text); }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(24px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* REEL */
+    .reel-section {
+      padding: 0 40px 100px;
+      opacity: 0; animation: fadeUp 0.8s 0.5s forwards;
+    }
+    .reel-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      max-height: 540px;
+      background: #000;
+      overflow: hidden;
+    }
+    .reel-bg {
+      width: 100%; height: 100%;
+      object-fit: cover; opacity: 0.6;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1218 50%, #0e0a0a 100%);
+      /* Placeholder atmospheric background */
+      position: relative;
+    }
+    .reel-placeholder {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #080808, #141010, #0c0a0a);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .reel-placeholder::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.012) 0px, transparent 1px, transparent 80px, rgba(255,255,255,0.012) 81px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, transparent 1px, transparent 60px, rgba(255,255,255,0.012) 61px);
+    }
+    .reel-placeholder::after {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 60%; height: 60%;
+      background: radial-gradient(ellipse, rgba(207,92,54,0.04) 0%, transparent 70%);
+    }
+    .play-btn {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 72px; height: 72px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      cursor: none;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      z-index: 2;
+    }
+    .play-btn:hover { border-color: var(--primary); background: rgba(207,92,54,0.15); transform: translate(-50%,-50%) scale(1.08); }
+    .play-btn svg { margin-left: 4px; }
+    .reel-label {
+      position: absolute; bottom: 16px; left: 20px;
+      font-family: var(--font-mono);
+      font-size: 10px; letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+    }
+    .reel-corner {
+      position: absolute; top: 16px; right: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px; color: rgba(255,255,255,0.25);
+      letter-spacing: 0.1em;
+    }
+
+    /* SKILLS */
+    .skills-section {
+      padding: 80px 40px;
+      border-top: 1px solid var(--border);
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 60px;
+    }
+    .skill-item {}
+    .skill-icon {
+      width: 36px; height: 36px;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+    .skill-title {
+      font-size: 26px; font-weight: 800;
+      line-height: 1.1; text-transform: uppercase;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+    .skill-desc {
+      font-size: 13px; line-height: 1.75;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+    .skill-tags {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 9px; letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--neutral);
+    }
+
+    /* DIVIDER */
+    .divider {
+      width: 100%; height: 1px;
+      background: var(--border);
+      margin: 0 40px;
+      width: calc(100% - 80px);
+    }
+
+    /* FEATURED PROJECTS */
+    .projects-section {
+      padding: 80px 40px;
+    }
+    .section-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 40px;
+    }
+    .section-title {
+      font-size: 13px; font-weight: 800;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      font-family: var(--font-mono);
+      position: relative;
+      padding-bottom: 12px;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0;
+      width: 40px; height: 2px;
+      background: var(--primary);
+    }
+    .view-all {
+      font-family: var(--font-mono);
+      font-size: 10px; letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+      transition: color 0.2s;
+    }
+    .view-all:hover { color: var(--primary); }
+    .view-all::after { content: '→'; }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .project-card {
+      position: relative;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      background: var(--surface);
+      cursor: none;
+    }
+    .project-card-bg {
+      width: 100%; height: 100%;
+      transition: transform 0.5s ease;
+    }
+    .project-card:hover .project-card-bg { transform: scale(1.04); }
+    .project-card-1 .project-card-bg {
+      background: linear-gradient(135deg, #0a1a14 0%, #061510 40%, #122010 100%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .project-card-1 .project-card-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 60%, rgba(0,140,161,0.3) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 30%, rgba(207,92,54,0.2) 0%, transparent 50%);
+    }
+    .project-card-2 .project-card-bg {
+      background: linear-gradient(135deg, #120a02 0%, #1a0e04 50%, #0e0804 100%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .project-card-2 .project-card-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(207,92,54,0.4) 0%, rgba(239,200,139,0.1) 40%, transparent 70%);
+    }
+    .project-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+      display: flex; align-items: flex-end;
+      padding: 24px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .project-card:hover .project-overlay { opacity: 1; }
+    .project-info {}
+    .project-name {
+      font-family: var(--font-mono);
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .project-type {
+      font-size: 12px; color: rgba(255,255,255,0.5);
+    }
+
+    /* Abstract art for project cards */
+    .geo-shape {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    /* CONTACT */
+    .contact-section {
+      padding: 100px 40px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .contact-title {
+      font-size: clamp(36px, 5vw, 68px);
+      font-weight: 900;
+      line-height: 1.05;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .contact-sub {
+      font-size: 14px; color: var(--text-dim);
+      max-width: 480px; margin: 0 auto 60px;
+      line-height: 1.75;
+    }
+    .contact-form {
+      max-width: 640px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .form-group { text-align: left; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 9px; letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--neutral);
+      margin-bottom: 8px;
+    }
+    .form-input, .form-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input::placeholder, .form-textarea::placeholder {
+      color: var(--border);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: var(--primary); }
+    .form-textarea { resize: none; height: 80px; display: block; }
+
+    .form-divider {
+      grid-column: 1 / -1;
+      height: 1px; background: var(--border);
+      margin: 8px 0;
+    }
+    .btn-submit {
+      grid-column: 1 / -1;
+      font-family: var(--font-mono);
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 18px;
+      background: var(--primary);
+      color: #fff; border: none; cursor: none;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover { background: var(--primary-light); }
+
+    /* FOOTER */
+    footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 40px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 10px; letter-spacing: 0.12em;
+      color: var(--neutral); text-transform: uppercase;
+    }
+    .footer-links {
+      display: flex; gap: 28px; list-style: none;
+    }
+    .footer-links a {
+      font-family: var(--font-mono);
+      font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--neutral); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--primary); }
+
+    /* SCROLL FADE IN */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* SCANLINE EFFECT (subtle) */
+    .scanline-wrap {
+      position: relative;
+    }
+    .scanline-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor">
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">TECH_ART_LABS</a>
+  <ul class="nav-links">
+    <li><a href="#reel" class="active">Reel</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Tools</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#" class="nav-resume">Resume</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-label">SYSTEMS_ENGINEER_V.2024</p>
+  <h1 class="hero-title">
+    <span class="line1">ALEX_CHEN <span class="cursor-blink"></span></span>
+    <span class="line2">TECHNICAL ARTIST</span>
+  </h1>
+  <p class="hero-desc">
+    Bridging Art and Logic through Procedural Systems in Houdini &amp; Unreal Engine.
+    Specialising in automated environment generation and high-fidelity real-time shaders.
+  </p>
+  <div class="hero-actions">
+    <a href="#reel" class="btn-primary">View Reel</a>
+    <a href="#skills" class="btn-outlined">Technical_Spec</a>
+  </div>
+</section>
+
+<!-- REEL -->
+<section class="reel-section scanline-wrap" id="reel">
+  <div class="reel-wrap">
+    <div class="reel-placeholder">
+      <!-- Abstract corridor lines -->
+      <svg width="100%" height="100%" viewBox="0 0 900 500" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;opacity:0.35;">
+        <defs>
+          <radialGradient id="rg" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#CF5C36" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="900" height="500" fill="url(#rg)"/>
+        <!-- Perspective lines -->
+        <line x1="450" y1="250" x2="0"   y2="0"   stroke="#CF5C36" stroke-width="0.5" stroke-opacity="0.3"/>
+        <line x1="450" y1="250" x2="900" y2="0"   stroke="#CF5C36" stroke-width="0.5" stroke-opacity="0.3"/>
+        <line x1="450" y1="250" x2="0"   y2="500" stroke="#CF5C36" stroke-width="0.5" stroke-opacity="0.3"/>
+        <line x1="450" y1="250" x2="900" y2="500" stroke="#CF5C36" stroke-width="0.5" stroke-opacity="0.3"/>
+        <line x1="450" y1="250" x2="100" y2="0"   stroke="#888" stroke-width="0.3" stroke-opacity="0.2"/>
+        <line x1="450" y1="250" x2="800" y2="0"   stroke="#888" stroke-width="0.3" stroke-opacity="0.2"/>
+        <line x1="450" y1="250" x2="100" y2="500" stroke="#888" stroke-width="0.3" stroke-opacity="0.2"/>
+        <line x1="450" y1="250" x2="800" y2="500" stroke="#888" stroke-width="0.3" stroke-opacity="0.2"/>
+        <!-- Horizontal bands -->
+        <rect x="200" y="160" width="500" height="1" fill="#888" fill-opacity="0.15"/>
+        <rect x="250" y="200" width="400" height="1" fill="#888" fill-opacity="0.12"/>
+        <rect x="320" y="235" width="260" height="1" fill="#888" fill-opacity="0.1"/>
+        <rect x="200" y="340" width="500" height="1" fill="#888" fill-opacity="0.15"/>
+        <rect x="250" y="300" width="400" height="1" fill="#888" fill-opacity="0.12"/>
+        <rect x="320" y="265" width="260" height="1" fill="#888" fill-opacity="0.1"/>
+        <!-- Vertical bands -->
+        <rect x="300" y="0" width="1" height="500" fill="#888" fill-opacity="0.08"/>
+        <rect x="380" y="0" width="1" height="500" fill="#888" fill-opacity="0.06"/>
+        <rect x="520" y="0" width="1" height="500" fill="#888" fill-opacity="0.06"/>
+        <rect x="600" y="0" width="1" height="500" fill="#888" fill-opacity="0.08"/>
+      </svg>
+    </div>
+    <button class="play-btn" aria-label="Play reel">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+    </button>
+    <span class="reel-label">PROJECT_REEL_2024.MP4 [4K_8HQ]</span>
+    <span class="reel-corner">▣</span>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills-section reveal" id="skills">
+  <div class="skills-grid">
+    <div class="skill-item">
+      <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 2v4M12 18v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M2 12h4M18 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+      </svg>
+      <h3 class="skill-title">Procedural<br>Workflows</h3>
+      <p class="skill-desc">Houdini-based environment and asset generation. Developing HDA toolsets for massive world-building and non-destructive modelling pipelines.</p>
+      <div class="skill-tags">
+        <span class="tag">Houdini</span>
+        <span class="tag">Vellum</span>
+        <span class="tag">PDG</span>
+      </div>
+    </div>
+    <div class="skill-item">
+      <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+      <h3 class="skill-title">Real-time<br>Systems</h3>
+      <p class="skill-desc">UES material shaders, Niagara VFX, and performance optimisation. Crafting visually stunning real-time effects with efficient technical budgets.</p>
+      <div class="skill-tags">
+        <span class="tag">Unreal_Engine_5</span>
+        <span class="tag">HLSL</span>
+        <span class="tag">Lumen</span>
+      </div>
+    </div>
+    <div class="skill-item">
+      <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <path d="M9 9l3 3-3 3M13 15h3"/>
+      </svg>
+      <h3 class="skill-title">Tool<br>Development</h3>
+      <p class="skill-desc">Python and C++ pipeline tools for production. Automating repetitive tasks and building custom bridges between DCC applications.</p>
+      <div class="skill-tags">
+        <span class="tag">Python_3</span>
+        <span class="tag">C++</span>
+        <span class="tag">Qt/PySide</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED PROJECTS -->
+<section class="projects-section reveal" id="projects">
+  <div class="section-header">
+    <h2 class="section-title">Featured_Projects</h2>
+    <a href="#" class="view-all">View All Works</a>
+  </div>
+  <div class="projects-grid">
+    <div class="project-card project-card-1">
+      <div class="project-card-bg">
+        <!-- Procedural city abstract -->
+        <svg width="100%" height="100%" viewBox="0 0 600 450" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;">
+          <defs>
+            <radialGradient id="g1" cx="35%" cy="65%" r="60%">
+              <stop offset="0%" stop-color="#008CA1" stop-opacity="0.5"/>
+              <stop offset="60%" stop-color="#CF5C36" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="600" height="450" fill="url(#g1)"/>
+          <!-- Abstract city blocks -->
+          <g opacity="0.7" fill="none" stroke="#008CA1" stroke-width="0.8">
+            <rect x="80" y="200" width="40" height="180" stroke-opacity="0.6"/>
+            <rect x="130" y="160" width="55" height="220" stroke-opacity="0.8"/>
+            <rect x="195" y="220" width="35" height="160" stroke-opacity="0.5"/>
+            <rect x="240" y="140" width="60" height="240" stroke-opacity="0.9"/>
+            <rect x="310" y="190" width="45" height="190" stroke-opacity="0.6"/>
+            <rect x="365" y="250" width="30" height="130" stroke-opacity="0.4"/>
+            <rect x="405" y="170" width="50" height="210" stroke-opacity="0.7"/>
+            <rect x="465" y="220" width="40" height="160" stroke-opacity="0.5"/>
+          </g>
+          <!-- Glowing lines -->
+          <line x1="0" y1="380" x2="600" y2="380" stroke="#CF5C36" stroke-width="1" stroke-opacity="0.4"/>
+          <line x1="0" y1="395" x2="600" y2="395" stroke="#008CA1" stroke-width="0.5" stroke-opacity="0.3"/>
+        </svg>
+      </div>
+      <div class="project-overlay">
+        <div class="project-info">
+          <p class="project-name">PROC_CITY_V3</p>
+          <p class="project-type">Houdini · Procedural Environment</p>
+        </div>
+      </div>
+    </div>
+    <div class="project-card project-card-2">
+      <div class="project-card-bg">
+        <!-- Vortex abstract -->
+        <svg width="100%" height="100%" viewBox="0 0 600 450" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;">
+          <defs>
+            <radialGradient id="g2" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" stop-color="#EFC88B" stop-opacity="0.7"/>
+              <stop offset="40%" stop-color="#CF5C36" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#0e0404" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="600" height="450" fill="#060202"/>
+          <!-- Spiral rings -->
+          <g fill="none" stroke-width="1.2">
+            <ellipse cx="300" cy="225" rx="30"  ry="15"  stroke="#EFC88B" stroke-opacity="0.9"/>
+            <ellipse cx="300" cy="225" rx="65"  ry="35"  stroke="#CF5C36" stroke-opacity="0.8"/>
+            <ellipse cx="300" cy="225" rx="105" ry="58"  stroke="#EFC88B" stroke-opacity="0.65"/>
+            <ellipse cx="300" cy="225" rx="148" ry="82"  stroke="#CF5C36" stroke-opacity="0.5"/>
+            <ellipse cx="300" cy="225" rx="192" ry="108" stroke="#EFC88B" stroke-opacity="0.35"/>
+            <ellipse cx="300" cy="225" rx="238" ry="135" stroke="#CF5C36" stroke-opacity="0.2"/>
+          </g>
+          <rect width="600" height="450" fill="url(#g2)" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="project-overlay">
+        <div class="project-info">
+          <p class="project-name">VORTEX_SIM_01</p>
+          <p class="project-type">Houdini Vellum · VFX Simulation</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section reveal" id="contact">
+  <h2 class="contact-title">Let's Build<br>Something Complex</h2>
+  <p class="contact-sub">Currently open to collaborative projects and high-end technical art roles. If you have a pipeline challenge or a vision that requires procedural solutions, get in touch.</p>
+  <form class="contact-form" onsubmit="return false;">
+    <div class="form-group">
+      <label class="form-label">Name_Identity</label>
+      <input type="text" class="form-input" placeholder="USER_NAME" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email_Endpoint</label>
+      <input type="email" class="form-input" placeholder="ADDRESS@DOMAIN.COM" />
+    </div>
+    <div class="form-group full">
+      <label class="form-label">Project_Parameters</label>
+      <textarea class="form-textarea" placeholder="DESCRIBE_TECHNICAL_REQUIREMENTS"></textarea>
+    </div>
+    <div class="form-divider"></div>
+    <button type="submit" class="btn-submit">Initiate_Contact</button>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-copy">© 2024 PROCEDURAL_SYSTEMS. ALL RIGHTS RESERVED.</p>
+  <ul class="footer-links">
+    <li><a href="#">ArtStation</a></li>
+    <li><a href="#">LinkedIn</a></li>
+    <li><a href="#">GitHub</a></li>
+    <li><a href="#">Email</a></li>
+  </ul>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  function animateCursor() {
+    rx += (mx - rx) * 0.15;
+    ry += (my - ry) * 0.15;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => observer.observe(r));
+
+  // Nav active link
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+</body>
+</html>
