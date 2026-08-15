@@ -88,6 +88,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 /* ─ REEL ─ */
 .s-reel{padding:48px 0;}
 .node-reel .node-body{padding:0;}
+.node-reel{border-color:rgba(230,109,69,.35);box-shadow:0 0 0 1px rgba(230,109,69,.12),0 0 50px rgba(230,109,69,.24),0 0 140px rgba(230,109,69,.16),0 0 240px rgba(230,109,69,.09);}
+.node-reel:hover{border-color:rgba(230,109,69,.6);}
+@media (prefers-reduced-motion:no-preference){
+  .node-reel{animation:reelGlow 6s ease-in-out infinite;}
+}
+@keyframes reelGlow{
+  0%,100%{box-shadow:0 0 0 1px rgba(230,109,69,.12),0 0 50px rgba(230,109,69,.22),0 0 140px rgba(230,109,69,.14),0 0 240px rgba(230,109,69,.08);}
+  50%    {box-shadow:0 0 0 1px rgba(230,109,69,.18),0 0 60px rgba(230,109,69,.30),0 0 170px rgba(230,109,69,.19),0 0 280px rgba(230,109,69,.12);}
+}
 .reel-wrap{position:relative;width:100%;aspect-ratio:16/9;background:var(--bg-low);border-radius:0 0 var(--r) var(--r);overflow:hidden;}
 .reel-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
 .reel-info{position:absolute;bottom:16px;left:20px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);z-index:3;pointer-events:none;text-shadow:0 1px 4px rgba(0,0,0,.6);}
@@ -177,7 +186,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
   <div class="nav-left">
     <a href="#" class="nav-name">Eduardo J. Reyes</a>
     <span class="nav-sep">|</span>
-    <a href="#s-contact" class="nav-hire">Hire Me</a>
+    <a href="mailto:eduardoj.reyes@hotmail.com?subject=Technical%20Art%20enquiry" class="nav-hire">Hire Me</a>
   </div>
   <ul class="nav-right">
     <li><a href="#s-projects">Articles</a></li>
@@ -227,14 +236,14 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
 <!-- REEL -->
 <section id="s-reel" class="s-reel">
   <div class="page">
-    <div class="node" id="n-reel">
+    <div class="node node-reel" id="n-reel">
       <div class="node-header">
         <span class="nh-dot sand"></span>
         <span class="nh-path">VISUAL_SEQUENCE</span>
         <span class="nh-sep">::</span>
         <span class="nh-name">BEST_WORKS</span>
       </div>
-      <div class="node-body" style="padding:0;">
+      <div class="node-body">
         <div class="reel-wrap">
           <iframe
             src="https://player.vimeo.com/video/1203903259?autoplay=1&muted=1&loop=1&background=1&autopause=0&playsinline=1&byline=0&title=0&portrait=0"
@@ -572,13 +581,18 @@ function redrawAll(){
 window.addEventListener('resize', ()=>{ clearTimeout(rzTimer); rzTimer=setTimeout(redrawAll, 120); });
 
 const triggers = [
-  { watch:'s-reel',     wires:[{ from:'n-spec-c',  to:'n-reel',     side:'right' }], nodes:['n-reel']              },
+  { watch:'s-reel',     wires:[{ from:'n-spec-a',  to:'n-reel', side:'right', eFrac:0.34 },
+                                { from:'n-spec-b',  to:'n-reel', side:'right', eFrac:0.50 },
+                                { from:'n-spec-c',  to:'n-reel', side:'right', eFrac:0.66 }], nodes:['n-reel'], afterHero:true },
   { watch:'s-values',   wires:[{ from:'n-reel',    to:'n-va',       side:'left'  }], nodes:['n-va','n-vb','n-vc'] },
   { watch:'s-projects', wires:[{ from:'n-vc',      to:'n-projects', side:'right' }], nodes:['n-projects']         },
   { watch:'s-trusted',  wires:[{ from:'n-projects',to:'n-trusted',  side:'left'  }], nodes:['n-trusted','n-photo','n-contact'],
                         postWires:[{ from:'n-photo', to:'n-contact', side:'across', sFrac:0.5, eFrac:0.5 }] },
 ];
 const triggered = new Set();
+const T0 = Date.now();
+const HERO_SEQ_MS = 2900;  // hero fades + the three fan-out wires
+
 
 const scrollObs = new IntersectionObserver(entries=>{
   entries.forEach(e=>{
@@ -587,15 +601,19 @@ const scrollObs = new IntersectionObserver(entries=>{
     if(t && !triggered.has(t.watch)){
       triggered.add(t.watch);
       scrollObs.unobserve(e.target);
-      connSvg.style.height = document.body.scrollHeight+'px';
-      t.wires.forEach(w=>drawAnimated(w));
+      // if this section is already on screen at load, let the hero finish first
+      const hold = t.afterHero ? Math.max(0, HERO_SEQ_MS - (Date.now() - T0)) : 0;
       setTimeout(()=>{
-        t.nodes.forEach(id=>{ const el=document.getElementById(id); if(el) fadeIn(el); });
-        if(t.postWires) setTimeout(()=>{
-          connSvg.style.height = document.body.scrollHeight+'px';
-          t.postWires.forEach(w=>drawAnimated(w));
-        }, 1500);
-      }, WIRE_MS);
+        connSvg.style.height = document.body.scrollHeight+'px';
+        t.wires.forEach(w=>drawAnimated(w));
+        setTimeout(()=>{
+          t.nodes.forEach(id=>{ const el=document.getElementById(id); if(el) fadeIn(el); });
+          if(t.postWires) setTimeout(()=>{
+            connSvg.style.height = document.body.scrollHeight+'px';
+            t.postWires.forEach(w=>drawAnimated(w));
+          }, 1500);
+        }, WIRE_MS);
+      }, hold);
     }
   });
 },{threshold:0.05});
