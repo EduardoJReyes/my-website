@@ -170,7 +170,7 @@ a.cv-meta-row:hover{color:var(--primary);}
       <!-- LEFT COLUMN -->
       <aside class="cv-col">
 
-        <div class="node node-id">
+        <div class="node node-id" id="n-id">
           <div class="node-header">
             <span class="nh-dot"></span>
             <span class="nh-path">IDENTITY_PROFILE</span>
@@ -190,7 +190,7 @@ a.cv-meta-row:hover{color:var(--primary);}
           </div>
         </div>
 
-        <div class="node node-panel">
+        <div class="node node-panel" id="n-skills">
           <div class="node-header">
             <span class="nh-dot teal"></span>
             <span class="nh-path">TECHNICAL_SKILLSET</span>
@@ -235,7 +235,7 @@ a.cv-meta-row:hover{color:var(--primary);}
           </div>
         </div>
 
-        <div class="node node-panel">
+        <div class="node node-panel" id="n-certs">
           <div class="node-header">
             <span class="nh-dot sand"></span>
             <span class="nh-path">CERTIFICATIONS</span>
@@ -247,7 +247,7 @@ a.cv-meta-row:hover{color:var(--primary);}
           </div>
         </div>
 
-        <div class="node node-panel">
+        <div class="node node-panel" id="n-langs">
           <div class="node-header">
             <span class="nh-dot"></span>
             <span class="nh-path">LANGUAGES</span>
@@ -259,7 +259,7 @@ a.cv-meta-row:hover{color:var(--primary);}
           </div>
         </div>
 
-        <div class="node node-portrait">
+        <div class="node node-portrait" id="n-portrait">
           <div class="node-header">
             <span class="nh-dot teal"></span>
             <span class="nh-path">PORTRAIT_INPUT</span>
@@ -282,7 +282,7 @@ a.cv-meta-row:hover{color:var(--primary);}
           <h2 class="sec-h">Professional Experience</h2>
           <div class="cv-col">
 
-            <div class="node role-card">
+            <div class="node role-card" id="n-exp-1">
               <div class="node-header">
                 <span class="nh-dot"></span>
                 <span class="nh-path">FREELANCE_PROJECTS</span>
@@ -306,7 +306,7 @@ a.cv-meta-row:hover{color:var(--primary);}
               </div>
             </div>
 
-            <div class="node role-card">
+            <div class="node role-card" id="n-exp-2">
               <div class="node-header">
                 <span class="nh-dot sand"></span>
                 <span class="nh-path">EPIC_GAMES_PARTNER</span>
@@ -339,7 +339,7 @@ a.cv-meta-row:hover{color:var(--primary);}
               </div>
             </div>
 
-            <div class="node role-card">
+            <div class="node role-card" id="n-exp-3">
               <div class="node-header">
                 <span class="nh-dot teal"></span>
                 <span class="nh-path">DEV_SLUMBERPARTY</span>
@@ -364,7 +364,7 @@ a.cv-meta-row:hover{color:var(--primary);}
               </div>
             </div>
 
-            <div class="node role-card">
+            <div class="node role-card" id="n-exp-4">
               <div class="node-header">
                 <span class="nh-dot"></span>
                 <span class="nh-path">TEACHING_LASALLE</span>
@@ -384,7 +384,7 @@ a.cv-meta-row:hover{color:var(--primary);}
               </div>
             </div>
 
-            <div class="node role-card">
+            <div class="node role-card" id="n-exp-5">
               <div class="node-header">
                 <span class="nh-dot sand"></span>
                 <span class="nh-path">PROD_BWATER</span>
@@ -409,7 +409,7 @@ a.cv-meta-row:hover{color:var(--primary);}
 
         <div class="cv-block">
           <h2 class="sec-h">Education</h2>
-          <div class="node node-edu">
+          <div class="node node-edu" id="n-edu">
             <div class="node-header">
               <span class="nh-dot sand"></span>
               <span class="nh-path">ACADEMIC_HISTORY</span>
@@ -475,16 +475,34 @@ function fadeIn(el){
   el.style.animation='fadeIn 1.4s cubic-bezier(0.4,0,0.2,1) forwards';
 }
 
-// ── REVEAL ON SCROLL ──
-const revealObs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(!e.isIntersecting) return;
-    revealObs.unobserve(e.target);
-    const sibs = Array.from(e.target.parentElement.children).filter(n=>n.classList.contains('node'));
-    setTimeout(()=>fadeIn(e.target), 110 * Math.max(0, sibs.indexOf(e.target)));
+// ── ORDERED REVEAL ──
+// reading order, not DOM order: identity, the whole career, then the side panels
+const REVEAL_ORDER = [
+  'n-id',
+  'n-exp-1','n-exp-2','n-exp-3','n-exp-4','n-exp-5',
+  'n-skills','n-certs','n-langs','n-portrait',
+  'n-edu',
+];
+const FADE_MS = 467;   // index.html runs 1400
+const STEP_MS = 37;    // index.html staggers 110
+
+function revealNode(el){
+  el.style.animation='none';
+  el.offsetHeight;
+  el.style.animation='fadeIn '+FADE_MS+'ms cubic-bezier(0.4,0,0.2,1) forwards';
+}
+
+function initReveal(){
+  REVEAL_ORDER.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el) setTimeout(()=>revealNode(el), STEP_MS*i);
   });
-},{threshold:0.06});
-document.querySelectorAll('.node').forEach(n=>revealObs.observe(n));
+  // anything not listed still gets shown rather than left invisible
+  document.querySelectorAll('.node').forEach(n=>{
+    if(REVEAL_ORDER.indexOf(n.id)===-1) revealNode(n);
+  });
+}
+document.fonts ? document.fonts.ready.then(initReveal) : window.addEventListener('load', initReveal);
 </script>
 </body>
 </html>
