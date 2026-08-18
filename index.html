@@ -61,8 +61,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
   0%  {opacity:0;transform:translateY(20px);}
   100%{opacity:1;transform:translateY(0);}
 }
-.anim-fade{animation:fadeIn 1.4s cubic-bezier(0.4,0,0.2,1) forwards;}
-.anim-glitch{animation:fadeIn 1.6s cubic-bezier(0.4,0,0.2,1) forwards;}
+.anim-fade{animation:fadeIn 467ms cubic-bezier(0.4,0,0.2,1) forwards;}
+.anim-glitch{animation:fadeIn 533ms cubic-bezier(0.4,0,0.2,1) forwards;}
 
 /* Header */
 .node-header{display:flex;align-items:center;gap:8px;padding:7px 16px;background:var(--surf-hi);border-bottom:1px solid rgba(255,255,255,.06);border-radius:var(--r) var(--r) 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.07em;user-select:none;}
@@ -476,12 +476,12 @@ document.querySelectorAll('a,button,.proj-card,.trusted-card').forEach(el=>{
 function fadeIn(el){
   el.style.animation='none';
   el.offsetHeight;
-  el.style.animation='fadeIn 1.4s cubic-bezier(0.4,0,0.2,1) forwards';
+  el.style.animation='fadeIn 467ms cubic-bezier(0.4,0,0.2,1) forwards';
 }
 
 // ── WIRE + PIN SYSTEM ──
 const connSvg   = document.getElementById('conn-svg');
-const WIRE_MS   = 750;
+const WIRE_MS   = 250;
 const EXT       = 70;
 const PIN_R     = 5.5;
 const WIRE_CLR  = '#e66d45';
@@ -592,7 +592,7 @@ const triggers = [
 ];
 const triggered = new Set();
 const T0 = Date.now();
-const HERO_SEQ_MS = 2900;  // hero fades + the three fan-out wires
+const HERO_SEQ_MS = 970;   // hero fades + the three fan-out wires
 
 
 const scrollObs = new IntersectionObserver(entries=>{
@@ -612,7 +612,7 @@ const scrollObs = new IntersectionObserver(entries=>{
           if(t.postWires) setTimeout(()=>{
             connSvg.style.height = document.body.scrollHeight+'px';
             t.postWires.forEach(w=>drawAnimated(w));
-          }, 1500);
+          }, 500);
         }, WIRE_MS);
       }, hold);
     }
@@ -645,13 +645,13 @@ function initLoad(){
   fadeIn(document.getElementById('n-hero'));
   SPEC_IDS.forEach((id,i)=>{
     const el=document.getElementById(id);
-    if(el) setTimeout(()=>fadeIn(el), 140*i);
+    if(el) setTimeout(()=>fadeIn(el), 47*i);
   });
   // wait for the node fades to settle so the wire endpoints land on final positions
   HERO_WIRES.forEach((w,i)=>setTimeout(()=>{
     connSvg.style.height = document.body.scrollHeight+'px';
     drawAnimated(w);
-  }, 1750 + 170*i));
+  }, 583 + 57*i));
 }
 document.fonts ? document.fonts.ready.then(initLoad) : window.addEventListener('load',initLoad);
 </script>
