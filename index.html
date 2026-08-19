@@ -31,7 +31,7 @@ body{
     radial-gradient(circle, rgba(255,255,255,.1) 1px, transparent 1px);
   background-size:80px 80px, 80px 80px, 18px 18px;
   color:var(--text);font-family:var(--font);overflow-x:clip;
-  cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M5.5 2.5 L5.5 17.5 L9 13.5 L12.5 21 L14.5 20 L11 12.8 L16 12.8 Z' fill='white' stroke='black' stroke-width='1.2' stroke-linejoin='round'/></svg>") 5 3, auto;
+  cursor:url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><path d='M8 4 L8 30 L14 23 L20 36 L24 34.5 L18 22 L28 22 Z' fill='white' stroke='%23e66d45' stroke-width='2.5' stroke-linejoin='round' paint-order='stroke fill'/></svg>") 8 4, auto;
 }
 
 /* CURSOR */
@@ -103,8 +103,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .s-values{padding:40px 0;}
 .values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 .node-val .node-body{padding:28px 28px 32px;}
-.val-icon{width:32px;height:32px;color:var(--primary);margin-bottom:18px;}
-.val-title{font-size:17px;font-weight:700;line-height:1.25;letter-spacing:-.01em;margin-bottom:12px;}
+.val-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.val-icon{width:32px;height:32px;flex-shrink:0;color:var(--primary);}
+.val-title{font-size:17px;font-weight:700;line-height:1.25;letter-spacing:-.01em;margin:0;}
 .val-text{font-size:14px;line-height:1.7;color:rgba(227,226,226,.55);}
 
 /* ─ PROJECTS ─ */
@@ -264,8 +265,8 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
           <span class="nh-name">OUTPUT_A</span>
         </div>
         <div class="node-body">
-          <svg class="val-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <h3 class="val-title">Environments will ship faster. And look better.</h3>
+          <div class="val-header"><svg class="val-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <h3 class="val-title">Environments will ship faster. And look better.</h3></div>
           <p class="val-text">From organic landscapes to artificial structures, I build the systems that make environments faster to produce and cheaper to iterate on.</p>
         </div>
       </div>
@@ -278,8 +279,8 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
           <span class="nh-name">OUTPUT_B</span>
         </div>
         <div class="node-body">
-          <svg class="val-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <h3 class="val-title">Everything will be expertly documented.</h3>
+          <div class="val-header"><svg class="val-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <h3 class="val-title">Everything will be expertly documented.</h3></div>
           <p class="val-text">Every system is easily usable for artists, scalable for the team and shipped with the right documentation.</p>
         </div>
       </div>
@@ -292,8 +293,8 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
           <span class="nh-name">OUTPUT_C</span>
         </div>
         <div class="node-body">
-          <svg class="val-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M2 12h4M18 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-          <h3 class="val-title">Your project will run fast and won't bottleneck.</h3>
+          <div class="val-header"><svg class="val-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M2 12h4M18 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          <h3 class="val-title">Your project will run fast and won't bottleneck.</h3></div>
           <p class="val-text">Validation tools, project starters, optimization for the engine... Anything needed to make everything run smoothly.</p>
         </div>
       </div>
