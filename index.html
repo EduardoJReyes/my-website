@@ -193,8 +193,123 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
 /* SCROLL PIPS */
 .scroll-hint{position:fixed;right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:100;pointer-events:none;}
 .scroll-pip{width:4px;height:4px;border-radius:50%;background:rgba(166,139,131,.3);transition:background .3s,transform .3s;}
-.scroll-pip.active{background:var(--primary);transform:scale(1.6);}
-</style>
+/* ─ MOBILE ─ */
+@media (max-width: 900px) {
+  /* hide SVG wire connections */
+  #conn-svg { display: none !important; }
+  .scroll-hint { display: none; }
+
+  /* nav */
+  nav { padding: 0 20px; height: 52px; }
+  .nav-sep { display: none; }
+  .nav-right { display: none; }
+  .nav-right.open {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: fixed;
+    top: 52px;
+    left: 0; right: 0;
+    background: rgba(13,14,15,.97);
+    border-bottom: 1px solid var(--outline);
+    padding: 12px 0;
+    z-index: 199;
+  }
+  .nav-right.open li a {
+    display: block;
+    padding: 12px 24px;
+    font-size: 12px;
+  }
+  .nav-burger {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 6px;
+    margin-left: auto;
+  }
+  .nav-burger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform .2s, opacity .2s;
+  }
+
+  /* page padding */
+  .page { padding: 0 16px; }
+
+  /* hero */
+  .s-hero { padding-top: 72px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 12px; }
+  .node-hero-text .node-body { padding: 24px 20px 28px; }
+  .hero-h1 { font-size: clamp(36px,11vw,64px); white-space: normal; }
+  .hero-sub { font-size: clamp(12px,3.5vw,16px); }
+  .spec-col { padding-left: 0; gap: 10px; }
+  .node-spec { padding: 16px 20px; }
+  .spec-label { font-size: clamp(13px,4vw,17px); }
+
+  /* reel */
+  .s-reel { padding: 24px 0; }
+
+  /* values — vertical flow connector */
+  .s-values { padding: 24px 0; }
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+    position: relative;
+  }
+  .node-val { border-radius: 0; }
+  .node-val:first-child { border-radius: var(--r) var(--r) 0 0; }
+  .node-val:last-child  { border-radius: 0 0 var(--r) var(--r); }
+  /* connector line between cards */
+  .node-val + .node-val { border-top: none; position: relative; }
+  .node-val + .node-val::before {
+    content: '';
+    display: block;
+    width: 2px;
+    height: 20px;
+    background: var(--primary);
+    margin: 0 auto;
+    opacity: .75;
+  }
+  .node-val .node-body { padding: 20px 20px 24px; }
+
+  /* projects */
+  .s-projects { padding: 24px 0; }
+  .projects-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 10px;
+  }
+  .proj-card:nth-child(3) { grid-column: auto; grid-row: auto; }
+
+  /* trusted */
+  .s-trusted { padding: 24px 0; }
+  .node-trusted .node-body { padding: 20px 16px 24px; }
+
+  /* contact */
+  .s-contact { padding: 24px 0 48px; }
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .node-photo { display: none; } /* hide portrait on mobile */
+  .node-body.node-contact { padding: 24px 20px 32px; }
+  .contact-h { font-size: clamp(28px,7vw,44px); }
+
+  /* footer */
+  footer {
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .foot-links { justify-content: center; }
+}
+
 </head>
 <body>
 
@@ -215,11 +330,14 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
     <span class="nav-sep">|</span>
     <a href="mailto:eduardoj.reyes@hotmail.com?subject=Technical%20Art%20enquiry" class="nav-hire">Hire Me</a>
   </div>
-  <ul class="nav-right">
+  <ul class="nav-right" id="navMenu">
     <li><a href="#">Home</a></li>
     <li><a href="works.html">Works</a></li>
     <li><a href="cv.html">CV</a></li>
   </ul>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" style="display:none;">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -683,6 +801,30 @@ function initLoad(){
   }, 583 + 57*i));
 }
 document.fonts ? document.fonts.ready.then(initLoad) : window.addEventListener('load',initLoad);
+</script>
+<script>
+// Hamburger menu — show only on mobile
+(function(){
+  var burger = document.getElementById('navBurger');
+  var menu   = document.getElementById('navMenu');
+  function checkWidth(){
+    if(window.innerWidth <= 900){
+      burger.style.display = 'flex';
+    } else {
+      burger.style.display = 'none';
+      menu.classList.remove('open');
+    }
+  }
+  checkWidth();
+  window.addEventListener('resize', checkWidth);
+  burger.addEventListener('click', function(){
+    menu.classList.toggle('open');
+  });
+  // close menu when a link is tapped
+  menu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ menu.classList.remove('open'); });
+  });
+})();
 </script>
 </body>
 </html>
