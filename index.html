@@ -78,6 +78,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .nav-right{display:flex;gap:32px;list-style:none;}
 .nav-right a{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(227,226,226,.45);text-decoration:none;transition:color .2s;}
 .nav-right a:hover{color:var(--text);}
+.nav-right a.active{color:var(--primary);}
 .nav-sep{color:rgba(166,139,131,.3);font-size:10px;}
 
 /* PAGE */
@@ -332,7 +333,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
     <a href="mailto:eduardoj.reyes@hotmail.com?subject=Technical%20Art%20enquiry" class="nav-hire">Hire Me</a>
   </div>
   <ul class="nav-right" id="navMenu">
-    <li><a href="#">Home</a></li>
+    <li><a href="#" class="active">Home</a></li>
     <li><a href="works.html">Works</a></li>
     <li><a href="cv.html">CV</a></li>
   </ul>
