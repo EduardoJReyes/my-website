@@ -800,7 +800,10 @@ function initLoad(){
     drawAnimated(w);
   }, 583 + 57*i));
 }
-document.fonts ? document.fonts.ready.then(initLoad) : window.addEventListener('load',initLoad);
+let _loaded = false;
+function safeInit(){ if(!_loaded){ _loaded=true; initLoad(); } }
+if(document.fonts){ document.fonts.ready.then(safeInit); } else { window.addEventListener('load',safeInit); }
+setTimeout(safeInit, 400);
 </script>
 <script>
 // Hamburger menu — show only on mobile
