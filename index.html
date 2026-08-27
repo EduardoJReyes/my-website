@@ -84,7 +84,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .page{position:relative;max-width:var(--pw);margin:0 auto;padding:0 40px;z-index:3;}
 
 /* NODE — base (invisible until animated) */
-.node{background:var(--surface);border:1px solid var(--outline);border-radius:var(--r);position:relative;opacity:0;border-color .3s;}
+.node{background:var(--surface);border:1px solid var(--outline);border-radius:var(--r);position:relative;opacity:0;border-color .3s;z-index:1;}
 .node:hover{border-color:var(--outline-hi);}
 
 /* ── ANIMATION KEYFRAMES ── */
@@ -198,7 +198,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
 </head>
 <body>
 
-<svg id="conn-svg" style="position:absolute;top:0;left:0;width:100%;pointer-events:none;z-index:5;overflow:visible;"></svg>
+<svg id="conn-svg" style="position:absolute;top:0;left:0;width:100%;pointer-events:none;z-index:0;overflow:visible;"></svg>
 
 <div class="scroll-hint" id="scrollPips">
   <div class="scroll-pip active"></div>
@@ -613,8 +613,8 @@ const triggers = [
                                 { from:'n-spec-b',  to:'n-reel', side:'right', eFrac:0.50 },
                                 { from:'n-spec-c',  to:'n-reel', side:'right', eFrac:0.50 }], nodes:['n-reel'], afterHero:true },
   { watch:'s-values',   wires:[{ from:'n-reel',    to:'n-va',       side:'left'  },
-                                { from:'n-va',      to:'n-vb',       side:'right' },
-                                { from:'n-vb',      to:'n-vc',       side:'right' }], nodes:['n-va','n-vb','n-vc'] },
+                                { from:'n-va',      to:'n-vb',       side:'across' },
+                                { from:'n-vb',      to:'n-vc',       side:'across' }], nodes:['n-va','n-vb','n-vc'] },
   { watch:'s-projects', wires:[{ from:'n-vc',      to:'n-projects', side:'right' }], nodes:['n-projects']         },
   { watch:'s-trusted',  wires:[{ from:'n-projects',to:'n-trusted',  side:'left'  }], nodes:['n-trusted','n-photo','n-contact'],
                         postWires:[{ from:'n-photo', to:'n-contact', side:'across', sFrac:0.5, eFrac:0.5 }] },
