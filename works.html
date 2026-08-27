@@ -79,6 +79,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .works-back svg{width:14px;height:14px;flex-shrink:0;transition:transform .2s;}
 .works-back:hover svg{transform:translateX(-3px);}
 
+.works-interim{margin-top:40px;padding-top:32px;border-top:1px solid var(--outline);}
+.interim-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#5a4845;margin-bottom:14px;}
+.interim-text{font-family:var(--mono);font-size:12px;line-height:1.75;color:rgba(227,226,226,.4);margin-bottom:20px;}
+.interim-text a{color:var(--primary);text-decoration:none;transition:color .2s;}
+.interim-text a:hover{color:var(--primary-lo);}
+.interim-example{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7a6460;text-decoration:none;border:1px solid var(--outline);border-radius:var(--r);padding:10px 18px;transition:border-color .2s,color .2s,background .2s;}
+.interim-example:hover{border-color:var(--primary);color:var(--primary);background:rgba(230,109,69,.07);}
+.interim-example svg{width:13px;height:13px;flex-shrink:0;}
+
 /* FOOTER */
 footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;max-width:var(--pw);margin:0 auto;}
 .foot-copy{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#3a302d;}
@@ -89,6 +98,68 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
 /* ANIM */
 @keyframes fadeIn{0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
 .works-node{opacity:0;animation:fadeIn 600ms cubic-bezier(0.4,0,0.2,1) 120ms forwards;}
+
+/* ─ MOBILE ─ */
+@media (max-width: 900px) {
+  /* nav */
+  nav { padding: 0 20px; height: 52px; }
+  .nav-sep { display: none; }
+  .nav-right { display: none; }
+  .nav-right.open {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: fixed;
+    top: 52px;
+    left: 0; right: 0;
+    background: rgba(13,14,15,.97);
+    border-bottom: 1px solid var(--outline);
+    padding: 12px 0;
+    z-index: 199;
+  }
+  .nav-right.open li a {
+    display: block;
+    padding: 12px 24px;
+    font-size: 12px;
+  }
+  .nav-burger {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 6px;
+    margin-left: auto;
+  }
+  .nav-burger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform .2s, opacity .2s;
+  }
+
+  /* page */
+  .page { padding: 0 16px; }
+
+  /* works section */
+  .s-works { padding-top: 72px; align-items: flex-start; min-height: auto; padding-bottom: 48px; }
+  .works-body { padding: 40px 24px 48px; }
+  .works-h1 { font-size: clamp(48px,14vw,80px); }
+  .works-sub { font-size: 12px; margin-bottom: 36px; }
+  .coming-label { margin-bottom: 24px; }
+  .works-back { padding: 12px 22px; font-size: 10px; }
+
+  /* footer */
+  footer {
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .foot-links { justify-content: center; }
+}
 </style>
 </head>
 <body>
@@ -99,11 +170,14 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
     <span class="nav-sep">|</span>
     <a href="mailto:eduardoj.reyes@hotmail.com?subject=Technical%20Art%20enquiry" class="nav-hire">Hire Me</a>
   </div>
-  <ul class="nav-right">
+  <ul class="nav-right" id="navMenu">
     <li><a href="index.html">Home</a></li>
     <li><a href="works.html" class="active">Works</a></li>
     <li><a href="cv.html">CV</a></li>
   </ul>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" style="display:none;">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <section class="s-works">
@@ -125,6 +199,15 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
           </svg>
           Back to Home
         </a>
+
+        <div class="works-interim">
+          <p class="interim-label">// Meanwhile</p>
+          <p class="interim-text">You can check my breakdowns and process posts on <a href="https://www.linkedin.com/in/eduardojreyesdev" target="_blank" rel="noopener">LinkedIn</a> while the full case studies are being written up.</p>
+          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7480244254116646912/" target="_blank" rel="noopener" class="interim-example">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Example Breakdown
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -139,5 +222,27 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
   </ul>
 </footer>
 
+<script>
+(function(){
+  var burger = document.getElementById('navBurger');
+  var menu   = document.getElementById('navMenu');
+  function checkWidth(){
+    if(window.innerWidth <= 900){
+      burger.style.display = 'flex';
+    } else {
+      burger.style.display = 'none';
+      menu.classList.remove('open');
+    }
+  }
+  checkWidth();
+  window.addEventListener('resize', checkWidth);
+  burger.addEventListener('click', function(){
+    menu.classList.toggle('open');
+  });
+  menu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ menu.classList.remove('open'); });
+  });
+})();
+</script>
 </body>
 </html>
