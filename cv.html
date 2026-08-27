@@ -169,6 +169,100 @@ a.cv-meta-row:hover{color:var(--primary);}
 .portrait-frame{aspect-ratio:3/4;position:relative;overflow:hidden;background:var(--bg-low);border-radius:0 0 var(--r) var(--r);}
 .portrait-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 14%;display:block;}
 .nav-right a.active{color:var(--primary);}
+
+/* ─ MOBILE ─ */
+@media (max-width: 900px) {
+  /* nav */
+  nav { padding: 0 20px; height: 52px; }
+  .nav-sep { display: none; }
+  .nav-right { display: none; }
+  .nav-right.open {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: fixed;
+    top: 52px;
+    left: 0; right: 0;
+    background: rgba(13,14,15,.97);
+    border-bottom: 1px solid var(--outline);
+    padding: 12px 0;
+    z-index: 199;
+  }
+  .nav-right.open li a {
+    display: block;
+    padding: 12px 24px;
+    font-size: 12px;
+  }
+  .nav-burger {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 6px;
+    margin-left: auto;
+  }
+  .nav-burger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform .2s, opacity .2s;
+  }
+
+  /* page */
+  .page { padding: 0 16px; }
+
+  /* cv layout — single column */
+  .s-cv { padding: 72px 0 48px; }
+  .cv-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* identity card */
+  .node-id .node-body { padding: 20px 18px 24px; }
+  .cv-h1 { font-size: clamp(26px,8vw,38px); }
+  .cv-role { font-size: 13px; }
+  .cv-role-sub { font-size: 13px; }
+  .cv-meta-row { font-size: 11.5px; }
+
+  /* side panels */
+  .node-panel .node-body { padding: 18px 18px 20px; }
+  .sk-tag { font-size: 10px; padding: 5px 8px; }
+
+  /* kv rows */
+  .kv-k { font-size: 13px; }
+  .kv-v { font-size: 10px; }
+
+  /* experience cards */
+  .role-card .node-body { padding: 18px 18px 20px; }
+  .rc-title { font-size: 15px; }
+  .rc-v { font-size: 13px; }
+  .rc-k { font-size: 13px; }
+
+  /* education */
+  .node-edu .node-body { padding: 18px 18px 20px; }
+  .edu-grid { grid-template-columns: 1fr; gap: 20px; }
+  .edu-t { font-size: 14px; }
+
+  /* portrait — hide on mobile like the contact photo in index */
+  .node-portrait { display: none; }
+
+  /* section headings */
+  .sec-h { font-size: clamp(20px,6vw,30px); margin-bottom: 16px; }
+  .cv-block + .cv-block { margin-top: 36px; }
+
+  /* footer */
+  footer {
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .foot-links { justify-content: center; }
+}
 </style>
 </head>
 <body>
@@ -184,11 +278,14 @@ a.cv-meta-row:hover{color:var(--primary);}
     <span class="nav-sep">|</span>
     <a href="mailto:eduardoj.reyes@hotmail.com?subject=Technical%20Art%20enquiry" class="nav-hire">Hire Me</a>
   </div>
-  <ul class="nav-right">
+  <ul class="nav-right" id="navMenu">
     <li><a href="index.html">Home</a></li>
     <li><a href="index.html#s-projects">Works</a></li>
     <li><a href="cv.html" class="active">CV</a></li>
   </ul>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" style="display:none;">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <section class="s-cv">
@@ -532,6 +629,28 @@ let revealed = false;
 function startReveal(){ if(revealed) return; revealed = true; initReveal(); }
 if(document.fonts) document.fonts.ready.then(startReveal);
 setTimeout(startReveal, 400);
+</script>
+<script>
+(function(){
+  var burger = document.getElementById('navBurger');
+  var menu   = document.getElementById('navMenu');
+  function checkWidth(){
+    if(window.innerWidth <= 900){
+      burger.style.display = 'flex';
+    } else {
+      burger.style.display = 'none';
+      menu.classList.remove('open');
+    }
+  }
+  checkWidth();
+  window.addEventListener('resize', checkWidth);
+  burger.addEventListener('click', function(){
+    menu.classList.toggle('open');
+  });
+  menu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ menu.classList.remove('open'); });
+  });
+})();
 </script>
 </body>
 </html>
