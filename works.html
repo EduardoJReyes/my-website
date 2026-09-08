@@ -62,31 +62,52 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 /* PAGE */
 .page{max-width:var(--pw);margin:0 auto;padding:0 40px;}
 
-/* HERO */
-.s-works{padding-top:96px;min-height:100vh;display:flex;align-items:center;}
-.works-node{max-width:860px;margin:0 auto;width:100%;}
-.works-body{padding:72px 64px 80px;text-align:center;}
+/* WORKS LIST */
+.s-works{padding-top:88px;padding-bottom:80px;}
+.works-header{padding:48px 0 36px;}
+.works-title{font-size:clamp(32px,4vw,52px);font-weight:900;letter-spacing:-.02em;text-transform:uppercase;color:var(--text);line-height:1;}
+.works-title span{color:var(--primary);}
+.works-count{font-family:var(--mono);font-size:11px;color:#5a4845;margin-top:8px;letter-spacing:.06em;}
 
-.coming-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--secondary);border:1px solid rgba(231,193,132,.35);display:inline-block;padding:6px 16px;border-radius:var(--r);margin-bottom:36px;}
+/* PROJECT NODE */
+.project-node{margin-bottom:40px;}
+.project-body{display:grid;grid-template-columns:1fr 420px;gap:0;}
+.project-media{position:relative;}
+.gif-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--outline);}
+.gif-grid img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;}
+.yt-wrap{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000;}
+.yt-wrap iframe{position:absolute;top:-3px;left:-3px;width:calc(100% + 6px);height:calc(100% + 6px);border:none;pointer-events:none;}
+.project-info{padding:32px 36px;display:flex;flex-direction:column;border-left:1px solid var(--outline);}
 
-.works-h1{font-size:clamp(56px,8vw,120px);font-weight:900;line-height:.88;letter-spacing:-.03em;text-transform:uppercase;margin-bottom:24px;color:var(--text);}
-.works-h1 span{color:var(--primary);}
+.proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+.proj-tag{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r);border:1px solid var(--outline);}
+.proj-tag.orange{color:var(--primary);border-color:rgba(230,109,69,.35);}
+.proj-tag.sand{color:var(--secondary);border-color:rgba(231,193,132,.3);}
+.proj-tag.teal{color:var(--tertiary);border-color:rgba(110,213,235,.25);}
 
-.works-sub{font-family:var(--mono);font-size:14px;line-height:1.8;color:rgba(227,226,226,.45);max-width:520px;margin:0 auto 52px;}
+.proj-title{font-size:22px;font-weight:800;letter-spacing:-.01em;color:var(--text);margin-bottom:4px;line-height:1.1;}
+.proj-client{font-family:var(--mono);font-size:10px;color:#7a6460;letter-spacing:.08em;margin-bottom:16px;}
 
-.works-back{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text);text-decoration:none;padding:14px 28px;border:1px solid var(--outline-hi);border-radius:var(--r);transition:border-color .2s, color .2s, background .2s;}
-.works-back:hover{border-color:var(--primary);color:var(--primary);background:rgba(230,109,69,.07);}
-.works-back svg{width:14px;height:14px;flex-shrink:0;transition:transform .2s;}
-.works-back:hover svg{transform:translateX(-3px);}
+.proj-desc{font-size:13px;line-height:1.7;color:rgba(227,226,226,.6);margin-bottom:20px;flex:1;}
+.proj-desc strong{color:rgba(227,226,226,.85);font-weight:600;}
 
-.works-interim{margin-top:40px;padding-top:32px;border-top:1px solid var(--outline);}
-.interim-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#5a4845;margin-bottom:14px;}
-.interim-text{font-family:var(--mono);font-size:12px;line-height:1.75;color:rgba(227,226,226,.4);margin-bottom:20px;}
-.interim-text a{color:var(--primary);text-decoration:none;transition:color .2s;}
-.interim-text a:hover{color:var(--primary-lo);}
-.interim-example{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7a6460;text-decoration:none;border:1px solid var(--outline);border-radius:var(--r);padding:10px 18px;transition:border-color .2s,color .2s,background .2s;}
-.interim-example:hover{border-color:var(--primary);color:var(--primary);background:rgba(230,109,69,.07);}
-.interim-example svg{width:13px;height:13px;flex-shrink:0;}
+.proj-bullets{list-style:none;margin-bottom:24px;display:flex;flex-direction:column;gap:6px;}
+.proj-bullets li{font-family:var(--mono);font-size:11px;color:rgba(227,226,226,.45);line-height:1.5;padding-left:14px;position:relative;}
+.proj-bullets li::before{content:'//';position:absolute;left:0;color:#5a4845;font-size:9px;top:1px;}
+
+.proj-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:20px;border-top:1px solid var(--outline);}
+.proj-link{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7a6460;text-decoration:none;padding:8px 14px;border:1px solid var(--outline);border-radius:var(--r);transition:border-color .2s,color .2s,background .2s;}
+.proj-link:hover{border-color:var(--primary);color:var(--primary);background:rgba(230,109,69,.07);}
+.proj-link svg{width:11px;height:11px;flex-shrink:0;}
+.proj-link.primary{color:var(--primary);border-color:rgba(230,109,69,.4);}
+.proj-link.primary:hover{background:rgba(230,109,69,.1);}
+
+/* ANIM */
+@keyframes fadeIn{0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
+.project-node{opacity:0;animation:fadeIn 500ms cubic-bezier(0.4,0,0.2,1) forwards;}
+.project-node:nth-child(1){animation-delay:80ms;}
+.project-node:nth-child(2){animation-delay:160ms;}
+.project-node:nth-child(3){animation-delay:240ms;}
 
 /* FOOTER */
 footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;max-width:var(--pw);margin:0 auto;}
@@ -144,12 +165,12 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
   .page { padding: 0 16px; }
 
   /* works section */
-  .s-works { padding-top: 72px; align-items: flex-start; min-height: auto; padding-bottom: 48px; }
-  .works-body { padding: 40px 24px 48px; }
-  .works-h1 { font-size: clamp(48px,14vw,80px); }
-  .works-sub { font-size: 12px; margin-bottom: 36px; }
-  .coming-label { margin-bottom: 24px; }
-  .works-back { padding: 12px 22px; font-size: 10px; }
+  .s-works { padding-top: 68px; padding-bottom: 48px; }
+  .works-header { padding: 28px 0 24px; }
+  .project-body { grid-template-columns: 1fr; }
+  .project-info { border-left: none; border-top: 1px solid var(--outline); padding: 24px 20px; }
+  .proj-desc { font-size: 12px; }
+  .proj-bullets li { font-size: 10px; }
 
   /* footer */
   footer {
@@ -181,35 +202,75 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
 </nav>
 
 <section class="s-works">
-  <div class="page" style="width:100%;">
-    <div class="node works-node">
-      <div class="node-header">
-        <span class="nh-dot sand"></span>
-        <span class="nh-path">COLLECTION</span>
-        <span class="nh-sep">::</span>
-        <span class="nh-name">FEATURED_WORKS</span>
-      </div>
-      <div class="works-body">
-        <div class="coming-label">Status: Building</div>
-        <h1 class="works-h1">Coming<br/><span>Soon</span></h1>
-        <p class="works-sub">The portfolio is being assembled. Case studies, breakdowns, and project files are on their way.</p>
-        <a href="index.html" class="works-back">
-          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 2L4 7l5 5"/>
-          </svg>
-          Back to Home
-        </a>
+  <div class="page">
 
-        <div class="works-interim">
-          <p class="interim-label">// Meanwhile</p>
-          <p class="interim-text">You can check my breakdowns and process posts on <a href="https://www.linkedin.com/in/eduardojreyesdev" target="_blank" rel="noopener">LinkedIn</a> while the full case studies are being written up.</p>
-          <a href="https://www.linkedin.com/feed/update/urn:li:activity:7480244254116646912/" target="_blank" rel="noopener" class="interim-example">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            Example Breakdown
-          </a>
+    <div class="works-header">
+      <h1 class="works-title">Selected <span>Works</span></h1>
+      <p class="works-count">// 1 project — more coming</p>
+    </div>
+
+    <!-- PROJECT: Slumber Party Games -->
+    <div class="node project-node">
+      <div class="node-header">
+        <span class="nh-dot"></span>
+        <span class="nh-path">PROJECT</span>
+        <span class="nh-sep">::</span>
+        <span class="nh-name">SLUMBER_PARTY_GAMES</span>
+      </div>
+      <div class="project-body">
+
+        <div class="project-media">
+          <div class="gif-grid">
+            <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/TJSD_s5ZDk0?autoplay=1&mute=1&loop=1&playlist=TJSD_s5ZDk0&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="El Patriota gameplay"></iframe></div>
+            <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/fyQJTCYXRhM?autoplay=1&mute=1&loop=1&playlist=fyQJTCYXRhM&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="Invincible gameplay"></iframe></div>
+            <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/bqIe_Vs4nIk?autoplay=1&mute=1&loop=1&playlist=bqIe_Vs4nIk&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="El Internado gameplay"></iframe></div>
+            <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/NWB3_ob7dZY?autoplay=1&mute=1&loop=1&playlist=NWB3_ob7dZY&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="Fleabag gameplay"></iframe></div>
+          </div>
         </div>
+
+        <div class="project-info">
+          <div class="proj-tags">
+            <span class="proj-tag orange">Game Design</span>
+            <span class="proj-tag orange">Programming</span>
+            <span class="proj-tag sand">GDevelop</span>
+            <span class="proj-tag teal">Prime Video</span>
+          </div>
+
+          <h2 class="proj-title">Four Mini-Games for Prime Video</h2>
+          <p class="proj-client">Slumber Party Games &nbsp;·&nbsp; 2022–2023</p>
+
+          <p class="proj-desc">
+            Four browser mini-games, each built in <strong>four weeks</strong>, commissioned to promote Prime Video series — The Boys, Invincible, El Internado, and Fleabag. Each game had to hold at least 45 minutes of live-streamed content, which meant designing for reactability, not just completion. The campaign was featured by streamer <strong>Mayichi</strong> on Twitch.
+          </p>
+
+          <ul class="proj-bullets">
+            <li>Sole designer and programmer — core mechanics to final build</li>
+            <li>Client-facing throughout: needs assessment, regular test builds</li>
+            <li>Playtested all levels; built engine tools to speed up level authoring</li>
+            <li>Composed and implemented all music and sound</li>
+            <li>Assisted with extra art tasks across titles</li>
+          </ul>
+
+          <div class="proj-links">
+            <a href="https://gd.games/SlumberParty_Games" target="_blank" rel="noopener" class="proj-link primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              Play the Games
+            </a>
+            <a href="https://youtu.be/oQLYUIbxGas?t=450" target="_blank" rel="noopener" class="proj-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Mayichi Stream
+            </a>
+            <a href="https://www.youtube.com/@PrimeVideoES" target="_blank" rel="noopener" class="proj-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Prime Video ES
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
+    <!-- /PROJECT -->
+
   </div>
 </section>
 
