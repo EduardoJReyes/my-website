@@ -76,7 +76,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .gif-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--outline);}
 .gif-grid img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;}
 .yt-wrap{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000;}
-.yt-wrap iframe{position:absolute;top:-3px;left:-3px;width:calc(100% + 6px);height:calc(100% + 6px);border:none;pointer-events:none;}
+.yt-wrap iframe{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300%;height:300%;border:none;pointer-events:none;}
 .project-info{padding:32px 36px;display:flex;flex-direction:column;border-left:1px solid var(--outline);}
 
 .proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
@@ -221,10 +221,10 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
 
         <div class="project-media">
           <div class="gif-grid">
-            <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/TJSD_s5ZDk0?autoplay=1&mute=1&loop=1&playlist=TJSD_s5ZDk0&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="El Patriota gameplay"></iframe></div>
-            <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/fyQJTCYXRhM?autoplay=1&mute=1&loop=1&playlist=fyQJTCYXRhM&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="Invincible gameplay"></iframe></div>
-            <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/bqIe_Vs4nIk?autoplay=1&mute=1&loop=1&playlist=bqIe_Vs4nIk&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="El Internado gameplay"></iframe></div>
-            <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/NWB3_ob7dZY?autoplay=1&mute=1&loop=1&playlist=NWB3_ob7dZY&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="Fleabag gameplay"></iframe></div>
+            <div class="yt-wrap" id="yt-elpatriota"></div>
+            <div class="yt-wrap" id="yt-invincible"></div>
+            <div class="yt-wrap" id="yt-elinternado"></div>
+            <div class="yt-wrap" id="yt-fleabag"></div>
           </div>
         </div>
 
@@ -282,6 +282,45 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
     <li><a href="mailto:eduardoj.reyes@hotmail.com">Email</a></li>
   </ul>
 </footer>
+
+<script>
+// YouTube IFrame API
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(tag);
+
+var ytVideos = [
+  { id: 'yt-elpatriota', videoId: 'TJSD_s5ZDk0' },
+  { id: 'yt-invincible',  videoId: 'fyQJTCYXRhM' },
+  { id: 'yt-elinternado', videoId: 'bqIe_Vs4nIk' },
+  { id: 'yt-fleabag',     videoId: 'NWB3_ob7dZY'  },
+];
+
+function onYouTubeIframeAPIReady() {
+  ytVideos.forEach(function(v) {
+    new YT.Player(v.id, {
+      videoId: v.videoId,
+      playerVars: {
+        autoplay: 1,
+        mute: 1,
+        loop: 1,
+        playlist: v.videoId,
+        controls: 0,
+        modestbranding: 1,
+        showinfo: 0,
+        rel: 0,
+        iv_load_policy: 3,
+        disablekb: 1,
+        fs: 0,
+        playsinline: 1,
+      },
+      events: {
+        onReady: function(e) { e.target.playVideo(); }
+      }
+    });
+  });
+}
+</script>
 
 <script>
 (function(){
