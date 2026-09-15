@@ -213,8 +213,111 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
 
     <div class="works-header">
       <h1 class="works-title">Selected <span>Works</span></h1>
-      <p class="works-count">// 4 projects — more coming</p>
+      <p class="works-count">// 6 projects — more coming</p>
     </div>
+
+    <!-- PROJECT: Impala Films -->
+    <div class="node project-node">
+      <div class="node-header">
+        <span class="nh-dot"></span>
+        <span class="nh-path">PROJECT</span>
+        <span class="nh-sep">::</span>
+        <span class="nh-name">IMPALA_FILMS__VIRTUAL_PRODUCTION</span>
+      </div>
+      <div class="project-body">
+
+        <div class="project-info">
+          <div class="proj-tags">
+            <span class="proj-tag orange">Technical Artist</span>
+            <span class="proj-tag sand">Unreal Engine 5</span>
+            <span class="proj-tag sand">PCG</span>
+            <span class="proj-tag sand">HLSL</span>
+            <span class="proj-tag teal">Virtual Production</span>
+            <span class="proj-tag teal">Lighting</span>
+          </div>
+
+          <h2 class="proj-title">Virtual Production Commercial · Impala Films</h2>
+          <p class="proj-client">Technical Artist</p>
+
+          <p class="proj-desc">
+            Technical Artist on a Virtual Production commercial shot on LED walls, responsible for building and optimizing the real-time UE5 environment used as the projected background across multiple shots. The city scene required developing custom shaders for architectural surfaces and set-dressing elements, alongside a procedural content generation system to populate the bridge and road traffic without manual placement overhead. Scene optimization was a continuous deliverable throughout production to maintain stable framerates on the LED volume.
+          </p>
+
+          <ul class="proj-bullets">
+            <li>Developed custom material shaders for city surfaces using HLSL and UE5 material graph</li>
+            <li>Authored PCG graphs to procedurally distribute bridge structure elements and vehicle traffic</li>
+            <li>Performed scene optimization passes: draw call reduction, LOD setup, culling and asset auditing</li>
+            <li>Handled set dressing and composition of the full city environment</li>
+            <li>Coordinated directly with the production team across multiple shot iterations</li>
+          </ul>
+
+          <div class="proj-links">
+            <a href="https://youtu.be/kUeCIan6rvk" target="_blank" rel="noopener" class="proj-link primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              Watch Commercial
+            </a>
+          </div>
+        </div>
+
+        <div class="project-media">
+          <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/kUeCIan6rvk?autoplay=1&mute=1&loop=1&playlist=kUeCIan6rvk&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Impala Films Virtual Production commercial"></iframe></div>
+        </div>
+
+      </div>
+    </div>
+    <!-- /PROJECT -->
+
+    <!-- PROJECT: DJ Dokku -->
+    <div class="node project-node">
+      <div class="node-header">
+        <span class="nh-dot sand"></span>
+        <span class="nh-path">PROJECT</span>
+        <span class="nh-sep">::</span>
+        <span class="nh-name">DJ_DOKKU__SALA_RAZZMATAZZ</span>
+      </div>
+      <div class="project-body media-left">
+
+        <div class="project-media">
+          <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/APET_m-ztyg?autoplay=1&mute=1&loop=1&playlist=APET_m-ztyg&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="DJ Dokku Razzmatazz live visuals"></iframe></div>
+        </div>
+
+        <div class="project-info">
+          <div class="proj-tags">
+            <span class="proj-tag orange">Technical Artist</span>
+            <span class="proj-tag sand">Unreal Engine 5</span>
+            <span class="proj-tag sand">Maya</span>
+            <span class="proj-tag sand">HLSL</span>
+            <span class="proj-tag teal">Rigging</span>
+            <span class="proj-tag teal">Shaders</span>
+            <span class="proj-tag teal">Live Performance</span>
+          </div>
+
+          <h2 class="proj-title">Live Performance Visuals · DJ Dokku at Sala Razzmatazz</h2>
+          <p class="proj-client">Technical Artist</p>
+
+          <p class="proj-desc">
+            Designed and implemented the full real-time visual pipeline for DJ Dokku's live performance at Sala Razzmatazz Barcelona. The character mascot was rigged in Maya and integrated into UE5 alongside a custom pixel art shader built from scratch in the material graph: pixelization pass, Color LUT grading, vertex position wiggle to replicate PS1 geometric artifacts, and facial animation driven by texture swapping rather than traditional blend shapes. The result was a looping, music-synced real-time render projected live during the performance.
+          </p>
+
+          <ul class="proj-bullets">
+            <li>Rigged the low-poly character mascot in Maya, accounting for topology constraints at minimal polygon count</li>
+            <li>Developed the pixel art shader pipeline in UE5: pixelization, dithering, Color LUT and PS1-style vertex wiggle</li>
+            <li>Implemented facial animation system via texture swapping on the material graph</li>
+            <li>Authored looping camera animations synced to a reference audio track</li>
+            <li>Delivered three final looped clips ready for live projection</li>
+          </ul>
+
+          <div class="proj-links">
+            <a href="https://youtu.be/APET_m-ztyg" target="_blank" rel="noopener" class="proj-link primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              Watch Performance
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- /PROJECT -->
 
     <!-- PROJECT: Slumber Party Games -->
     <div class="node project-node">
@@ -236,7 +339,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
           </div>
 
           <h2 class="proj-title">Prime Video Mini-Games · The Boys, Invincible, El Internado & Fleabag</h2>
-          <p class="proj-client">Game Designer & Programmer &nbsp;·&nbsp; 2022–2023</p>
+          <p class="proj-client">Game Designer & Programmer</p>
 
           <p class="proj-desc">
             Four browser-based mini-games commissioned by Prime Video Spain, each delivered within a four-week production cycle. Designed and engineered to sustain a minimum of 45 minutes of live-streamed content per session, which drove design decisions toward emergent reactability and replayable encounter structures rather than linear completion. The campaign was broadcast live by streamer <strong>Mayichi</strong> on Twitch.
@@ -299,7 +402,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
           </div>
 
           <h2 class="proj-title">3D Immersive Quiz for Pere Tarrés Foundation</h2>
-          <p class="proj-client">Game Designer & Programmer &nbsp;·&nbsp; Commission</p>
+          <p class="proj-client">Game Designer & Programmer</p>
 
           <p class="proj-desc">
             Interactive learning module designed and developed for the Moodle platform, packaged and distributed as a SCORM file. Built in Unity, the experience places students inside a navigable 3D domestic environment where they must identify and mitigate hazards that elderly individuals are likely to encounter at home. The project required integrating custom interaction systems, spatial UI and SCORM-compliant event tracking into a single deployable package aligned with the foundation's curriculum.
@@ -380,7 +483,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
           </div>
 
           <h2 class="proj-title">Freelance Commissions · Rise of Droids & Bucky Away</h2>
-          <p class="proj-client">Game Designer & Programmer &nbsp;·&nbsp; 2023</p>
+          <p class="proj-client">Game Designer & Programmer</p>
 
           <p class="proj-desc">
             Two prototypes with a shared focus on core systems architecture and game feel. Rise of Droids was a freelance commission to design and implement the foundational gameplay systems of a top-down shooter in active development: core mechanics, enemy AI behaviour trees and a reward system, built to serve as a playtest-ready vertical slice for the client. Bucky Away was developed as an instructional prototype for Game Design students at La Salle URL, demonstrating how to architect and tune polished mechanics inside a no-code editor, with a deliberate emphasis on feedback loops and game feel refinement.
