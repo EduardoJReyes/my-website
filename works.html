@@ -70,9 +70,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .works-count{font-family:var(--mono);font-size:11px;color:#5a4845;margin-top:8px;letter-spacing:.06em;}
 
 /* PROJECT NODE */
-.project-node{margin-bottom:40px;}
-.project-body{display:grid;grid-template-columns:1fr 280px;gap:0;}
+.project-node{margin-bottom:32px;max-width:900px;margin-left:auto;margin-right:auto;}
+.project-body{display:grid;grid-template-columns:1fr 300px;gap:0;}
+.project-body.media-left{grid-template-columns:300px 1fr;}
 .project-media{display:flex;flex-direction:column;gap:1px;background:var(--outline);border-left:1px solid var(--outline);}
+.project-body.media-left .project-media{border-left:none;border-right:1px solid var(--outline);}
+.project-body-stacked{display:flex;flex-direction:column;}
+.project-body-stacked .project-info{padding:28px 32px;border-bottom:1px solid var(--outline);}
+.project-media-bottom{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--outline);}
 .yt-wrap{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000;width:100%;flex:1;}
 .yt-wrap iframe{position:absolute;top:-38px;left:0;width:100%;height:calc(100% + 76px);border:none;pointer-events:none;}
 .yt-wrap.interactive iframe{pointer-events:auto;}
@@ -167,7 +172,9 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
   .s-works { padding-top: 68px; padding-bottom: 48px; }
   .works-header { padding: 28px 0 24px; }
   .project-body { grid-template-columns: 1fr; }
-  .project-media { border-left: none; border-top: 1px solid var(--outline); flex-direction: row; }
+  .project-body.media-left { grid-template-columns: 1fr; }
+  .project-body.media-left .project-media { border-right: none; border-bottom: 1px solid var(--outline); }
+  .project-media { border-left: none; border-bottom: 1px solid var(--outline); }
   .project-info { padding: 24px 20px; }
   .proj-desc { font-size: 12px; }
   .proj-bullets li { font-size: 10px; }
@@ -206,7 +213,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
 
     <div class="works-header">
       <h1 class="works-title">Selected <span>Works</span></h1>
-      <p class="works-count">// 1 project — more coming</p>
+      <p class="works-count">// 4 projects — more coming</p>
     </div>
 
     <!-- PROJECT: Slumber Party Games -->
@@ -260,7 +267,130 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
 
         <div class="project-media">
           <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/-KlT5hNjlBw?autoplay=1&mute=1&loop=1&playlist=-KlT5hNjlBw&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Prime Video mini-games gameplay"></iframe></div>
-          <div class="yt-wrap interactive"><iframe src="https://www.youtube-nocookie.com/embed/LPW5F-TkqDY?start=454&mute=1&controls=1&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Mayichi stream"></iframe></div>
+          <div class="yt-wrap interactive"><iframe src="https://www.youtube-nocookie.com/embed/LPW5F-TkqDY?start=454&autoplay=1&mute=1&loop=1&playlist=LPW5F-TkqDY&controls=1&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Mayichi stream"></iframe></div>
+        </div>
+
+      </div>
+    </div>
+    <!-- /PROJECT -->
+
+    <!-- PROJECT: Pere Tarrés -->
+    <div class="node project-node">
+      <div class="node-header">
+        <span class="nh-dot sand"></span>
+        <span class="nh-path">PROJECT</span>
+        <span class="nh-sep">::</span>
+        <span class="nh-name">PERE_TARRES_FOUNDATION</span>
+      </div>
+      <div class="project-body media-left">
+
+        <div class="project-media">
+          <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/XRPxPH-1XAQ?autoplay=1&mute=1&loop=1&playlist=XRPxPH-1XAQ&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="3D Immersive Quiz gameplay"></iframe></div>
+        </div>
+
+        <div class="project-info">
+          <div class="proj-tags">
+            <span class="proj-tag orange">Game Design</span>
+            <span class="proj-tag orange">Programming</span>
+            <span class="proj-tag sand">Unity</span>
+            <span class="proj-tag teal">Education</span>
+          </div>
+
+          <h2 class="proj-title">3D Immersive Quiz</h2>
+          <p class="proj-client">Pere Tarrés Foundation &nbsp;·&nbsp; Commission</p>
+
+          <p class="proj-desc">
+            Designed and developed an <strong>interactive learning module</strong> for the Moodle platform, packaged as a SCORM file. The tool helps students identify and mitigate potential hazards elderly individuals might encounter at home — combining <strong>3D environment design and programming</strong> into a user-friendly experience that complements their curriculum.
+          </p>
+
+          <div class="proj-links">
+            <a href="https://www.youtube.com/watch?v=XRPxPH-1XAQ" target="_blank" rel="noopener" class="proj-link primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              Watch Demo
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- /PROJECT -->
+
+    <!-- PROJECT: Chirality -->
+    <div class="node project-node">
+      <div class="node-header">
+        <span class="nh-dot"></span>
+        <span class="nh-path">PROJECT</span>
+        <span class="nh-sep">::</span>
+        <span class="nh-name">CHIRALITY_THE_FIRST_JOURNAL</span>
+      </div>
+      <div class="project-body-stacked">
+
+        <div class="project-info">
+          <div class="proj-tags">
+            <span class="proj-tag orange">Game Design</span>
+            <span class="proj-tag orange">Programming</span>
+            <span class="proj-tag sand">Unity</span>
+            <span class="proj-tag teal">Master Thesis</span>
+          </div>
+
+          <h2 class="proj-title">Chirality: The First Journal</h2>
+          <p class="proj-client">Master Thesis &nbsp;·&nbsp; La Salle URL</p>
+
+          <p class="proj-desc">
+            Prototype designed and developed for <strong><a href="https://drive.google.com/drive/folders/1zYK_8UnCLvL6zsCubllLS57lA8xO0i6C" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:none;">Crafting Fear: Theories of Horror in Game Design</a></strong>, Eduardo's Master's thesis at La Salle URL. The intention was to explore, design, develop and prove the <strong>mechanics and dynamics</strong> that affect and increment the horror experience within an academic context — validated through several structured tests and dozens of playtesters. Responsible for both game design and programming.
+          </p>
+        </div>
+
+        <div class="project-media-bottom">
+          <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/q1ySLmZE9q8?autoplay=1&mute=1&loop=1&playlist=q1ySLmZE9q8&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Chirality gameplay 1"></iframe></div>
+          <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/kMqLC0ne0CM?autoplay=1&mute=1&loop=1&playlist=kMqLC0ne0CM&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Chirality gameplay 2"></iframe></div>
+        </div>
+
+      </div>
+    </div>
+    <!-- /PROJECT -->
+
+    <!-- PROJECT: Rise of Droids + Bucky Away -->
+    <div class="node project-node">
+      <div class="node-header">
+        <span class="nh-dot orange"></span>
+        <span class="nh-path">PROJECT</span>
+        <span class="nh-sep">::</span>
+        <span class="nh-name">RISE_OF_DROIDS__BUCKY_AWAY</span>
+      </div>
+      <div class="project-body">
+
+        <div class="project-info">
+          <div class="proj-tags">
+            <span class="proj-tag orange">Game Design</span>
+            <span class="proj-tag orange">Programming</span>
+            <span class="proj-tag sand">GDevelop</span>
+            <span class="proj-tag teal">Freelance</span>
+            <span class="proj-tag teal">Teaching</span>
+          </div>
+
+          <h2 class="proj-title">Rise of Droids & Bucky Away</h2>
+          <p class="proj-client">Freelance + La Salle URL &nbsp;·&nbsp; 2023</p>
+
+          <p class="proj-desc">
+            Two prototypes built with a shared focus on <strong>core mechanics and game feel</strong>. Rise of Droids was a freelance commission to playtest and validate the systems of a top-down shooter in development — responsible for design and implementation of core gameplay, enemy AI, and the reward system. Bucky Away was built as a <strong>teaching tool for La Salle</strong> game design students, demonstrating how to implement polished mechanics in a no-code editor, with an emphasis on game feel refinement.
+          </p>
+
+          <div class="proj-links">
+            <a href="https://youtu.be/JcIpM4Lwbpk" target="_blank" rel="noopener" class="proj-link primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              Rise of Droids
+            </a>
+            <a href="https://youtu.be/eijvEl-rvY4" target="_blank" rel="noopener" class="proj-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              Bucky Away
+            </a>
+          </div>
+        </div>
+
+        <div class="project-media">
+          <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/JcIpM4Lwbpk?autoplay=1&mute=1&loop=1&playlist=JcIpM4Lwbpk&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Rise of Droids gameplay"></iframe></div>
+          <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/eijvEl-rvY4?autoplay=1&mute=1&loop=1&playlist=eijvEl-rvY4&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Bucky Away gameplay"></iframe></div>
         </div>
 
       </div>
