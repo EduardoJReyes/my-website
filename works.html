@@ -67,10 +67,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .works-header{padding:48px 0 36px;}
 .works-title{font-size:clamp(32px,4vw,52px);font-weight:900;letter-spacing:-.02em;text-transform:uppercase;color:var(--text);line-height:1;}
 .works-title span{color:var(--primary);}
-.works-count{font-family:var(--mono);font-size:11px;color:#5a4845;margin-top:8px;letter-spacing:.06em;}
 
-/* PROJECT NODE */
-.project-node{margin-bottom:32px;max-width:900px;margin-left:auto;margin-right:auto;}
+/* TIMELINE */
+.timeline-wrap{position:relative;max-width:900px;margin:0 auto;padding-left:32px;}
+.timeline-line{position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,transparent 0%,var(--primary) 3%,var(--primary) 97%,transparent 100%);opacity:.4;}
+.timeline-node{position:relative;margin-bottom:32px;}
+.timeline-node::before{content:'';position:absolute;left:-28px;top:50%;transform:translateY(-50%);width:16px;height:2px;background:var(--primary);opacity:.5;}
+.timeline-node::after{content:'';position:absolute;left:-32px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:var(--primary);border:2px solid var(--bg);box-shadow:0 0 6px rgba(230,109,69,.6);}
+
+/* STICKY ROLE */
+.role-indicator{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:6px;pointer-events:none;max-width:120px;text-align:right;}
+.role-indicator-text{font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--primary);opacity:0;transition:opacity .4s;line-height:1.6;word-break:break-word;text-align:right;}
+.role-indicator-text.active{opacity:.7;}
+.role-indicator-line{width:32px;height:2px;background:var(--primary);opacity:.3;align-self:flex-end;}
+@media(max-width:1100px){.role-indicator{display:none;}}
 .project-body{display:grid;grid-template-columns:1fr 300px;gap:0;}
 .project-body.media-left{grid-template-columns:300px 1fr;}
 .project-media{display:flex;flex-direction:column;gap:1px;background:var(--outline);border-left:1px solid var(--outline);}
@@ -108,6 +118,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 
 /* ANIM */
 @keyframes fadeIn{0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
+.project-node{width:100%;}
 .project-node{opacity:0;animation:fadeIn 500ms cubic-bezier(0.4,0,0.2,1) forwards;}
 .project-node:nth-child(1){animation-delay:80ms;}
 .project-node:nth-child(2){animation-delay:160ms;}
@@ -212,11 +223,14 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
   <div class="page">
 
     <div class="works-header">
-      <h1 class="works-title">Selected <span>Works</span></h1>
-      <p class="works-count">// 6 projects — more coming</p>
+      <h1 class="works-title">Selected <span>Projects</span></h1>
     </div>
 
-    <!-- PROJECT: Impala Films -->
+    <div class="timeline-wrap">
+      <div class="timeline-line"></div>
+
+      <div class="timeline-node" data-role="Technical Artist">
+        <!-- PROJECT: Impala Films -->
     <div class="node project-node">
       <div class="node-header">
         <span class="nh-dot"></span>
@@ -266,8 +280,10 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
       </div>
     </div>
     <!-- /PROJECT -->
+      </div><!-- /timeline-node -->
 
-    <!-- PROJECT: DJ Dokku -->
+      <div class="timeline-node" data-role="Technical Artist">
+        <!-- PROJECT: DJ Dokku -->
     <div class="node project-node">
       <div class="node-header">
         <span class="nh-dot sand"></span>
@@ -318,8 +334,10 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
       </div>
     </div>
     <!-- /PROJECT -->
+      </div><!-- /timeline-node -->
 
-    <!-- PROJECT: Slumber Party Games -->
+      <div class="timeline-node" data-role="Game Designer &amp; Programmer">
+        <!-- PROJECT: Slumber Party Games -->
     <div class="node project-node">
       <div class="node-header">
         <span class="nh-dot"></span>
@@ -377,8 +395,10 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
       </div>
     </div>
     <!-- /PROJECT -->
+      </div><!-- /timeline-node -->
 
-    <!-- PROJECT: Pere Tarrés -->
+      <div class="timeline-node" data-role="Game Designer &amp; Programmer">
+        <!-- PROJECT: Pere Tarrés -->
     <div class="node project-node">
       <div class="node-header">
         <span class="nh-dot sand"></span>
@@ -419,8 +439,10 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
       </div>
     </div>
     <!-- /PROJECT -->
+      </div><!-- /timeline-node -->
 
-    <!-- PROJECT: Chirality -->
+      <div class="timeline-node" data-role="Game Designer &amp; Programmer">
+        <!-- PROJECT: Chirality -->
     <div class="node project-node">
       <div class="node-header">
         <span class="nh-dot"></span>
@@ -462,8 +484,10 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
       </div>
     </div>
     <!-- /PROJECT -->
+      </div><!-- /timeline-node -->
 
-    <!-- PROJECT: Rise of Droids + Bucky Away -->
+      <div class="timeline-node" data-role="Game Designer &amp; Programmer">
+        <!-- PROJECT: Rise of Droids + Bucky Away -->
     <div class="node project-node">
       <div class="node-header">
         <span class="nh-dot orange"></span>
@@ -510,6 +534,79 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
     </div>
     <!-- /PROJECT -->
 
+    <!-- PROJECT: Diddl -->
+    <div class="node project-node">
+      <div class="node-header">
+        <span class="nh-dot sand"></span>
+        <span class="nh-path">PROJECT</span>
+        <span class="nh-sep">::</span>
+        <span class="nh-name">DIDDL__B-WATER_STUDIOS</span>
+      </div>
+      <div class="project-body-stacked">
+
+        <div class="project-info">
+          <div class="proj-tags">
+            <span class="proj-tag orange">Production Coordinator</span>
+            <span class="proj-tag sand">Animation</span>
+            <span class="proj-tag sand">Pipeline</span>
+            <span class="proj-tag teal">B-Water Studios</span>
+          </div>
+
+          <h2 class="proj-title">Animation Production · Diddl at B-Water Studios</h2>
+          <p class="proj-client">Production Coordinator</p>
+
+          <p class="proj-desc">
+            Production Coordinator at B-Water Studios on Diddl, a multi-team animation production. Served as the primary point of contact between the client and internal departments, responsible for keeping workflow alignment across teams throughout the production pipeline. Managed planning, inter-departmental communication and delivery across both series and film formats.
+          </p>
+        </div>
+
+        <div class="project-media-bottom" style="grid-template-columns:1fr;">
+          <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/AJhZlGP9VkM?start=36&autoplay=1&mute=1&loop=1&playlist=AJhZlGP9VkM&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Diddl animation"></iframe></div>
+        </div>
+
+      </div>
+    </div>
+    <!-- /PROJECT -->
+      </div><!-- /timeline-node -->
+
+      <div class="timeline-node" data-role="Producer">
+        <!-- PROJECT: Diddl / B-Water Studios -->
+        <div class="node project-node">
+          <div class="node-header">
+            <span class="nh-dot sand"></span>
+            <span class="nh-path">PROJECT</span>
+            <span class="nh-sep">::</span>
+            <span class="nh-name">DIDDL__B-WATER_STUDIOS</span>
+          </div>
+          <div class="project-body-stacked">
+
+            <div class="project-info">
+              <div class="proj-tags">
+                <span class="proj-tag orange">Production</span>
+                <span class="proj-tag sand">Pipeline</span>
+                <span class="proj-tag sand">Animation</span>
+                <span class="proj-tag teal">B-Water Studios</span>
+              </div>
+
+              <h2 class="proj-title">Animation Production · Diddl at B-Water Studios</h2>
+              <p class="proj-client">Production Coordinator</p>
+
+              <p class="proj-desc">
+                Production Coordinator at B-Water Studios on Diddl, a multi-team animation production. Served as the primary point of contact between the client and internal departments, responsible for keeping workflow alignment across teams throughout the production pipeline. Managed planning, inter-departmental communication and delivery across both series and film formats.
+              </p>
+            </div>
+
+            <div class="project-media-bottom">
+              <div class="yt-wrap" style="grid-column:1/-1;"><iframe src="https://www.youtube-nocookie.com/embed/AJhZlGP9VkM?start=36&autoplay=1&mute=1&loop=1&playlist=AJhZlGP9VkM&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Diddl animation"></iframe></div>
+            </div>
+
+          </div>
+        </div>
+        <!-- /PROJECT -->
+      </div><!-- /timeline-node -->
+
+    </div><!-- /timeline-wrap -->
+
   </div>
 </section>
 
@@ -521,6 +618,12 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
     <li><a href="mailto:eduardoj.reyes@hotmail.com">Email</a></li>
   </ul>
 </footer>
+
+<!-- Sticky role indicator -->
+<div class="role-indicator" id="roleIndicator">
+  <div class="role-indicator-line"></div>
+  <div class="role-indicator-text" id="roleText">Technical Artist</div>
+</div>
 
 <script>
 (function(){
@@ -542,6 +645,35 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
   menu.querySelectorAll('a').forEach(function(a){
     a.addEventListener('click', function(){ menu.classList.remove('open'); });
   });
+  // Sticky role indicator
+  var roleText = document.getElementById('roleText');
+  var nodes = document.querySelectorAll('.timeline-node[data-role]');
+  var currentRole = '';
+  function roleHTML(role){
+    if(role === 'Game Designer & Programmer') return 'Game Designer<br>& Programmer';
+    return role;
+  }
+  function updateRole(){
+    var mid = window.innerHeight / 2;
+    var active = null;
+    nodes.forEach(function(n){
+      var rect = n.getBoundingClientRect();
+      if(rect.top < mid && rect.bottom > 0) active = n;
+    });
+    if(active){
+      var role = active.getAttribute('data-role');
+      if(role !== currentRole){
+        currentRole = role;
+        roleText.style.opacity = '0';
+        setTimeout(function(){ roleText.innerHTML = roleHTML(role); roleText.classList.add('active'); roleText.style.opacity = ''; }, 200);
+      }
+      roleText.classList.add('active');
+    } else {
+      roleText.classList.remove('active');
+    }
+  }
+  window.addEventListener('scroll', updateRole, {passive:true});
+  updateRole();
 })();
 </script>
 </body>
