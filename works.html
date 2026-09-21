@@ -91,6 +91,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .yt-wrap{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000;width:100%;flex:1;}
 .yt-wrap iframe{position:absolute;top:-38px;left:0;width:100%;height:calc(100% + 76px);border:none;pointer-events:none;}
 .yt-wrap.interactive iframe{pointer-events:auto;}
+.project-media.fill{align-self:stretch;}
+.project-media.fill .yt-wrap{aspect-ratio:unset;height:100%;min-height:200px;}
+.project-media.fill .yt-wrap iframe{top:0;height:100%;width:180%;left:-40%;}
 .project-info{padding:28px 32px;display:flex;flex-direction:column;}
 
 .proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
@@ -273,7 +276,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
           </div>
         </div>
 
-        <div class="project-media">
+        <div class="project-media fill">
           <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/kUeCIan6rvk?autoplay=1&mute=1&loop=1&playlist=kUeCIan6rvk&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Impala Films Virtual Production commercial"></iframe></div>
         </div>
 
@@ -293,7 +296,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
       </div>
       <div class="project-body media-left">
 
-        <div class="project-media">
+        <div class="project-media fill">
           <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/APET_m-ztyg?autoplay=1&mute=1&loop=1&playlist=APET_m-ztyg&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="DJ Dokku Razzmatazz live visuals"></iframe></div>
         </div>
 
