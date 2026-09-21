@@ -89,12 +89,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .project-body-stacked .project-info{padding:28px 32px;border-bottom:1px solid var(--outline);}
 .project-media-bottom{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--outline);}
 .yt-wrap{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000;width:100%;flex:1;}
+.yt-wrap::after{content:'';position:absolute;inset:0;z-index:2;}
 .yt-wrap iframe{position:absolute;top:-38px;left:0;width:100%;height:calc(100% + 76px);border:none;pointer-events:none;}
+.yt-wrap.interactive::after{display:none;}
 .yt-wrap.interactive iframe{pointer-events:auto;}
 .project-media.fill{align-self:stretch;}
 .project-media.fill .yt-wrap{aspect-ratio:unset;height:100%;min-height:200px;}
 .project-media.fill .yt-wrap iframe{top:0;height:100%;width:180%;left:-40%;}
-.project-media.fill-more .yt-wrap iframe{top:0;height:100%;width:260%;left:-80%;}
+.project-media.fill-more .yt-wrap iframe{top:0;height:100%;width:340%;left:-80%;}
 .project-info{padding:28px 32px;display:flex;flex-direction:column;}
 
 .proj-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
@@ -481,8 +483,8 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
         </div>
 
         <div class="project-media-bottom">
-          <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/q1ySLmZE9q8?start=30&autoplay=1&mute=1&loop=1&playlist=q1ySLmZE9q8&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Chirality gameplay 1"></iframe></div>
-          <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/kMqLC0ne0CM?start=30&autoplay=1&mute=1&loop=1&playlist=kMqLC0ne0CM&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" allow="autoplay; encrypted-media" title="Chirality gameplay 2"></iframe></div>
+          <div class="yt-wrap"><iframe src="https://player.vimeo.com/video/1228747181?autoplay=1&muted=1&loop=1&background=1" allow="autoplay; fullscreen; picture-in-picture" title="Chirality gameplay"></iframe></div>
+          <div class="yt-wrap"><iframe src="https://player.vimeo.com/video/1228747182?autoplay=1&muted=1&loop=1&background=1" allow="autoplay; fullscreen; picture-in-picture" title="Chirality trailer"></iframe></div>
         </div>
 
       </div>
