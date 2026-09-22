@@ -111,15 +111,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .s-hero{padding-top:96px;}
 .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 480px;gap:20px;align-items:stretch;}
 .node-hero-text .node-body{padding:40px 40px 44px;}
-.hero-h1{font-size:clamp(44px,6vw,100px);font-weight:900;line-height:.92;letter-spacing:-.03em;text-transform:uppercase;margin-bottom:12px;color:var(--text);white-space:nowrap;}
+.hero-h1{font-size:clamp(52px,8vw,128px);font-weight:900;line-height:.88;letter-spacing:-.03em;text-transform:uppercase;margin-bottom:16px;color:var(--text);}
 .hero-sub{font-family:var(--mono);font-size:clamp(14px,1.55vw,21px);font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--primary);margin-bottom:0;}
 
 /* Spec output nodes */
-.spec-col{display:flex;flex-direction:column;justify-content:center;gap:22px;height:100%;padding-left:64px;}
-.node-spec{background:var(--primary);border-color:rgba(255,255,255,.16);display:flex;align-items:center;gap:16px;padding:26px 30px;box-shadow:0 10px 34px rgba(230,109,69,.14);}
+.spec-col{display:flex;flex-direction:column;justify-content:center;gap:18px;height:100%;padding-left:48px;}
+.node-spec{background:var(--primary);border-color:rgba(255,255,255,.16);display:flex;align-items:center;gap:14px;padding:20px 28px;box-shadow:0 10px 34px rgba(230,109,69,.14);}
 .node-spec:hover{border-color:rgba(255,255,255,.5);background:#f07846;}
-.spec-pin{width:8px;height:8px;border-radius:50%;background:#fff;flex-shrink:0;box-shadow:0 0 8px rgba(255,255,255,.6);}
-.spec-label{font-family:var(--mono);font-size:clamp(15px,1.25vw,19px);font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#fff;line-height:1.05;}
+.spec-pin{width:8px;height:8px;border-radius:50%;background:#fff;flex-shrink:0;box-shadow:0 0 8px rgba(255,255,255,.6);order:-1;}
+.spec-label{font-family:var(--mono);font-size:clamp(13px,1.1vw,16px);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#fff;line-height:1.05;}
 
 /* ─ REEL ─ */
 .s-reel{padding:48px 0;}
@@ -364,7 +364,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
           <span class="nh-name">WELCOME!</span>
         </div>
         <div class="node-body">
-          <h1 class="hero-h1">Technical Art</h1>
+          <h1 class="hero-h1">Technical<br>Art</h1>
           <p class="hero-sub">For Video Games and Virtual Production</p>
         </div>
       </div>
@@ -661,6 +661,7 @@ function yAt(r, frac){
   return frac==null ? r.midY : r.top + (r.bottom - r.top) * frac;
 }
 
+// Orthogonal wire drawing (right-angle lines, like the image)
 // w = { from, to, side:'right'|'left'|'across', sFrac?, eFrac? }
 function calcCoords(w){
   const a = nRect(w.from);
@@ -670,13 +671,13 @@ function calcCoords(w){
   const ey = yAt(b, w.eFrac);
   if(w.side === 'across'){
     const sx = a.right, ex = b.left;
-    const ext = Math.min(Math.max((ex - sx) * 0.45, 14), 54);
-    return { sx, sy, ex, ey, cp1x:sx+ext, cp1y:sy, cp2x:ex-ext, cp2y:ey };
+    const mx = sx + (ex - sx) * 0.5;
+    return { sx, sy, ex, ey, mx };
   }
   const sx = w.side==='right' ? a.right : a.left;
   const ex = w.side==='right' ? b.right : b.left;
   const bx = w.side==='right' ? sx + EXT : sx - EXT;
-  return { sx, sy, ex, ey, cp1x:bx, cp1y:sy, cp2x:bx, cp2y:ey };
+  return { sx, sy, ex, ey, bx };
 }
 
 function addPin(x, y){
@@ -690,18 +691,28 @@ function addPin(x, y){
   connSvg.appendChild(c);
 }
 
+// Build an orthogonal path: H then V then H (right-angle elbows)
+function orthoPath(sx, sy, ex, ey, bx){
+  // exit right from sx,sy → elbow at bx,sy → drop/rise to bx,ey → enter ex,ey
+  return `M${sx} ${sy} L${bx} ${sy} L${bx} ${ey} L${ex} ${ey}`;
+}
+
 function drawAnimated(w){
   const co = calcCoords(w);
   if(!co) return;
-  const { sx, sy, ex, ey, cp1x, cp1y, cp2x, cp2y } = co;
+  const { sx, sy, ex, ey, bx, mx } = co;
   addPin(sx, sy);
   const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-  path.setAttribute('d', `M${sx} ${sy} C${cp1x} ${cp1y} ${cp2x} ${cp2y} ${ex} ${ey}`);
+  const d = (w.side === 'across')
+    ? `M${sx} ${sy} L${mx} ${sy} L${mx} ${ey} L${ex} ${ey}`
+    : orthoPath(sx, sy, ex, ey, bx);
+  path.setAttribute('d', d);
   path.setAttribute('stroke', WIRE_CLR);
   path.setAttribute('stroke-width', '2');
   path.setAttribute('fill', 'none');
   path.setAttribute('stroke-opacity', '0.75');
-  path.setAttribute('stroke-linecap', 'round');
+  path.setAttribute('stroke-linecap', 'square');
+  path.setAttribute('stroke-linejoin', 'miter');
   connSvg.appendChild(path);
   const len = path.getTotalLength();
   path.style.strokeDasharray  = len;
@@ -720,14 +731,18 @@ function redrawAll(){
   activeWires.forEach(w => {
     const co = calcCoords(w);
     if(!co) return;
-    const { sx, sy, ex, ey, cp1x, cp1y, cp2x, cp2y } = co;
+    const { sx, sy, ex, ey, bx, mx } = co;
     const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-    path.setAttribute('d', `M${sx} ${sy} C${cp1x} ${cp1y} ${cp2x} ${cp2y} ${ex} ${ey}`);
+    const d = (w.side === 'across')
+      ? `M${sx} ${sy} L${mx} ${sy} L${mx} ${ey} L${ex} ${ey}`
+      : orthoPath(sx, sy, ex, ey, bx);
+    path.setAttribute('d', d);
     path.setAttribute('stroke', WIRE_CLR);
     path.setAttribute('stroke-width', '2');
     path.setAttribute('fill', 'none');
     path.setAttribute('stroke-opacity', '0.75');
-    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linecap', 'square');
+    path.setAttribute('stroke-linejoin', 'miter');
     connSvg.appendChild(path);
     addPin(sx, sy);
     addPin(ex, ey);
@@ -737,9 +752,9 @@ function redrawAll(){
 window.addEventListener('resize', ()=>{ clearTimeout(rzTimer); rzTimer=setTimeout(redrawAll, 120); });
 
 const triggers = [
-  { watch:'s-reel',     wires:[{ from:'n-spec-a',  to:'n-reel', side:'right', eFrac:0.50 },
+  { watch:'s-reel',     wires:[{ from:'n-spec-a',  to:'n-reel', side:'right', eFrac:0.33 },
                                 { from:'n-spec-b',  to:'n-reel', side:'right', eFrac:0.50 },
-                                { from:'n-spec-c',  to:'n-reel', side:'right', eFrac:0.50 }], nodes:['n-reel'], afterHero:true },
+                                { from:'n-spec-c',  to:'n-reel', side:'right', eFrac:0.67 }], nodes:['n-reel'], afterHero:true },
   { watch:'s-values',   wires:[{ from:'n-reel',    to:'n-va',       side:'left'  },
                                 { from:'n-va',      to:'n-vb',       side:'across' },
                                 { from:'n-vb',      to:'n-vc',       side:'across' }], nodes:['n-va','n-vb','n-vc'] },
@@ -792,9 +807,9 @@ window.addEventListener('scroll',()=>{
 // ── INIT ──
 const SPEC_IDS = ['n-spec-a','n-spec-b','n-spec-c'];
 const HERO_WIRES = [
-  { from:'n-hero', to:'n-spec-a', side:'across', sFrac:0.32, eFrac:0.5 },
+  { from:'n-hero', to:'n-spec-a', side:'across', sFrac:0.25, eFrac:0.5 },
   { from:'n-hero', to:'n-spec-b', side:'across', sFrac:0.50, eFrac:0.5 },
-  { from:'n-hero', to:'n-spec-c', side:'across', sFrac:0.68, eFrac:0.5 },
+  { from:'n-hero', to:'n-spec-c', side:'across', sFrac:0.75, eFrac:0.5 },
 ];
 
 function initLoad(){
