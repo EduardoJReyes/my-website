@@ -77,6 +77,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .nav-right a{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(227,226,226,.45);text-decoration:none;transition:color .2s;}
 .nav-right a:hover{color:var(--text);}
 .nav-sep{color:rgba(166,139,131,.3);font-size:10px;}
+.nav-icons{display:flex;align-items:center;gap:10px;}
+.nav-icon{display:flex;align-items:center;color:rgba(227,226,226,.45);text-decoration:none;transition:color .2s;}
+.nav-icon:hover{color:var(--primary);}
+.nav-icon svg{width:15px;height:15px;}
 
 /* PAGE */
 .page{position:relative;max-width:var(--pw);margin:0 auto;padding:0 40px;z-index:3;}
@@ -275,12 +279,16 @@ a.cv-meta-row:hover{color:var(--primary);}
 <nav>
   <div class="nav-left">
     <a href="index.html" class="nav-name">Eduardo J. Reyes</a>
-    <span class="nav-sep">|</span>
     <a href="mailto:eduardoj.reyes@hotmail.com?subject=Technical%20Art%20enquiry" class="nav-hire">Hire Me</a>
+    <div class="nav-icons">
+      <a href="mailto:eduardoj.reyes@hotmail.com" class="nav-icon" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+      <a href="https://www.linkedin.com/in/eduardojreyesdev" target="_blank" rel="noopener" class="nav-icon" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+    </div>
   </div>
   <ul class="nav-right" id="navMenu">
     <li><a href="index.html">Home</a></li>
-    <li><a href="works.html">Works</a></li>
+    <li><a href="works.html">Projects</a></li>
+    <li><a href="articles.html">Articles</a></li>
     <li><a href="cv.html" class="active">CV</a></li>
   </ul>
   <button class="nav-burger" id="navBurger" aria-label="Menu" style="display:none;">
