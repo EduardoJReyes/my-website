@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Eduardo J. Reyes — Articles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#121414; --bg-low:#0d0e0f;
+  --surface:#1f2020; --surf-hi:#212323;
+  --primary:#e66d45; --primary-lo:#ffb59e;
+  --secondary:#e7c184; --tertiary:#6ed5eb;
+  --text:#e3e2e2; --text-dim:#dec0b7;
+  --outline:rgba(166,139,131,.2);
+  --outline-hi:rgba(166,139,131,.38);
+  --font:'Roboto Condensed',sans-serif;
+  --mono:'Roboto Mono',monospace;
+  --r:4px; --pw:1400px;
+  --sidebar:260px;
+}
+html{scroll-behavior:smooth;}
+body{
+  position:relative;
+  background-color:var(--bg);
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,.1) 1px, transparent 1px);
+  background-size:80px 80px, 80px 80px, 18px 18px;
+  color:var(--text);font-family:var(--font);overflow-x:clip;
+  cursor:url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><path d='M8 4 L8 30 L14 23 L20 36 L24 34.5 L18 22 L28 22 Z' fill='white' stroke='%23e66d45' stroke-width='2.5' stroke-linejoin='round' paint-order='stroke fill'/></svg>") 8 4, auto;
+}
+a, button, [role="button"], .nav-hire {
+  cursor:url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><path d='M14 6 C14 4.9 14.9 4 16 4 C17.1 4 18 4.9 18 6 L18 16 C18.7 15.4 19.6 15 20.5 15 C21.6 15 22.5 15.6 23 16.5 C23.6 15.9 24.5 15.5 25.5 15.5 C26.5 15.5 27.4 16 28 16.8 C28.5 16.3 29.2 16 30 16 C31.1 16 32 16.9 32 18 L32 26 C32 30.4 28.4 34 24 34 L22 34 C19.6 34 17.4 33 15.9 31.3 L10.4 25 C9.6 24 9.7 22.6 10.7 21.8 C11.6 21.1 12.9 21.2 13.7 22 L14 22.3 Z' fill='white' stroke='%23e66d45' stroke-width='2' stroke-linejoin='round' paint-order='stroke fill'/></svg>") 14 4, pointer;
+}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(13,14,15,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--outline);}
+.nav-left{display:flex;align-items:center;gap:16px;}
+.nav-name{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);text-decoration:none;}
+.nav-icons{display:flex;align-items:center;gap:10px;}
+.nav-icon{display:flex;align-items:center;color:rgba(227,226,226,.45);text-decoration:none;transition:color .2s;}
+.nav-icon:hover{color:var(--primary);}
+.nav-icon svg{width:15px;height:15px;}
+.nav-hire{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:5px 14px;background:var(--primary);color:#fff;text-decoration:none;border-radius:var(--r);transition:background .2s;}
+.nav-hire:hover{background:var(--primary-lo);}
+.nav-right{display:flex;gap:32px;list-style:none;}
+.nav-right a{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(227,226,226,.45);text-decoration:none;transition:color .2s;}
+.nav-right a:hover{color:var(--text);}
+.nav-right a.active{color:var(--primary);}
+.nav-sep{color:rgba(166,139,131,.3);font-size:10px;}
+.nav-burger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px;margin-left:auto;}
+.nav-burger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:transform .2s,opacity .2s;}
+
+/* NODE */
+.node{background:var(--surface);border:1px solid var(--outline);border-radius:var(--r);position:relative;}
+.node:hover{border-color:var(--outline-hi);}
+.node-header{display:flex;align-items:center;gap:8px;padding:7px 16px;background:var(--surf-hi);border-bottom:1px solid rgba(255,255,255,.06);border-radius:var(--r) var(--r) 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.07em;user-select:none;}
+.nh-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--primary);box-shadow:0 0 6px rgba(230,109,69,.5);}
+.nh-dot.sand{background:var(--secondary);box-shadow:0 0 6px rgba(231,193,132,.4);}
+.nh-dot.teal{background:var(--tertiary);box-shadow:0 0 6px rgba(110,213,235,.4);}
+.nh-path{color:#5a4845;}
+.nh-sep{color:#443635;margin:0 3px;}
+.nh-name{color:#7a6460;}
+
+/* LAYOUT */
+.articles-wrap{display:grid;grid-template-columns:var(--sidebar) 1fr;gap:0;padding-top:52px;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;border-right:1px solid var(--outline);padding:32px 0;scrollbar-width:thin;scrollbar-color:var(--outline) transparent;}
+.sidebar::-webkit-scrollbar{width:4px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--outline);}
+
+.sidebar-section{margin-bottom:28px;}
+.sidebar-cat{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5a4845;padding:0 24px;margin-bottom:8px;display:block;}
+.sidebar-link{display:flex;align-items:flex-start;gap:8px;padding:8px 24px;font-family:var(--mono);font-size:10px;color:rgba(227,226,226,.4);text-decoration:none;transition:color .15s,background .15s;line-height:1.4;border-left:2px solid transparent;transition:all .2s;}
+.sidebar-link:hover{color:var(--text);background:rgba(255,255,255,.03);}
+.sidebar-link.active{color:var(--primary);border-left-color:var(--primary);background:rgba(230,109,69,.05);}
+.sidebar-link-num{color:#5a4845;flex-shrink:0;font-size:9px;padding-top:1px;}
+
+/* ARTICLE AREA */
+.article-area{padding:48px 56px 80px;max-width:860px;}
+
+.article-header{margin-bottom:48px;}
+.article-tag{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--secondary);border:1px solid rgba(231,193,132,.3);display:inline-block;padding:4px 12px;border-radius:var(--r);margin-bottom:16px;}
+.article-title{font-size:clamp(28px,3vw,44px);font-weight:900;letter-spacing:-.02em;line-height:1;color:var(--text);margin-bottom:12px;}
+.article-subtitle{font-family:var(--mono);font-size:12px;color:rgba(227,226,226,.4);line-height:1.7;max-width:600px;}
+
+/* ARTICLE BODY */
+.article-body h2{font-size:20px;font-weight:800;letter-spacing:-.01em;color:var(--text);margin:40px 0 14px;padding-top:8px;border-top:1px solid var(--outline);}
+.article-body h3{font-size:15px;font-weight:700;color:var(--primary);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin:28px 0 10px;}
+.article-body p{font-size:14px;line-height:1.8;color:rgba(227,226,226,.7);margin-bottom:16px;}
+.article-body ul{list-style:none;margin-bottom:20px;display:flex;flex-direction:column;gap:6px;}
+.article-body ul li{font-family:var(--mono);font-size:12px;color:rgba(227,226,226,.5);padding-left:16px;position:relative;line-height:1.6;}
+.article-body ul li::before{content:'//';position:absolute;left:0;color:#5a4845;font-size:9px;top:2px;}
+.article-body strong{color:rgba(227,226,226,.9);font-weight:600;}
+.article-body code{font-family:var(--mono);font-size:12px;background:rgba(255,255,255,.06);border:1px solid var(--outline);padding:2px 6px;border-radius:3px;color:var(--tertiary);}
+
+/* IMAGE PLACEHOLDER */
+.img-placeholder{width:100%;aspect-ratio:16/9;background:var(--surface);border:1px solid var(--outline);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin:24px 0;position:relative;overflow:hidden;}
+.img-placeholder::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,.02) 10px,rgba(255,255,255,.02) 20px);}
+.img-placeholder-icon{color:#3a302d;}
+.img-placeholder-icon svg{width:32px;height:32px;}
+.img-placeholder-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#5a4845;}
+.img-placeholder-sub{font-family:var(--mono);font-size:9px;color:#3a302d;letter-spacing:.08em;}
+.img-placeholder.half{aspect-ratio:4/3;}
+
+.img-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0;}
+
+/* TECHNICAL HIGHLIGHT BOX */
+.tech-box{background:rgba(110,213,235,.04);border:1px solid rgba(110,213,235,.15);border-radius:var(--r);padding:20px 24px;margin:24px 0;}
+.tech-box-title{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--tertiary);margin-bottom:12px;}
+.tech-box ul{margin-bottom:0;}
+.tech-box ul li{color:rgba(110,213,235,.6);}
+.tech-box ul li::before{color:rgba(110,213,235,.3);}
+
+/* FLOW DIAGRAM */
+.flow-diagram{background:var(--surface);border:1px solid var(--outline);border-radius:var(--r);padding:24px;margin:24px 0;font-family:var(--mono);font-size:11px;color:rgba(227,226,226,.5);line-height:2;}
+.flow-diagram .flow-step{color:var(--text);font-weight:700;}
+.flow-diagram .flow-arrow{color:#5a4845;margin:0 8px;}
+
+/* DIVIDER */
+.article-divider{border:none;border-top:1px solid var(--outline);margin:48px 0;}
+
+/* COMING SOON */
+.coming-soon-block{background:var(--surface);border:1px dashed var(--outline);border-radius:var(--r);padding:40px;text-align:center;margin:40px 0;}
+.coming-soon-block p{font-family:var(--mono);font-size:11px;color:#5a4845;letter-spacing:.1em;text-transform:uppercase;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;}
+.foot-copy{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#3a302d;}
+.foot-links{display:flex;gap:24px;list-style:none;}
+.foot-links a{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#7a6460;text-decoration:none;transition:color .2s;}
+.foot-links a:hover{color:var(--primary);}
+
+/* MOBILE */
+@media(max-width:900px){
+  nav{padding:0 20px;}
+  .nav-right{display:none;}
+  .nav-right.open{display:flex;flex-direction:column;gap:0;position:fixed;top:52px;left:0;right:0;background:rgba(13,14,15,.97);border-bottom:1px solid var(--outline);padding:12px 0;z-index:199;}
+  .nav-right.open li a{display:block;padding:12px 24px;font-size:12px;}
+  .nav-burger{display:flex;}
+  .articles-wrap{grid-template-columns:1fr;}
+  .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--outline);padding:20px 0;}
+  .article-area{padding:32px 20px 60px;}
+  .img-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="index.html" class="nav-name">Eduardo J. Reyes</a>
+    <a href="mailto:eduardoj.reyes@hotmail.com?subject=Technical%20Art%20enquiry" class="nav-hire">Hire Me</a>
+    <div class="nav-icons">
+      <a href="mailto:eduardoj.reyes@hotmail.com" class="nav-icon" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+      <a href="https://www.linkedin.com/in/eduardojreyesdev" target="_blank" rel="noopener" class="nav-icon" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+    </div>
+  </div>
+  <ul class="nav-right" id="navMenu">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="works.html">Projects</a></li>
+    <li><a href="articles.html" class="active">Articles</a></li>
+    <li><a href="cv.html">CV</a></li>
+  </ul>
+  <button class="nav-burger" id="navBurger" aria-label="Menu" style="display:none;">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="articles-wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="sidebar-section">
+      <span class="sidebar-cat">// Shaders</span>
+      <a href="#landscape-shader" class="sidebar-link active" data-article="landscape-shader">
+        <span class="sidebar-link-num">01</span>
+        Landscape Master Material
+      </a>
+      <a href="#stylized-clouds" class="sidebar-link" data-article="stylized-clouds">
+        <span class="sidebar-link-num">02</span>
+        Stylized Clouds Shader
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <span class="sidebar-cat">// Tools</span>
+      <a href="#houdini-pie-menu" class="sidebar-link" data-article="houdini-pie-menu">
+        <span class="sidebar-link-num">03</span>
+        Houdini Pie Menu
+      </a>
+      <a href="#unreal-project-starter" class="sidebar-link" data-article="unreal-project-starter">
+        <span class="sidebar-link-num">04</span>
+        Unreal Project Starter
+      </a>
+    </div>
+
+    <div class="sidebar-section">
+      <span class="sidebar-cat">// Procedural Modeling</span>
+      <a href="#one-click-terrain" class="sidebar-link" data-article="one-click-terrain">
+        <span class="sidebar-link-num">05</span>
+        One Click Terrain Generator
+      </a>
+      <a href="#cliff-generator" class="sidebar-link" data-article="cliff-generator">
+        <span class="sidebar-link-num">06</span>
+        Cliff Generator
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- ARTICLE AREA -->
+  <main class="article-area">
+
+    <!-- ======================== -->
+    <!-- LANDSCAPE MASTER MATERIAL -->
+    <!-- ======================== -->
+    <article id="landscape-shader">
+
+      <div class="article-header">
+        <span class="article-tag">Shaders · Unreal Engine 5</span>
+        <h1 class="article-title">Procedural Landscape<br/>Master Material</h1>
+        <p class="article-subtitle">A modular landscape material system designed in Unreal Engine to provide flexible terrain layering, procedural variation, and artist-friendly controls while remaining suitable for real-time environments.</p>
+      </div>
+
+      <div class="article-body">
+
+        <!-- OVERVIEW IMAGE -->
+        <div class="img-placeholder">
+          <div class="img-placeholder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+          <span class="img-placeholder-label">Overview — Material Graph</span>
+          <span class="img-placeholder-sub">Full master material node graph screenshot</span>
+        </div>
+
+        <h2>Overview</h2>
+        <p>For this project, I developed a reusable Landscape Master Material in Unreal Engine designed around a modular layer-based workflow. Instead of building each terrain material independently, the system separates the landscape into multiple layers and provides a consistent set of controls for each one. These layers can then be blended according to landscape paint masks, slope, and altitude, allowing the terrain to transition naturally between different materials.</p>
+        <p>The system also incorporates near, mid, and far texture variation, macro color breakup, material adjustments, displacement, and Runtime Virtual Texture integration.</p>
+
+        <h2>Modular Material Layers</h2>
+        <p>The master material is organized into four main terrain layers:</p>
+        <ul>
+          <li>Base Layer</li>
+          <li>Sloped Layer</li>
+          <li>Top Layer</li>
+          <li>Bottom Layer</li>
+        </ul>
+        <p>Each layer uses the same underlying material function, making the system easier to maintain and allowing parameters to be exposed consistently. Each layer can independently control: <strong>Albedo / Color, Normal, ORM, Displacement, UV scale, Macro color variation, Brightness, Contrast, Saturation, Tint, Normal intensity, Ambient Occlusion, Roughness, Metallic.</strong></p>
+
+        <div class="img-row">
+          <div class="img-placeholder half">
+            <div class="img-placeholder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+            <span class="img-placeholder-label">MF_LandscapeMat — Inputs</span>
+            <span class="img-placeholder-sub">Material function node breakdown</span>
+          </div>
+          <div class="img-placeholder half">
+            <div class="img-placeholder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+            <span class="img-placeholder-label">Layer Parameter Exposure</span>
+            <span class="img-placeholder-sub">Material instance parameter list</span>
+          </div>
+        </div>
+
+        <h2>Slope & Altitude Blending</h2>
+        <p>One of the main goals was to avoid relying exclusively on manually painted landscape masks. The Mask Control section combines several sources of information to determine which material should appear on the terrain.</p>
+
+        <h3>Slope</h3>
+        <p>The terrain's surface orientation influences material distribution. This makes it possible, for example, to introduce a different material on steep surfaces while retaining another on flatter areas.</p>
+
+        <h3>Altitude</h3>
+        <p>Height-based masks provide additional control over where materials appear vertically across the landscape. The altitude masks can be further adjusted through exposed parameters, allowing the transition between materials to be tuned without modifying the underlying shader.</p>
+
+        <div class="img-placeholder">
+          <div class="img-placeholder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+          <span class="img-placeholder-label">Slope + Altitude Blending in Viewport</span>
+          <span class="img-placeholder-sub">Side-by-side: painted mask vs procedural blend result</span>
+        </div>
+
+        <h2>Near, Mid & Far Variation</h2>
+        <p>A single texture scale across an entire landscape can quickly become repetitive, particularly in large environments. The material function separates texture variation into near, mid, and far representations. Different texture scales and variations are used depending on camera distance, maintaining detail close-up while preventing obvious repetition further away. A camera-distance fade mask controls the transition between these representations.</p>
+
+        <div class="img-row">
+          <div class="img-placeholder half">
+            <div class="img-placeholder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+            <span class="img-placeholder-label">Without Distance Variation</span>
+            <span class="img-placeholder-sub">Tiling visible at mid/far distance</span>
+          </div>
+          <div class="img-placeholder half">
+            <div class="img-placeholder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+            <span class="img-placeholder-label">With Near / Mid / Far Variation</span>
+            <span class="img-placeholder-sub">Clean result across all distances</span>
+          </div>
+        </div>
+
+        <h2>Macro Variation</h2>
+        <p>The material uses a separate macro color pattern to break up large areas of uniform color. The macro pattern operates at a much larger scale than the primary surface textures and can be adjusted through parameters: <code>Macro Color Size</code>, <code>Macro Color Pattern</code>, <code>Macro Color Strength</code>.</p>
+
+        <div class="img-placeholder">
+          <div class="img-placeholder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+          <span class="img-placeholder-label">Macro Variation — Before / After</span>
+          <span class="img-placeholder-sub">Comparison showing color breakup on large terrain sections</span>
+        </div>
+
+        <h2>Material Adjustments</h2>
+        <p>Rather than modifying textures externally for every environment, the master material exposes several artistic controls directly to the material instance. Color controls include: <strong>Brightness, Contrast, Saturation, Tint.</strong> Alongside these, exposed parameters for: <strong>Normal Intensity, Ambient Occlusion Intensity, Min/Max Roughness, Min/Max Metallic.</strong></p>
+
+        <h2>Material Attributes & RVT</h2>
+        <p>Individual layers are processed as Material Attributes, allowing different properties of each material to be blended as a single unit. The final material attributes are also written into a Runtime Virtual Texture together with: Base Color, Roughness, Normal, World Height, and Displacement. This allows the landscape material to participate in a broader environment workflow where other assets can sample terrain information.</p>
+
+        <div class="img-placeholder">
+          <div class="img-placeholder-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+          <span class="img-placeholder-label">RVT Output Channels</span>
+          <span class="img-placeholder-sub">Runtime Virtual Texture debug view</span>
+        </div>
+
+        <h2>Technical Structure</h2>
+        <p>The overall structure was designed around reusable material functions rather than keeping the entire shader inside a single graph. The main material acts as the central layer-management system, while <code>MF_LandscapeMat</code> encapsulates the repeated material logic used by each terrain layer.</p>
+
+        <div class="flow-diagram">
+          <span class="flow-step">Landscape Layers</span><span class="flow-arrow">↓</span>
+          <span class="flow-step">Near / Mid / Far Variation</span><span class="flow-arrow">↓</span>
+          <span class="flow-step">Macro Variation & Adjustments</span><span class="flow-arrow">↓</span>
+          <span class="flow-step">Slope / Altitude Masking</span><span class="flow-arrow">↓</span>
+          <span class="flow-step">Material Attribute Blending</span><span class="flow-arrow">↓</span>
+          <span class="flow-step">Final Landscape Material</span><span class="flow-arrow">↓</span>
+          <span class="flow-step">RVT Output</span>
+        </div>
+
+        <div class="tech-box">
+          <div class="tech-box-title">// Technical Highlights</div>
+          <ul>
+            <li>Modular landscape layer architecture</li>
+            <li>Reusable Material Functions</li>
+            <li>Slope-based material blending</li>
+            <li>Altitude-based material blending</li>
+            <li>Landscape paint masks</li>
+            <li>Near / Mid / Far texture variation</li>
+            <li>Macro texture / color breakup</li>
+            <li>Artist-facing material parameters</li>
+            <li>Material Attribute workflow</li>
+            <li>Displacement support</li>
+            <li>Runtime Virtual Texture integration</li>
+            <li>World-height data output</li>
+            <li>Designed for reuse across environments</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </article>
+
+    <hr class="article-divider"/>
+
+    <!-- ======================== -->
+    <!-- COMING SOON ARTICLES     -->
+    <!-- ======================== -->
+
+    <article id="stylized-clouds">
+      <div class="article-header">
+        <span class="article-tag">Shaders · Unreal Engine 5</span>
+        <h1 class="article-title">Stylized Clouds Shader</h1>
+      </div>
+      <div class="coming-soon-block">
+        <p>// Article in progress</p>
+      </div>
+    </article>
+
+    <hr class="article-divider"/>
+
+    <article id="houdini-pie-menu">
+      <div class="article-header">
+        <span class="article-tag">Tools · Houdini</span>
+        <h1 class="article-title">Houdini Pie Menu</h1>
+      </div>
+      <div class="coming-soon-block">
+        <p>// Article in progress</p>
+      </div>
+    </article>
+
+    <hr class="article-divider"/>
+
+    <article id="unreal-project-starter">
+      <div class="article-header">
+        <span class="article-tag">Tools · Unreal Engine 5</span>
+        <h1 class="article-title">Unreal Project Starter</h1>
+      </div>
+      <div class="coming-soon-block">
+        <p>// Article in progress</p>
+      </div>
+    </article>
+
+    <hr class="article-divider"/>
+
+    <article id="one-click-terrain">
+      <div class="article-header">
+        <span class="article-tag">Procedural Modeling · Houdini</span>
+        <h1 class="article-title">One Click Terrain Generator</h1>
+      </div>
+      <div class="coming-soon-block">
+        <p>// Article in progress</p>
+      </div>
+    </article>
+
+    <hr class="article-divider"/>
+
+    <article id="cliff-generator">
+      <div class="article-header">
+        <span class="article-tag">Procedural Modeling · Houdini</span>
+        <h1 class="article-title">Cliff Generator</h1>
+      </div>
+      <div class="coming-soon-block">
+        <p>// Article in progress</p>
+      </div>
+    </article>
+
+  </main>
+
+</div>
+
+<footer>
+  <p class="foot-copy">&copy; 2026 Eduardo J. Reyes &middot; Technical Artist &middot; Procedural Workflows &amp; Real-Time Rendering</p>
+  <ul class="foot-links">
+    <li><a href="https://www.linkedin.com/in/eduardojreyesdev" target="_blank">LinkedIn</a></li>
+    <li><a href="index.html">Website</a></li>
+    <li><a href="mailto:eduardoj.reyes@hotmail.com">Email</a></li>
+  </ul>
+</footer>
+
+<script>
+(function(){
+  // Burger menu
+  var burger = document.getElementById('navBurger');
+  var menu   = document.getElementById('navMenu');
+  function checkWidth(){
+    if(window.innerWidth <= 900){
+      burger.style.display = 'flex';
+    } else {
+      burger.style.display = 'none';
+      menu.classList.remove('open');
+    }
+  }
+  checkWidth();
+  window.addEventListener('resize', checkWidth);
+  burger.addEventListener('click', function(){ menu.classList.toggle('open'); });
+  menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ menu.classList.remove('open'); }); });
+
+  // Sidebar active state on scroll
+  var articles = document.querySelectorAll('article[id]');
+  var sidebarLinks = document.querySelectorAll('.sidebar-link[data-article]');
+
+  function updateSidebar(){
+    var scrollY = window.scrollY;
+    var active = null;
+    articles.forEach(function(art){
+      var top = art.getBoundingClientRect().top + scrollY - 80;
+      if(scrollY >= top) active = art.id;
+    });
+    sidebarLinks.forEach(function(link){
+      link.classList.toggle('active', link.getAttribute('data-article') === active);
+    });
+  }
+
+  window.addEventListener('scroll', updateSidebar, {passive:true});
+  updateSidebar();
+})();
+</script>
+</body>
+</html>
