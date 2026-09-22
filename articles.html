@@ -76,7 +76,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .sidebar::-webkit-scrollbar-thumb{background:var(--outline);}
 
 .sidebar-section{margin-bottom:28px;}
-.sidebar-cat{font-family:var(--mono);font-size:14.4px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5a4845;padding:0 24px;margin-bottom:8px;display:block;}
+.sidebar-cat{font-family:var(--mono);font-size:14.4px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5a4845;padding:0 24px;margin-bottom:8px;display:block;transition:color .2s;}
+.sidebar-cat.active{color:var(--primary);}
 .sidebar-link{display:flex;align-items:flex-start;gap:8px;padding:8px 24px;font-family:var(--mono);font-size:12px;color:rgba(227,226,226,.4);text-decoration:none;line-height:1.4;border-left:2px solid transparent;transition:all .2s;}
 .sidebar-link:hover{color:var(--text);background:rgba(255,255,255,.03);}
 .sidebar-link.active{color:var(--primary);border-left-color:var(--primary);background:rgba(230,109,69,.05);}
@@ -178,7 +179,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
   <!-- SIDEBAR -->
   <aside class="sidebar">
 
-    <div class="sidebar-section">
+    <div class="sidebar-section" data-cat="shaders">
       <span class="sidebar-cat">// Shaders</span>
       <a href="#landscape-shader" class="sidebar-link active" data-article="landscape-shader">
         <span class="sidebar-link-num">01</span>
@@ -190,7 +191,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
       </a>
     </div>
 
-    <div class="sidebar-section">
+    <div class="sidebar-section" data-cat="tools">
       <span class="sidebar-cat">// Tools</span>
       <a href="#houdini-pie-menu" class="sidebar-link" data-article="houdini-pie-menu">
         <span class="sidebar-link-num">03</span>
@@ -202,7 +203,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
       </a>
     </div>
 
-    <div class="sidebar-section">
+    <div class="sidebar-section" data-cat="procedural">
       <span class="sidebar-cat">// Procedural Modeling</span>
       <a href="#one-click-terrain" class="sidebar-link" data-article="one-click-terrain">
         <span class="sidebar-link-num">05</span>
@@ -452,6 +453,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
   // Sidebar active state on scroll
   var articles = document.querySelectorAll('article[id]');
   var sidebarLinks = document.querySelectorAll('.sidebar-link[data-article]');
+  var sidebarCats = document.querySelectorAll('.sidebar-section');
 
   function updateSidebar(){
     var scrollY = window.scrollY;
@@ -462,6 +464,11 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
     });
     sidebarLinks.forEach(function(link){
       link.classList.toggle('active', link.getAttribute('data-article') === active);
+    });
+    // Highlight parent category
+    sidebarCats.forEach(function(section){
+      var hasActive = section.querySelector('.sidebar-link.active');
+      section.querySelector('.sidebar-cat').classList.toggle('active', !!hasActive);
     });
   }
 
