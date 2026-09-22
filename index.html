@@ -108,18 +108,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:52px;display:flex;ali
 .nh-path{color:#5a4845;} .nh-sep{color:#443635;margin:0 3px;} .nh-name{color:#7a6460;}
 
 /* ─ HERO ─ */
-.s-hero{padding-top:96px;}
-.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 480px;gap:20px;align-items:stretch;}
-.node-hero-text .node-body{padding:40px 40px 44px;}
-.hero-h1{font-size:clamp(52px,8vw,128px);font-weight:900;line-height:.88;letter-spacing:-.03em;text-transform:uppercase;margin-bottom:16px;color:var(--text);}
-.hero-sub{font-family:var(--mono);font-size:clamp(14px,1.55vw,21px);font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--primary);margin-bottom:0;}
+.s-hero{padding-top:72px;}
+.hero-grid{display:flex;align-items:center;gap:0;width:100%;}
+.node-hero-text{width:fit-content;flex-shrink:0;}.node-hero-text .node-body{padding:28px 32px 32px;}
+.hero-h1{font-size:clamp(38px,5.5vw,80px);font-weight:900;line-height:.9;letter-spacing:-.03em;text-transform:uppercase;margin-bottom:10px;color:var(--text);white-space:nowrap;}
+.hero-sub{font-family:var(--mono);font-size:clamp(11px,1.1vw,14px);font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--primary);margin-bottom:0;}
 
 /* Spec output nodes */
-.spec-col{display:flex;flex-direction:column;justify-content:center;gap:18px;height:100%;padding-left:48px;}
-.node-spec{background:var(--primary);border-color:rgba(255,255,255,.16);display:flex;align-items:center;gap:14px;padding:20px 28px;box-shadow:0 10px 34px rgba(230,109,69,.14);}
+.spec-col{display:flex;flex-direction:column;justify-content:center;gap:10px;padding-left:32px;flex-shrink:0;}
+.node-spec{background:var(--primary);border-color:rgba(255,255,255,.16);display:flex;align-items:center;gap:10px;padding:11px 18px;box-shadow:0 6px 20px rgba(230,109,69,.14);width:auto;}
 .node-spec:hover{border-color:rgba(255,255,255,.5);background:#f07846;}
-.spec-pin{width:8px;height:8px;border-radius:50%;background:#fff;flex-shrink:0;box-shadow:0 0 8px rgba(255,255,255,.6);order:-1;}
-.spec-label{font-family:var(--mono);font-size:clamp(13px,1.1vw,16px);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#fff;line-height:1.05;}
+.spec-pin{width:7px;height:7px;border-radius:50%;background:#fff;flex-shrink:0;box-shadow:0 0 6px rgba(255,255,255,.6);order:-1;}
+.spec-label{font-family:var(--mono);font-size:clamp(10px,0.85vw,12px);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#fff;line-height:1.05;white-space:nowrap;}
+
+/* Merge node — standalone, pushed to right edge of page */
+.node-merge{background:var(--surface);border:1px solid var(--outline);border-radius:var(--r);display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0;margin-left:auto;margin-right:0;}
+.merge-dot{width:7px;height:7px;border-radius:50%;background:var(--primary);box-shadow:0 0 8px rgba(230,109,69,.7);}
 
 /* ─ REEL ─ */
 .s-reel{padding:48px 0;}
@@ -364,7 +368,7 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
           <span class="nh-name">WELCOME!</span>
         </div>
         <div class="node-body">
-          <h1 class="hero-h1">Technical<br>Art</h1>
+          <h1 class="hero-h1">Technical Art</h1>
           <p class="hero-sub">For Video Games and Virtual Production</p>
         </div>
       </div>
@@ -383,6 +387,11 @@ footer{border-top:1px solid var(--outline);padding:24px 40px;display:flex;align-
           <span class="spec-pin"></span>
           <span class="spec-label">Pipeline Tools</span>
         </div>
+      </div>
+
+      <!-- Merge node (standalone, further right) -->
+      <div class="node node-merge" id="n-merge">
+        <span class="merge-dot"></span>
       </div>
 
     </div>
@@ -752,9 +761,10 @@ function redrawAll(){
 window.addEventListener('resize', ()=>{ clearTimeout(rzTimer); rzTimer=setTimeout(redrawAll, 120); });
 
 const triggers = [
-  { watch:'s-reel',     wires:[{ from:'n-spec-a',  to:'n-reel', side:'right', eFrac:0.33 },
-                                { from:'n-spec-b',  to:'n-reel', side:'right', eFrac:0.50 },
-                                { from:'n-spec-c',  to:'n-reel', side:'right', eFrac:0.67 }], nodes:['n-reel'], afterHero:true },
+  { watch:'s-reel',     wires:[{ from:'n-spec-a',  to:'n-merge', side:'right', eFrac:0.25 },
+                                { from:'n-spec-b',  to:'n-merge', side:'right', eFrac:0.50 },
+                                { from:'n-spec-c',  to:'n-merge', side:'right', eFrac:0.75 },
+                                { from:'n-merge',   to:'n-reel',  side:'right', eFrac:0.50 }], nodes:['n-merge','n-reel'], afterHero:true },
   { watch:'s-values',   wires:[{ from:'n-reel',    to:'n-va',       side:'left'  },
                                 { from:'n-va',      to:'n-vb',       side:'across' },
                                 { from:'n-vb',      to:'n-vc',       side:'across' }], nodes:['n-va','n-vb','n-vc'] },
