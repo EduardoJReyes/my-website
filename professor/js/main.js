@@ -233,7 +233,7 @@
   autoReviews();
 
   /* ---------- intro (first visit per session) ---------- */
-  var intro = document.getElementById('intro'), skip = document.getElementById('skipIntro');
+  var intro = document.getElementById('intro');
   var introRunning = root.classList.contains('intro-on'), introDone = !introRunning, timers = [];
   function endIntro() {
     if (!introRunning) return;
@@ -245,23 +245,23 @@
     if (curChapter) curChapter.classList.add('is-in');
   }
   if (introRunning) {
-    skip.addEventListener('click', endIntro);
+    intro.addEventListener('click', endIntro); // click anywhere (or Esc) skips it
     var word = document.getElementById('introWord'), pct = document.getElementById('introPct');
-    var WORDS = [['Open', 'Unreal.'], ['Stop', 'Panicking.'], ['Make', 'Things.']];
+    var WORDS = [['Lost in', 'Unreal Engine?'], ['Me too,', 'once.'], ["Let's fix", 'that.']];
     var at = function (ms, fn) { timers.push(setTimeout(fn, ms)); };
     var render = function (w) {
       var d = 0; word.className = 'intro-word';
       word.innerHTML = w.map(function (line, li) {
         return '<span class="w w' + (li + 1) + '">' + line.split('').map(function (c) {
-          return '<span class="ch" style="--d:' + (d++) + '">' + c + '</span>';
+          return c === ' ' ? '<span class="ch" style="--d:' + (d++) + '">&nbsp;</span>' : '<span class="ch" style="--d:' + (d++) + '">' + c + '</span>';
         }).join('') + '</span>';
       }).join('');
     };
-    var STEP = 1050, T0 = 150;
+    var STEP = 1250, T0 = 150;
     WORDS.forEach(function (w, i) {
       var s = T0 + i * STEP;
-      at(s, function () { intro.classList.remove('flip'); render(w); });
-      [480, 560, 640, 720].forEach(function (o) { at(s + o, function () { intro.classList.toggle('flip'); }); });
+      // the middle sentence is shown inverted (black on orange): one hard cut, no flashing
+      at(s, function () { intro.classList.toggle('flip', i === 1); render(w); });
       if (i < WORDS.length - 1) at(s + STEP - 200, function () { word.classList.add('out'); });
     });
     var total = T0 + WORDS.length * STEP + 250, p0 = performance.now();
