@@ -8,6 +8,7 @@
   var scroller = document.getElementById('scroller');
   var chaptersBar = document.getElementById('chapters');
   var tapeEl = document.getElementById('tape');
+  var crtEl = document.getElementById('crt'), crtOsd = document.getElementById('crtOsd');
 
   /* ---------- steps ---------- */
   var steps = [];
@@ -122,6 +123,18 @@
     }, TAPE_TOTAL);
   }
 
+  /* ---------- CRT power off / on (booking screens) ---------- */
+  var CRT_SWAP = 450, CRT_TOTAL = 1000;          // keep in sync with the crt keyframes
+  function crt(label, underCover) {
+    if (reduce || !introDone || tapeBusy) { if (underCover) underCover(); return; }
+    tapeBusy = true;
+    crtOsd.innerHTML = label;
+    crtEl.classList.remove('run'); void crtEl.offsetWidth;
+    crtEl.classList.add('run');
+    setTimeout(function () { if (underCover) underCover(); }, CRT_SWAP);
+    setTimeout(function () { crtEl.classList.remove('run'); tapeBusy = false; }, CRT_TOTAL);
+  }
+
   /* ---------- booking overlay ---------- */
   var BOOK = {
     'book': { title: 'First class<br><em>is free.</em>', text: "One session to see if it's a good fit, for both of us. No commitment, no sales call.",
@@ -149,7 +162,8 @@
     var show = function () {
       book.hidden = false;
       scroller.inert = true; chaptersBar.inert = true;
-      book.classList.remove('is-in'); void book.offsetWidth;
+      book.classList.remove('is-in', 'crt-in'); void book.offsetWidth;
+      book.classList.add('crt-in');
       requestAnimationFrame(function () { book.classList.add('is-in'); });
       document.getElementById('bookTitle').focus({ preventScroll: true });
     };
@@ -157,14 +171,14 @@
     if (!bookOpen) {
       lastFocus = document.activeElement;
       bookOpen = true;
-      tape(show);
+      crt('&#9654; PLAY', show);
     } else show();
   }
   function closeBook(then) {
     if (!bookOpen) { if (typeof then === 'function') then(); return; }
     bookOpen = false;
-    tape(function () {
-      book.classList.remove('is-in');
+    crt('&#9632; STOP', function () {
+      book.classList.remove('is-in', 'crt-in');
       book.hidden = true;
       scroller.inert = false; chaptersBar.inert = false;
       if (typeof then === 'function') then();

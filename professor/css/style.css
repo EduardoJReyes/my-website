@@ -267,7 +267,7 @@ em { font-style: normal; color: var(--orange); }
 .tape i:nth-child(1) { top: 0; background: var(--orange); }
 .tape i:nth-child(2) { top: 33%; background: var(--cream); }
 .tape i:nth-child(3) { top: 66%; background: var(--ink); }
-.tape.run { visibility: visible; animation: tapeFlicker .56s steps(3) both; }
+.tape.run { visibility: visible; }
 /* bars sweep in from the left, cover the screen (the new section is swapped in underneath),
    then carry on out to the right and reveal it. Total .56s + .06s stagger = 620ms (TAPE_TOTAL). */
 .tape.run i { animation: tapeBand .56s both; }
@@ -279,12 +279,56 @@ em { font-style: normal; color: var(--orange); }
   44%  { transform: translateX(0); animation-timing-function: cubic-bezier(.6,0,.4,1); }
   100% { transform: translateX(102%); }
 }
-@keyframes tapeFlicker { 0%, 100% { filter: none; } 40% { filter: drop-shadow(-6px 0 rgba(255,40,40,.7)) drop-shadow(6px 0 rgba(0,225,255,.6)); } }
 .scroller.glitch .stage { animation: caShake .3s steps(2) 1; }
 @keyframes caShake { 0% { filter: drop-shadow(-3px 0 rgba(255,40,40,.5)) drop-shadow(3px 0 rgba(0,225,255,.45)); } 100% { filter: none; } }
 
-/* ---------- grain + vignette ---------- */
-body::before { content: ''; position: fixed; inset: 0; z-index: 90; pointer-events: none; background: radial-gradient(120% 90% at 50% 40%, transparent 60%, rgba(0,0,0,.22) 100%); }
+/* ---------- CRT power off / on (booking screens) ----------
+   Black halves close onto a thin line, the line collapses to a dot (the screen is swapped here),
+   then it grows back and opens on the new screen. No bright full-screen frames. 1000ms (CRT_TOTAL). */
+.crt { position: fixed; top: var(--top-h); bottom: 0; left: 0; right: 0; z-index: 76; pointer-events: none; visibility: hidden; overflow: hidden; }
+.crt.run { visibility: visible; }
+.crt i { position: absolute; left: 0; right: 0; }
+.crt-top, .crt-bot { height: 50.5%; background: #0b0a09; transform: scaleY(0); }
+.crt-top { top: 0; transform-origin: 50% 0; }
+.crt-bot { bottom: 0; transform-origin: 50% 100%; }
+.crt-line { top: 50%; height: 2px; margin-top: -1px; background: var(--cream); box-shadow: 0 0 10px 2px rgba(240,106,54,.55), 0 0 2px var(--cream); opacity: 0; transform: scaleX(1); }
+.crt-osd { position: absolute; top: 28px; left: 48px; font: 400 15px/1 var(--mono); letter-spacing: .12em; color: var(--cream); opacity: 0; text-shadow: var(--ca); }
+.crt.run .crt-top, .crt.run .crt-bot { animation: crtHalf 1s both; }
+.crt.run .crt-line { animation: crtLine 1s both; }
+.crt.run .crt-osd { animation: crtOsd 1s steps(1) both; }
+@keyframes crtHalf {
+  0%   { transform: scaleY(0); animation-timing-function: cubic-bezier(.7,0,.9,.4); }
+  26%  { transform: scaleY(1); }
+  64%  { transform: scaleY(1); animation-timing-function: cubic-bezier(.2,.7,.2,1); }
+  100% { transform: scaleY(0); }
+}
+@keyframes crtLine {
+  0%, 24% { opacity: 0; transform: scaleX(1); }
+  27%  { opacity: 1; transform: scaleX(1); animation-timing-function: cubic-bezier(.8,0,.6,1); }
+  40%  { opacity: 1; transform: scaleX(.004); }
+  46%  { opacity: 0; transform: scaleX(.004); }
+  52%  { opacity: 1; transform: scaleX(.004); animation-timing-function: cubic-bezier(.3,.8,.3,1); }
+  62%  { opacity: 1; transform: scaleX(1); }
+  70%, 100% { opacity: 0; transform: scaleX(1); }
+}
+@keyframes crtOsd { 0%, 30% { opacity: 0; } 31%, 46% { opacity: 1; } 47%, 52% { opacity: 0; } 53%, 92% { opacity: 1; } 93%, 100% { opacity: 0; } }
+.book.crt-in { animation: crtSettle .5s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes crtSettle { 0% { transform: scale(1.025, .985); filter: brightness(1.12) contrast(1.05); } 100% { transform: none; filter: none; } }
+
+/* ---------- grain + vignette + light VHS ---------- */
+/* CRT vignette + faint scanlines, breathing slowly like an old tube (no flicker) */
+body::before { content: ''; position: fixed; inset: 0; z-index: 90; pointer-events: none;
+  background:
+    radial-gradient(115% 95% at 50% 45%, transparent 55%, rgba(0,0,0,.34) 100%),
+    repeating-linear-gradient(to bottom, rgba(0,0,0,.07) 0 1px, transparent 1px 3px);
+  animation: crtPump 4.5s ease-in-out infinite alternate; }
+@keyframes crtPump { 0% { opacity: .82; transform: scale(1.012); } 100% { opacity: 1; transform: scale(1); } }
+/* a soft brighter band rolling down the screen every few seconds */
+.vhs { position: fixed; inset: 0; z-index: 89; pointer-events: none; overflow: hidden; }
+.vhs::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 22vh;
+  background: linear-gradient(to bottom, transparent, rgba(255,240,220,.035) 45%, rgba(255,240,220,.045) 55%, transparent);
+  transform: translateY(-30vh); animation: vhsRoll 9s linear infinite; }
+@keyframes vhsRoll { 0% { transform: translateY(-30vh); } 55%, 100% { transform: translateY(110vh); } }
 body::after { content: ''; position: fixed; inset: -100px; z-index: 91; pointer-events: none; opacity: .11; mix-blend-mode: soft-light;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 2.2 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: grain .9s steps(5) infinite; }
@@ -377,7 +421,7 @@ body::after { content: ''; position: fixed; inset: -100px; z-index: 91; pointer-
 /* ---------- reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .intro, .tape { display: none !important; }
+  .intro, .tape, .crt, .vhs { display: none !important; }
   .js .ch-start .hero-title .ln > span, .js .ch-start .rise, .js .ch-start .badge, .js .panel .rise, .js .book .book-left > *, .js .book .big-btn { opacity: 1 !important; transform: none !important; }
   .js .ch-start .hero-photos { clip-path: none !important; }
   .scroller { scroll-behavior: auto; }
