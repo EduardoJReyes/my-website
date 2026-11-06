@@ -39,7 +39,8 @@
     var s = steps[i];
     var chapterChanged = curChapter && curChapter !== s.ch;
     cur = i;
-    if (chapterChanged) tape();
+    // a chapter change made by touch scrolling gets the wipe here; our own jumps run it in goTo
+    if (chapterChanged && fromScroll) tape();
     curChapter = s.ch;
 
     // items + panels inside the chapter
@@ -72,25 +73,53 @@
     ticking = true;
     requestAnimationFrame(function () {
       ticking = false;
+      if (tapeBusy) return;
       var i = Math.max(0, Math.min(steps.length - 1, Math.round(scroller.scrollTop / stageH)));
+      if (target !== null) {                 // smooth scroll in progress: wait until it lands
+        if (i === target && Math.abs(scroller.scrollTop - target * stageH) < 2) target = null;
+        return;
+      }
       activate(i, true);
     });
   }, { passive: true });
 
+  var target = null, targetTimer = 0;
   function goTo(i, smooth) {
     i = Math.max(0, Math.min(steps.length - 1, i));
-    scroller.scrollTo({ top: i * stageH, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+    if (i === cur && !smooth) return;
+    var jump = function () {
+      scroller.scrollTo({ top: i * stageH, behavior: 'auto' });
+      activate(i, false);
+      setHash(steps[i].id);
+    };
+    var otherChapter = curChapter && steps[i].ch !== curChapter;
+    if (otherChapter && smooth && !reduce && introDone) { tape(jump); return; }
+    if (!smooth || reduce) { jump(); return; }
+    target = i;
+    clearTimeout(targetTimer);
+    targetTimer = setTimeout(function () { target = null; }, 1200); // safety net
+    scroller.scrollTo({ top: i * stageH, behavior: 'smooth' });
     activate(i, false);
     setHash(steps[i].id);
   }
 
   /* ---------- tape wipe between chapters ---------- */
-  function tape() {
-    if (reduce || !introDone) return;
-    tapeEl.classList.remove('run'); scroller.classList.remove('glitch');
-    void tapeEl.offsetWidth;
-    tapeEl.classList.add('run'); scroller.classList.add('glitch');
-    setTimeout(function () { tapeEl.classList.remove('run'); scroller.classList.remove('glitch'); }, 450);
+  var tapeBusy = false;
+  var TAPE_IN = 230, TAPE_TOTAL = 620;           // keep in sync with the CSS keyframes
+  function tape(underCover) {
+    if (reduce || !introDone) { if (underCover) underCover(); return; }
+    if (tapeBusy) { if (underCover) underCover(); return; }   // never stack two wipes
+    tapeBusy = true;
+    tapeEl.classList.remove('run'); void tapeEl.offsetWidth;
+    tapeEl.classList.add('run');
+    setTimeout(function () {                       // bars fully cover the screen now
+      if (underCover) underCover();
+      scroller.classList.add('glitch');
+    }, TAPE_IN);
+    setTimeout(function () {
+      tapeEl.classList.remove('run'); scroller.classList.remove('glitch');
+      tapeBusy = false;
+    }, TAPE_TOTAL);
   }
 
   /* ---------- booking overlay ---------- */
@@ -117,34 +146,46 @@
     document.getElementById('bookMail').href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(v.subject);
     document.getElementById('bookSwitch').innerHTML = SWITCH.filter(function (s) { return s[0] !== key; })
       .map(function (s) { return '<a href="#' + s[0] + '">' + s[1] + ' &#8594;</a>'; }).join('');
-    if (!bookOpen) {
-      lastFocus = document.activeElement;
-      tape();
+    var show = function () {
       book.hidden = false;
       scroller.inert = true; chaptersBar.inert = true;
-      bookOpen = true;
-    }
-    book.classList.remove('is-in'); void book.offsetWidth;
-    requestAnimationFrame(function () { book.classList.add('is-in'); });
+      book.classList.remove('is-in'); void book.offsetWidth;
+      requestAnimationFrame(function () { book.classList.add('is-in'); });
+      document.getElementById('bookTitle').focus({ preventScroll: true });
+    };
     setHash(key);
-    document.getElementById('bookTitle').focus({ preventScroll: true });
+    if (!bookOpen) {
+      lastFocus = document.activeElement;
+      bookOpen = true;
+      tape(show);
+    } else show();
   }
-  function closeBook() {
-    if (!bookOpen) return;
+  function closeBook(then) {
+    if (!bookOpen) { if (typeof then === 'function') then(); return; }
     bookOpen = false;
-    book.classList.remove('is-in');
-    book.hidden = true;
-    scroller.inert = false; chaptersBar.inert = false;
-    setHash(steps[Math.max(cur, 0)].id);
-    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+    tape(function () {
+      book.classList.remove('is-in');
+      book.hidden = true;
+      scroller.inert = false; chaptersBar.inert = false;
+      if (typeof then === 'function') then();
+      else {
+        setHash(steps[Math.max(cur, 0)].id);
+        if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+      }
+    });
   }
-  document.getElementById('bookClose').addEventListener('click', closeBook);
+  document.getElementById('bookClose').addEventListener('click', function () { closeBook(); });
 
   /* ---------- links ---------- */
   function route(hash, smooth) {
     var key = (hash || '').replace(/^#/, '');
     if (BOOK[key]) { openBook(key); return true; }
-    if (key in byId) { if (bookOpen) closeBook(); goTo(byId[key], smooth); return true; }
+    if (key in byId) {
+      var i = byId[key];
+      if (bookOpen) closeBook(function () { scroller.scrollTo({ top: i * stageH, behavior: 'auto' }); activate(i, false); setHash(key); });
+      else goTo(i, smooth);
+      return true;
+    }
     return false;
   }
   document.addEventListener('click', function (e) {
@@ -158,6 +199,7 @@
   var wheelLock = 0, wheelQuiet = 0;
   scroller.addEventListener('wheel', function (e) {
     if (bookOpen || introRunning || e.ctrlKey) return;
+    if (tapeBusy) { e.preventDefault(); return; }
     // let inner panels that scroll (phone layouts) use the wheel first
     var inner = e.target.closest && e.target.closest('.right, .book');
     if (inner && inner.scrollHeight > inner.clientHeight + 2) {
@@ -176,6 +218,7 @@
   /* ---------- keyboard ---------- */
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') { if (introRunning) endIntro(); else closeBook(); return; }
+    if (tapeBusy) { e.preventDefault(); return; }
     if (bookOpen || introRunning || e.altKey || e.ctrlKey || e.metaKey) return;
     var t = e.target, tag = t && t.tagName;
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;

@@ -267,11 +267,18 @@ em { font-style: normal; color: var(--orange); }
 .tape i:nth-child(1) { top: 0; background: var(--orange); }
 .tape i:nth-child(2) { top: 33%; background: var(--cream); }
 .tape i:nth-child(3) { top: 66%; background: var(--ink); }
-.tape.run { visibility: visible; animation: tapeFlicker .42s steps(3) both; }
-.tape.run i { animation: tapeBand .42s cubic-bezier(.7,0,.3,1) both; }
+.tape.run { visibility: visible; animation: tapeFlicker .56s steps(3) both; }
+/* bars sweep in from the left, cover the screen (the new section is swapped in underneath),
+   then carry on out to the right and reveal it. Total .56s + .06s stagger = 620ms (TAPE_TOTAL). */
+.tape.run i { animation: tapeBand .56s both; }
 .tape.run i:nth-child(2) { animation-delay: .03s; }
 .tape.run i:nth-child(3) { animation-delay: .06s; }
-@keyframes tapeBand { 0% { transform: translateX(-102%); } 45% { transform: translateX(0); } 55% { transform: translateX(0); } 100% { transform: translateX(102%); } }
+@keyframes tapeBand {
+  0%   { transform: translateX(-102%); animation-timing-function: cubic-bezier(.6,0,.4,1); }
+  30%  { transform: translateX(0); }
+  44%  { transform: translateX(0); animation-timing-function: cubic-bezier(.6,0,.4,1); }
+  100% { transform: translateX(102%); }
+}
 @keyframes tapeFlicker { 0%, 100% { filter: none; } 40% { filter: drop-shadow(-6px 0 rgba(255,40,40,.7)) drop-shadow(6px 0 rgba(0,225,255,.6)); } }
 .scroller.glitch .stage { animation: caShake .3s steps(2) 1; }
 @keyframes caShake { 0% { filter: drop-shadow(-3px 0 rgba(255,40,40,.5)) drop-shadow(3px 0 rgba(0,225,255,.45)); } 100% { filter: none; } }
