@@ -8,6 +8,7 @@
   var scroller = document.getElementById('scroller');
   var chaptersBar = document.getElementById('chapters');
   var tapeEl = document.getElementById('tape');
+  var crtEl = document.getElementById('crt'), crtOsd = document.getElementById('crtOsd');
 
   /* ---------- steps ---------- */
   var steps = [];
@@ -39,7 +40,9 @@
     var s = steps[i];
     var chapterChanged = curChapter && curChapter !== s.ch;
     cur = i;
-    if (chapterChanged) tape();
+    // a chapter change made by touch scrolling gets the wipe here; our own jumps run it in goTo
+    if (chapterChanged && fromScroll) tape();
+    else if (curChapter && !chapterChanged && sfx) sfx('step'); // notch tick between parts of a chapter
     curChapter = s.ch;
 
     // items + panels inside the chapter
@@ -72,25 +75,140 @@
     ticking = true;
     requestAnimationFrame(function () {
       ticking = false;
+      if (tapeBusy) return;
       var i = Math.max(0, Math.min(steps.length - 1, Math.round(scroller.scrollTop / stageH)));
+      if (target !== null) {                 // smooth scroll in progress: wait until it lands
+        if (i === target && Math.abs(scroller.scrollTop - target * stageH) < 2) target = null;
+        return;
+      }
       activate(i, true);
     });
   }, { passive: true });
 
+  var target = null, targetTimer = 0;
   function goTo(i, smooth) {
     i = Math.max(0, Math.min(steps.length - 1, i));
-    scroller.scrollTo({ top: i * stageH, behavior: smooth && !reduce ? 'smooth' : 'auto' });
+    if (i === cur && !smooth) return;
+    var jump = function () {
+      scroller.scrollTo({ top: i * stageH, behavior: 'auto' });
+      activate(i, false);
+      setHash(steps[i].id);
+    };
+    var otherChapter = curChapter && steps[i].ch !== curChapter;
+    if (otherChapter && smooth && !reduce && introDone) { tape(jump); return; }
+    if (!smooth || reduce) { jump(); return; }
+    target = i;
+    clearTimeout(targetTimer);
+    targetTimer = setTimeout(function () { target = null; }, 1200); // safety net
+    scroller.scrollTo({ top: i * stageH, behavior: 'smooth' });
     activate(i, false);
     setHash(steps[i].id);
   }
 
+  /* ---------- sound: tiny synthesized effects (Web Audio, no files) ----------
+     Browsers only allow audio after a click or key press, so nothing plays before that. */
+  var sfx = (function () {
+    var ctx = null, out = null, noiseBuf = null;
+    var on = true;
+    try { on = localStorage.getItem('ejr-sound') !== 'off'; } catch (e) {}
+    function init() {
+      if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return; }
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      ctx = new AC(); out = ctx.createGain(); out.gain.value = .5; out.connect(ctx.destination);
+      noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+      var d = noiseBuf.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    function env(g, t, a, peak, dec) {
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec);
+    }
+    function noise(t, dur, type, f, q, peak, a) {
+      var n = ctx.createBufferSource(); n.buffer = noiseBuf;
+      var bq = ctx.createBiquadFilter(); bq.type = type; bq.frequency.setValueAtTime(f, t); bq.Q.value = q || 1;
+      var g = ctx.createGain(); env(g, t, a || .002, peak, dur);
+      n.connect(bq); bq.connect(g); g.connect(out); n.start(t, Math.random() * .5); n.stop(t + dur + .05);
+      return bq;
+    }
+    function tone(t, type, f0, f1, dur, peak, a) {
+      var o = ctx.createOscillator(); o.type = type;
+      o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      var g = ctx.createGain(); env(g, t, a || .004, peak, dur);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + dur + .05);
+    }
+    var S = {
+      // VCR button: a plastic click with a little body under it
+      click: function (t) { noise(t, .025, 'highpass', 2200, .7, .35); tone(t, 'sine', 180, 70, .06, .25); },
+      // a step inside a chapter: the soft tick of a dial notch
+      step: function (t) { noise(t, .018, 'bandpass', 3200, 2, .22); tone(t, 'triangle', 900, 600, .03, .05); },
+      // chapter wipe: tape being fast-forwarded past the head
+      chapter: function (t) {
+        var bq = noise(t, .5, 'bandpass', 500, 1.6, .22, .08);
+        bq.frequency.exponentialRampToValueAtTime(2600, t + .22); bq.frequency.exponentialRampToValueAtTime(700, t + .55);
+        tone(t, 'sawtooth', 70, 110, .45, .025, .06);
+      },
+      // CRT switching off: the picture collapses with a falling whine, then a thunk
+      off: function (t) {
+        tone(t, 'sine', 1400, 90, .38, .08, .01);
+        var bq = noise(t, .3, 'lowpass', 6000, .7, .12, .01); bq.frequency.exponentialRampToValueAtTime(400, t + .3);
+        tone(t + .4, 'sine', 120, 45, .12, .3); noise(t + .4, .03, 'highpass', 1500, .7, .2);
+      },
+      // CRT coming back: relay thunk, static settling, a short rising hum
+      on: function (t) {
+        noise(t, .03, 'highpass', 1800, .7, .25); tone(t, 'sine', 55, 40, .2, .35);
+        var bq = noise(t + .03, .35, 'bandpass', 2400, .8, .1, .02); bq.frequency.exponentialRampToValueAtTime(900, t + .38);
+        tone(t + .05, 'triangle', 90, 240, .3, .04, .05);
+      }
+    };
+    function play(name, delay) {
+      if (!on || !ctx || ctx.state !== 'running' || !S[name]) return;
+      S[name](ctx.currentTime + .005 + (delay || 0) / 1000);
+    }
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { document.addEventListener(ev, init, { passive: true }); });
+    var btn = document.getElementById('soundBtn');
+    function paint() { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); btn.querySelector('.sound-label').textContent = on ? 'Sound on' : 'Sound off'; }
+    btn.addEventListener('click', function () {
+      on = !on; try { localStorage.setItem('ejr-sound', on ? 'on' : 'off'); } catch (e) {}
+      paint(); init(); if (on) setTimeout(function () { play('click'); }, 30);
+    });
+    paint();
+    return play;
+  })();
+  // every button or link press gets the VCR click
+  document.addEventListener('pointerdown', function (e) {
+    if (e.button === 0 && e.target.closest && e.target.closest('a, button') && !e.target.closest('#soundBtn')) sfx('click');
+  });
+
   /* ---------- tape wipe between chapters ---------- */
-  function tape() {
-    if (reduce || !introDone) return;
-    tapeEl.classList.remove('run'); scroller.classList.remove('glitch');
-    void tapeEl.offsetWidth;
-    tapeEl.classList.add('run'); scroller.classList.add('glitch');
-    setTimeout(function () { tapeEl.classList.remove('run'); scroller.classList.remove('glitch'); }, 450);
+  var tapeBusy = false;
+  var TAPE_IN = 230, TAPE_TOTAL = 620;           // keep in sync with the CSS keyframes
+  function tape(underCover) {
+    if (reduce || !introDone) { if (underCover) underCover(); return; }
+    if (tapeBusy) { if (underCover) underCover(); return; }   // never stack two wipes
+    tapeBusy = true;
+    sfx('chapter');
+    tapeEl.classList.remove('run'); void tapeEl.offsetWidth;
+    tapeEl.classList.add('run');
+    setTimeout(function () {                       // bars fully cover the screen now
+      if (underCover) underCover();
+      scroller.classList.add('glitch');
+    }, TAPE_IN);
+    setTimeout(function () {
+      tapeEl.classList.remove('run'); scroller.classList.remove('glitch');
+      tapeBusy = false;
+    }, TAPE_TOTAL);
+  }
+
+  /* ---------- CRT power off / on (booking screens) ---------- */
+  var CRT_SWAP = 450, CRT_TOTAL = 1000;          // keep in sync with the crt keyframes
+  function crt(label, underCover) {
+    if (reduce || !introDone || tapeBusy) { if (underCover) underCover(); return; }
+    tapeBusy = true;
+    sfx('off'); sfx('on', CRT_SWAP + 40);
+    crtOsd.innerHTML = label;
+    crtEl.classList.remove('run'); void crtEl.offsetWidth;
+    crtEl.classList.add('run');
+    setTimeout(function () { if (underCover) underCover(); }, CRT_SWAP);
+    setTimeout(function () { crtEl.classList.remove('run'); tapeBusy = false; }, CRT_TOTAL);
   }
 
   /* ---------- booking overlay ---------- */
@@ -105,6 +223,7 @@
   var SWITCH = [['book', 'Booking for yourself?'], ['book-studio', 'Booking for a team?'], ['book-uni', 'Booking for a university?']];
   var CAL_URL = 'https://calendar.google.com/'; // TODO: your Google Calendar appointment schedule link
   var EMAIL = 'eduardoj.reyes@hotmail.com';
+  var topBook = document.getElementById('topBook');
   var book = document.getElementById('book'), bookOpen = false, lastFocus = null;
 
   function openBook(key) {
@@ -117,34 +236,49 @@
     document.getElementById('bookMail').href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(v.subject);
     document.getElementById('bookSwitch').innerHTML = SWITCH.filter(function (s) { return s[0] !== key; })
       .map(function (s) { return '<a href="#' + s[0] + '">' + s[1] + ' &#8594;</a>'; }).join('');
+    var show = function () {
+      book.hidden = false;
+      topBook.textContent = 'Go back'; topBook.href = '#' + steps[Math.max(cur, 0)].id;
+      scroller.inert = true; chaptersBar.inert = true;
+      book.classList.remove('is-in', 'crt-in'); void book.offsetWidth;
+      book.classList.add('crt-in');
+      requestAnimationFrame(function () { book.classList.add('is-in'); });
+      document.getElementById('bookTitle').focus({ preventScroll: true });
+    };
+    setHash(key);
     if (!bookOpen) {
       lastFocus = document.activeElement;
-      tape();
-      book.hidden = false;
-      scroller.inert = true; chaptersBar.inert = true;
       bookOpen = true;
-    }
-    book.classList.remove('is-in'); void book.offsetWidth;
-    requestAnimationFrame(function () { book.classList.add('is-in'); });
-    setHash(key);
-    document.getElementById('bookTitle').focus({ preventScroll: true });
+      crt('&#9654; PLAY', show);
+    } else show();
   }
-  function closeBook() {
-    if (!bookOpen) return;
+  function closeBook(then) {
+    if (!bookOpen) { if (typeof then === 'function') then(); return; }
     bookOpen = false;
-    book.classList.remove('is-in');
-    book.hidden = true;
-    scroller.inert = false; chaptersBar.inert = false;
-    setHash(steps[Math.max(cur, 0)].id);
-    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+    crt('&#9632; STOP', function () {
+      book.classList.remove('is-in', 'crt-in');
+      book.hidden = true;
+      topBook.textContent = 'Book session'; topBook.href = '#book';
+      scroller.inert = false; chaptersBar.inert = false;
+      if (typeof then === 'function') then();
+      else {
+        setHash(steps[Math.max(cur, 0)].id);
+        if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+      }
+    });
   }
-  document.getElementById('bookClose').addEventListener('click', closeBook);
+  document.getElementById('bookClose').addEventListener('click', function () { closeBook(); });
 
   /* ---------- links ---------- */
   function route(hash, smooth) {
     var key = (hash || '').replace(/^#/, '');
     if (BOOK[key]) { openBook(key); return true; }
-    if (key in byId) { if (bookOpen) closeBook(); goTo(byId[key], smooth); return true; }
+    if (key in byId) {
+      var i = byId[key];
+      if (bookOpen) closeBook(function () { scroller.scrollTo({ top: i * stageH, behavior: 'auto' }); activate(i, false); setHash(key); });
+      else goTo(i, smooth);
+      return true;
+    }
     return false;
   }
   document.addEventListener('click', function (e) {
@@ -158,6 +292,7 @@
   var wheelLock = 0, wheelQuiet = 0;
   scroller.addEventListener('wheel', function (e) {
     if (bookOpen || introRunning || e.ctrlKey) return;
+    if (tapeBusy) { e.preventDefault(); return; }
     // let inner panels that scroll (phone layouts) use the wheel first
     var inner = e.target.closest && e.target.closest('.right, .book');
     if (inner && inner.scrollHeight > inner.clientHeight + 2) {
@@ -176,6 +311,7 @@
   /* ---------- keyboard ---------- */
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') { if (introRunning) endIntro(); else closeBook(); return; }
+    if (tapeBusy) { e.preventDefault(); return; }
     if (bookOpen || introRunning || e.altKey || e.ctrlKey || e.metaKey) return;
     var t = e.target, tag = t && t.tagName;
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
@@ -233,7 +369,7 @@
   autoReviews();
 
   /* ---------- intro (first visit per session) ---------- */
-  var intro = document.getElementById('intro'), skip = document.getElementById('skipIntro');
+  var intro = document.getElementById('intro');
   var introRunning = root.classList.contains('intro-on'), introDone = !introRunning, timers = [];
   function endIntro() {
     if (!introRunning) return;
@@ -245,23 +381,23 @@
     if (curChapter) curChapter.classList.add('is-in');
   }
   if (introRunning) {
-    skip.addEventListener('click', endIntro);
+    intro.addEventListener('click', endIntro); // click anywhere (or Esc) skips it
     var word = document.getElementById('introWord'), pct = document.getElementById('introPct');
-    var WORDS = [['Open', 'Unreal.'], ['Stop', 'Panicking.'], ['Make', 'Things.']];
+    var WORDS = [['Lost in', 'Unreal Engine?'], ['Me too,', 'once.'], ["Let's fix", 'that.']];
     var at = function (ms, fn) { timers.push(setTimeout(fn, ms)); };
     var render = function (w) {
       var d = 0; word.className = 'intro-word';
       word.innerHTML = w.map(function (line, li) {
         return '<span class="w w' + (li + 1) + '">' + line.split('').map(function (c) {
-          return '<span class="ch" style="--d:' + (d++) + '">' + c + '</span>';
+          return c === ' ' ? '<span class="ch" style="--d:' + (d++) + '">&nbsp;</span>' : '<span class="ch" style="--d:' + (d++) + '">' + c + '</span>';
         }).join('') + '</span>';
       }).join('');
     };
-    var STEP = 1050, T0 = 150;
+    var STEP = 1250, T0 = 150;
     WORDS.forEach(function (w, i) {
       var s = T0 + i * STEP;
-      at(s, function () { intro.classList.remove('flip'); render(w); });
-      [480, 560, 640, 720].forEach(function (o) { at(s + o, function () { intro.classList.toggle('flip'); }); });
+      // the middle sentence is shown inverted (black on orange): one hard cut, no flashing
+      at(s, function () { intro.classList.toggle('flip', i === 1); render(w); });
       if (i < WORDS.length - 1) at(s + STEP - 200, function () { word.classList.add('out'); });
     });
     var total = T0 + WORDS.length * STEP + 250, p0 = performance.now();
