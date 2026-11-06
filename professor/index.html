@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+  (function () {
+    var r = document.documentElement; r.classList.add('js');
+    var seen = false; try { seen = sessionStorage.getItem('ejr-intro') === '1'; } catch (e) {}
+    if (!seen && !matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('intro-on');
+  })();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eduardo J. Reyes · Unreal Engine Professor</title>
+<meta name="description" content="Unreal Engine 5 classes, studio training and university seminars by Eduardo J. Reyes, Epic Games Authorized Instructor. Remote, Barcelona and Sweden.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;900&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#start">Skip to content</a>
+
+<!-- ===================== TOP BAR ===================== -->
+<header class="topbar">
+  <a class="brand" href="#start">EDUARDO J. REYES</a>
+  <div class="topbar-right">
+    <a class="ta-link" href="/">See my TECHNICAL ART work&nbsp;&#8594;</a>
+    <a class="btn btn-primary btn-sm" href="#book">Book session</a>
+  </div>
+</header>
+
+<!-- ===================== INTRO (first visit) ===================== -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro-c tl">Please don't<br>panic</div>
+  <div class="intro-c tr">UE 5.8<br>Current release</div>
+  <div class="intro-c bl"><span class="rw">&#9664;&#9664;</span> Remote · BCN · Sweden</div>
+  <div class="intro-c br">Compiling shaders<br><span id="introPct">0</span>%</div>
+  <div class="intro-word" id="introWord"></div>
+</div>
+<button class="skip-intro" id="skipIntro" type="button">Skip intro &#9654;&#9654;</button>
+
+<!-- tape wipe between chapters -->
+<div class="tape" id="tape" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<!-- ===================== CHAPTERS ===================== -->
+<main class="scroller" id="scroller">
+
+  <!-- 01 START -->
+  <section class="chapter ch-start" data-chapter="start" style="--steps:1" aria-label="Start">
+    <div class="stage">
+      <div class="hero-photos" aria-roledescription="carousel" aria-label="Eduardo teaching">
+        <img class="is-on" src="assets/teach-2.jpg" alt="Eduardo helping students at their computers during a class" style="object-position:100% 50%">
+        <img src="assets/teach-3.jpg" alt="Eduardo reviewing a student's project in class" style="object-position:92% 50%">
+        <img src="assets/teach-4.jpg" alt="Eduardo with a training group in Barcelona" style="object-position:50% 50%">
+        <img src="assets/teach-5.jpg" alt="Eduardo with a class of students on campus" style="object-position:100% 45%">
+        <img src="assets/teach-1.jpg" alt="Eduardo with students at the Arts Digitals Game Jam" style="object-position:73% 50%">
+        <div class="fade-r" aria-hidden="true"></div>
+        <div class="fade-b" aria-hidden="true"></div>
+      </div>
+      <div class="hero-text">
+        <h1 class="hero-title ca">
+          <span class="ln"><span>Open Unreal.</span></span>
+          <span class="ln s"><span>Stop panicking.</span></span>
+          <span class="ln o"><span>Make things.</span></span>
+        </h1>
+        <p class="hero-bio rise">Hello! I teach Unreal Engine 5 to students, studio teams and university programmes, from private classes to seminars across Europe. <strong>5 years in Unreal, more than 400 graduated students.</strong></p>
+        <div class="audience rise">
+          <a href="#formats-private">Learning UE5? &#8594;</a>
+          <a href="#book-studio">Training a team? &#8594;</a>
+          <a href="#book-uni">Running a programme? &#8594;</a>
+        </div>
+        <div class="cta-row rise">
+          <a class="btn btn-primary" href="#book">Book a free first class</a>
+          <a class="btn btn-ghost" href="#formats-private">How it works &#8594;</a>
+        </div>
+        <div class="proof rise">
+          <img class="badge" src="assets/badge-white.png" alt="Unreal Engine Authorized Instructor" width="60" height="48">
+          <p><span>UE Authorized Instructor</span><b>/</b><span>400+ students</span><b>/</b><span>Trained teams at Scopely</span><b>/</b><span>Currently teaching at La Salle URL</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="snaps"><i id="start"></i></div>
+  </section>
+
+  <!-- 02 FORMATS -->
+  <section class="chapter ch-split ch-formats" data-chapter="formats" style="--steps:3" aria-labelledby="formats-t">
+    <div class="stage">
+      <div class="left">
+        <div class="backdrop" aria-hidden="true"><img src="assets/teach-3.jpg" alt=""></div>
+        <h2 class="sec-title ca" id="formats-t">Pick how you<br>want to <em>learn</em></h2>
+        <p class="lede">Same engine, same direct approach. Only the size of the room changes.</p>
+        <div class="pick-list" role="list">
+          <a class="pick" role="listitem" href="#formats-private" data-item="0"><span class="tag">1:1</span><span class="pick-body"><span class="pick-name">Private classes</span><span class="pick-line">For students, career changers and artists</span></span><span class="chev" aria-hidden="true">&#8250;</span></a>
+          <a class="pick" role="listitem" href="#formats-studio" data-item="1"><span class="tag">Teams</span><span class="pick-body"><span class="pick-name">Studio training</span><span class="pick-line">Official Unreal training for studio teams</span></span><span class="chev" aria-hidden="true">&#8250;</span></a>
+          <a class="pick" role="listitem" href="#formats-seminars" data-item="2"><span class="tag">2h</span><span class="pick-body"><span class="pick-name">Seminars</span><span class="pick-line">For masters and degree programmes</span></span><span class="chev" aria-hidden="true">&#8250;</span></a>
+        </div>
+      </div>
+      <div class="right grid-panel">
+        <article class="panel" data-panel="0">
+          <h3 class="panel-title ca rise">Private classes</h3>
+          <p class="panel-text rise">Online. For people who want to stop copying tutorials and understand what they are building.</p>
+          <div class="steps rise">
+            <div class="step"><span class="n">01</span><h4>Diagnostic</h4><p>A free first session. We look at what you already know, what you want to make and how much time you have. You leave with a plan for the next weeks.</p></div>
+            <div class="step"><span class="n">02</span><h4>Real project</h4><p>You pick something you actually want to build: a level, a tool, a portfolio piece. Every class moves it forward, and theory shows up when the project needs it.</p></div>
+            <div class="step"><span class="n">03</span><h4>Feedback</h4><p>Direct, specific feedback in every class and between classes. Send me what you made and I'll tell you what works and what to fix next.</p></div>
+          </div>
+          <div class="panel-foot rise"><span class="price">Rate: ask me</span><a class="btn btn-primary" href="#book">Book a free class &#8594;</a></div>
+        </article>
+        <article class="panel" data-panel="1">
+          <h3 class="panel-title ca rise">Studio training</h3>
+          <p class="panel-text rise">Official Unreal training for studio teams through Epic Games' Unreal Authorized Instructor programme.</p>
+          <div class="panel-foot rise"><span class="price">Quote: ask me</span><a class="btn btn-primary" href="#book-studio">Request training &#8594;</a></div>
+        </article>
+        <article class="panel" data-panel="2">
+          <h3 class="panel-title ca rise">Seminars</h3>
+          <p class="panel-text rise">Two-hour sessions with real production examples instead of slides about slides.</p>
+          <div class="panel-foot rise"><span class="price">Fee: ask me</span><a class="btn btn-primary" href="#book-uni">Invite me &#8594;</a></div>
+        </article>
+      </div>
+    </div>
+    <div class="snaps"><i id="formats-private"></i><i id="formats-studio"></i><i id="formats-seminars"></i></div>
+  </section>
+
+  <!-- 03 CURRICULUM -->
+  <section class="chapter ch-split ch-curriculum" data-chapter="curriculum" style="--steps:9" aria-labelledby="cur-t">
+    <div class="stage">
+      <div class="left">
+        <div class="backdrop band" aria-hidden="true"><img src="assets/teach-1.jpg" alt=""></div>
+        <h2 class="sec-title ca" id="cur-t">What we <em>cover</em></h2>
+        <div class="tiles" role="list">
+          <a class="tile" role="listitem" href="#module-blueprints" data-item="0"><span class="tile-img" aria-hidden="true"></span><span class="tile-id">MOD_01</span><span class="tile-name">Blueprints</span><span class="tile-lv">Beginner</span></a>
+          <a class="tile" role="listitem" href="#module-materials" data-item="1"><span class="tile-img" aria-hidden="true"></span><span class="tile-id">MOD_02</span><span class="tile-name">Materials &amp; HLSL</span><span class="tile-lv">Intermediate</span></a>
+          <a class="tile" role="listitem" href="#module-pcg" data-item="2"><span class="tile-img" aria-hidden="true"></span><span class="tile-id">MOD_03</span><span class="tile-name">PCG</span><span class="tile-lv">Advanced</span></a>
+          <a class="tile" role="listitem" href="#module-optimization" data-item="3"><span class="tile-img" aria-hidden="true"></span><span class="tile-id">MOD_04</span><span class="tile-name">Optimization</span><span class="tile-lv">Intermediate</span></a>
+          <a class="tile" role="listitem" href="#module-procedural" data-item="4"><span class="tile-img" aria-hidden="true"></span><span class="tile-id">MOD_05</span><span class="tile-name">Procedural Modeling</span><span class="tile-lv">Advanced</span></a>
+          <a class="tile" role="listitem" href="#module-unity" data-item="5"><span class="tile-img" aria-hidden="true"></span><span class="tile-id">MOD_06</span><span class="tile-name">Development in Unity</span><span class="tile-lv">Beginner</span></a>
+          <a class="tile" role="listitem" href="#module-pipeline" data-item="6"><span class="tile-img" aria-hidden="true"></span><span class="tile-id">MOD_07</span><span class="tile-name">Pipeline tools</span><span class="tile-lv">Advanced</span></a>
+          <a class="tile" role="listitem" href="#module-gamedesign" data-item="7"><span class="tile-img" aria-hidden="true"></span><span class="tile-id">MOD_08</span><span class="tile-name">Game Design</span><span class="tile-lv">Beginner</span></a>
+          <a class="tile" role="listitem" href="#module-leveldesign" data-item="8"><span class="tile-img" aria-hidden="true"></span><span class="tile-id">MOD_09</span><span class="tile-name">Level Design</span><span class="tile-lv">Beginner</span></a>
+        </div>
+      </div>
+      <div class="right grid-panel">
+        <article class="panel" data-panel="0"><h3 class="panel-title ca rise">Blueprints</h3><div class="chips rise"><span class="lv">Beginner</span><span>Gameplay</span></div>
+          <dl class="mod rise"><dt>Who it's for</dt><dd>Artists and designers who have never coded, or coders who are new to Unreal.</dd><dt>What it's for</dt><dd>Making things happen in a level: doors, pickups, UI, simple enemies and game rules.</dd><dt>What you walk away with</dt><dd>A small playable prototype you built alone, with logic you can still read a month later.</dd></dl></article>
+        <article class="panel" data-panel="1"><h3 class="panel-title ca rise">Materials &amp; HLSL</h3><div class="chips rise"><span class="lv">Intermediate</span><span>Tech Art</span></div>
+          <dl class="mod rise"><dt>Who it's for</dt><dd>Artists who already use Unreal and want materials that look better and run faster.</dd><dt>What it's for</dt><dd>Every surface in the game: landscapes, props, VFX and stylised shading.</dd><dt>What you walk away with</dt><dd>A set of reusable master materials and the habit of checking what each one costs.</dd></dl></article>
+        <article class="panel" data-panel="2"><h3 class="panel-title ca rise">PCG</h3><div class="chips rise"><span class="lv">Advanced</span><span>Environments</span></div>
+          <dl class="mod rise"><dt>Who it's for</dt><dd>Environment and tech artists who are tired of placing every rock by hand.</dd><dt>What it's for</dt><dd>Filling worlds with rules instead of clicks: forests, towns, scattering and paths.</dd><dt>What you walk away with</dt><dd>A PCG graph that dresses a level for you, with controls you can hand to a team.</dd></dl></article>
+        <article class="panel" data-panel="3"><h3 class="panel-title ca rise">Optimization</h3><div class="chips rise"><span class="lv">Intermediate</span><span>Performance</span></div>
+          <dl class="mod rise"><dt>Who it's for</dt><dd>Anyone whose project runs fine on their own PC and nowhere else.</dd><dt>What it's for</dt><dd>Hitting a frame rate on real hardware with Nanite, Lumen, LODs and the profiler.</dd><dt>What you walk away with</dt><dd>You can profile a scene, find what is slow and fix it instead of guessing.</dd></dl></article>
+        <article class="panel" data-panel="4"><h3 class="panel-title ca rise">Procedural Modeling</h3><div class="chips rise"><span class="lv">Advanced</span><span>Houdini</span></div>
+          <dl class="mod rise"><dt>Who it's for</dt><dd>3D and tech artists curious about Houdini. No previous Houdini needed.</dd><dt>What it's for</dt><dd>Generating assets, terrain and destruction from parameters instead of modeling each one.</dd><dt>What you walk away with</dt><dd>A procedural asset or terrain tool in Unreal that you can change in seconds.</dd></dl></article>
+        <article class="panel" data-panel="5"><h3 class="panel-title ca rise">Development in Unity</h3><div class="chips rise"><span class="lv">Beginner</span><span>Unity</span></div>
+          <dl class="mod rise"><dt>Who it's for</dt><dd>Beginners and small indie or student teams working in Unity.</dd><dt>What it's for</dt><dd>C# gameplay scripting, scene structure and keeping a project from turning into chaos.</dd><dt>What you walk away with</dt><dd>A small finished Unity project with a structure your team can keep building on.</dd></dl></article>
+        <article class="panel" data-panel="6"><h3 class="panel-title ca rise">Pipeline tools</h3><div class="chips rise"><span class="lv">Advanced</span><span>Python</span></div>
+          <dl class="mod rise"><dt>Who it's for</dt><dd>Tech artists and artists who repeat the same steps every day.</dd><dt>What it's for</dt><dd>Python and Houdini tools that automate exports, naming, setup and other boring parts.</dd><dt>What you walk away with</dt><dd>At least one tool your team actually uses, and the know-how to write the next one.</dd></dl></article>
+        <article class="panel" data-panel="7"><h3 class="panel-title ca rise">Game Design</h3><div class="chips rise"><span class="lv">Beginner</span><span>Design</span></div>
+          <dl class="mod rise"><dt>Who it's for</dt><dd>Students and developers with ideas who struggle to turn them into a game.</dd><dt>What it's for</dt><dd>Core loops, mechanics, systems thinking and the documents that keep a team aligned.</dd><dt>What you walk away with</dt><dd>A clear design document and a prototype that tests whether the idea is fun.</dd></dl></article>
+        <article class="panel" data-panel="8"><h3 class="panel-title ca rise">Level Design</h3><div class="chips rise"><span class="lv">Beginner</span><span>Design</span></div>
+          <dl class="mod rise"><dt>Who it's for</dt><dd>Beginners and designers who want levels that guide the player without signs everywhere.</dd><dt>What it's for</dt><dd>Spatial flow, pacing and blockout methodology, from greybox to playable.</dd><dt>What you walk away with</dt><dd>A blocked-out, playtested level and a method you can repeat on the next one.</dd></dl></article>
+        <a class="btn btn-primary panel-cta" href="#book">Ask about this module &#8594;</a>
+      </div>
+    </div>
+    <div class="snaps"><i id="module-blueprints"></i><i id="module-materials"></i><i id="module-pcg"></i><i id="module-optimization"></i><i id="module-procedural"></i><i id="module-unity"></i><i id="module-pipeline"></i><i id="module-gamedesign"></i><i id="module-leveldesign"></i></div>
+  </section>
+
+  <!-- 04 STUDENTS -->
+  <section class="chapter ch-students" data-chapter="students" style="--steps:1" aria-labelledby="stu-t">
+    <div class="stage">
+      <div class="work" aria-roledescription="carousel" aria-label="Student work">
+        <div class="work-slide is-on" role="img" aria-label="Level Design class 2026"><span>[Student project image]</span></div>
+        <div class="work-slide" role="img" aria-label="UE5 class"><span>[Student project image]</span></div>
+        <div class="work-slide" role="img" aria-label="Technical Art class"><span>[Student project image]</span></div>
+        <div class="work-slide" role="img" aria-label="Game Design class"><span>[Student project image]</span></div>
+        <div class="fade-t" aria-hidden="true"></div><div class="fade-b" aria-hidden="true"></div>
+      </div>
+      <h2 class="sec-title ca stu-title" id="stu-t">Made by <em>my students</em></h2>
+      <div class="dots" id="workDots"></div>
+      <figure class="review" aria-roledescription="carousel" aria-label="What students say">
+        <div class="review-body" id="reviewBody">
+          <blockquote id="rvQ" lang="en">"Eduardo genuinely wants his students to grow and do their best. Even when we ask for feedback on personal projects outside class, he is always happy to help."</blockquote>
+        </div>
+        <div class="review-row">
+          <a class="avatar" id="rvLink" href="https://www.linkedin.com/in/naji-swabri-274b98386/" target="_blank" rel="noopener" aria-label="Naji on LinkedIn"><span id="rvIni">N</span></a>
+          <figcaption><span class="who" id="rvWho">Naji</span><span class="role" id="rvRole">Animation &amp; VFX, La Salle URL</span><span class="now" id="rvNow">[Now: where Naji is today]</span></figcaption>
+          <div class="review-nav"><button type="button" id="rvPrev" aria-label="Previous review">&#8249;</button><button type="button" id="rvNext" aria-label="Next review">&#8250;</button></div>
+        </div>
+      </figure>
+    </div>
+    <div class="snaps"><i id="students"></i></div>
+  </section>
+
+  <!-- 05 FAQ -->
+  <section class="chapter ch-split ch-faq" data-chapter="faq" style="--steps:6" aria-labelledby="faq-t">
+    <div class="stage">
+      <div class="left">
+        <div class="backdrop" aria-hidden="true"><img src="assets/teach-2.jpg" alt=""></div>
+        <h2 class="sec-title ca" id="faq-t"><em>F.A.Q.</em></h2>
+        <div class="q-list" role="list">
+          <a class="q" role="listitem" href="#faq-where" data-item="0"><span>Online or in person?</span><i aria-hidden="true"></i></a>
+          <a class="q" role="listitem" href="#faq-languages" data-item="1"><span>Which languages?</span><i aria-hidden="true"></i></a>
+          <a class="q" role="listitem" href="#faq-beginners" data-item="2"><span>I've never opened Unreal. Problem?</span><i aria-hidden="true"></i></a>
+          <a class="q" role="listitem" href="#faq-version" data-item="3"><span>Which version do you teach?</span><i aria-hidden="true"></i></a>
+          <a class="q" role="listitem" href="#faq-pc" data-item="4"><span>Do I need a powerful PC?</span><i aria-hidden="true"></i></a>
+          <a class="q" role="listitem" href="#faq-cost" data-item="5"><span>How much does it cost?</span><i aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <div class="right grid-panel">
+        <span class="label">Answer</span>
+        <article class="panel" data-panel="0"><h3 class="panel-title ca rise">Online or in person?</h3><p class="panel-text rise">Both. Private classes run remotely or in person in Barcelona and Sweden. Studio training can be on site or remote, and I give seminars at universities all around Europe.</p></article>
+        <article class="panel" data-panel="1"><h3 class="panel-title ca rise">Which languages?</h3><p class="panel-text rise">Spanish, English and Catalan.</p></article>
+        <article class="panel" data-panel="2"><h3 class="panel-title ca rise">I've never opened Unreal. Problem?</h3><p class="panel-text rise">No. Complete beginners are welcome. We start from the editor itself and build up from there. The depth adjusts to you; the approach doesn't.</p></article>
+        <article class="panel" data-panel="3"><h3 class="panel-title ca rise">Which version do you teach?</h3><p class="panel-text rise">Unreal Engine 5.8, the current release. If your team is locked to an older version, we work in that one.</p></article>
+        <article class="panel" data-panel="4"><h3 class="panel-title ca rise">Do I need a powerful PC?</h3><p class="panel-text rise">This is Epic's recommended setup for Unreal Engine 5.8. Below that, Unreal still opens, just slower. Send me your specs before the first class and we'll plan around them.</p>
+          <dl class="specs rise"><dt>OS</dt><dd>Windows 11</dd><dt>CPU</dt><dd>Quad-core Intel or AMD, 2.5 GHz or faster</dd><dt>RAM</dt><dd>32 GB</dd><dt>GPU</dt><dd>DirectX 12 compatible, 8 GB VRAM or more</dd><dt>Lumen / Nanite</dt><dd>NVIDIA RTX 2000, AMD RX 6000, Intel Arc A-Series or newer</dd></dl></article>
+        <article class="panel" data-panel="5"><h3 class="panel-title ca rise">How much does it cost?</h3><p class="panel-text rise">It depends on the format and the number of hours. Write to me and I'll give you a straight number. The first class is free either way.</p></article>
+        <div class="panel-foot"><span class="muted">Still unsure? Ask me directly.</span><a class="btn btn-primary" href="#book">Book a free first class &#8594;</a></div>
+      </div>
+    </div>
+    <div class="snaps"><i id="faq-where"></i><i id="faq-languages"></i><i id="faq-beginners"></i><i id="faq-version"></i><i id="faq-pc"></i><i id="faq-cost"></i></div>
+  </section>
+</main>
+
+<!-- ===================== CHAPTER BAR ===================== -->
+<nav class="chapters" id="chapters" aria-label="Chapters">
+  <a href="#start" data-ch="start"><span class="num">01</span><span class="lbl">Start</span><span class="ticks"></span></a>
+  <a href="#formats-private" data-ch="formats"><span class="num">02</span><span class="lbl">Formats</span><span class="ticks"></span></a>
+  <a href="#module-blueprints" data-ch="curriculum"><span class="num">03</span><span class="lbl">Curriculum</span><span class="ticks"></span></a>
+  <a href="#students" data-ch="students"><span class="num">04</span><span class="lbl">Students</span><span class="ticks"></span></a>
+  <a href="#faq-where" data-ch="faq"><span class="num">05</span><span class="lbl">FAQ</span><span class="ticks"></span></a>
+</nav>
+
+<!-- ===================== BOOKING (overlay, three audiences) ===================== -->
+<div class="book" id="book" role="dialog" aria-modal="true" aria-labelledby="bookTitle" hidden>
+  <div class="book-left">
+    <div class="backdrop" aria-hidden="true"><img id="bookImg" src="assets/render-01.jpg" alt=""></div>
+    <button type="button" class="back" id="bookClose">&#8592; Back</button>
+    <h2 class="book-title ca" id="bookTitle" tabindex="-1"></h2>
+    <p class="book-text" id="bookText"></p>
+    <div class="book-switch" id="bookSwitch"></div>
+  </div>
+  <div class="book-right grid-panel">
+    <a class="big-btn btn-primary" id="bookCal" href="https://calendar.google.com/" target="_blank" rel="noopener"><span><span class="t" id="bookCalT">Schedule a meeting</span><span class="s">Opens my Google Calendar booking page</span></span><i aria-hidden="true">&#8594;</i></a>
+    <a class="big-btn btn-ghost" id="bookMail" href="mailto:eduardoj.reyes@hotmail.com"><span><span class="t">Send a message directly</span><span class="s">eduardoj.reyes@hotmail.com</span></span><i aria-hidden="true">&#8594;</i></a>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
