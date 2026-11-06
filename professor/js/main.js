@@ -42,6 +42,7 @@
     cur = i;
     // a chapter change made by touch scrolling gets the wipe here; our own jumps run it in goTo
     if (chapterChanged && fromScroll) tape();
+    else if (curChapter && !chapterChanged && sfx) sfx('step'); // notch tick between parts of a chapter
     curChapter = s.ch;
 
     // items + panels inside the chapter
@@ -104,6 +105,79 @@
     setHash(steps[i].id);
   }
 
+  /* ---------- sound: tiny synthesized effects (Web Audio, no files) ----------
+     Browsers only allow audio after a click or key press, so nothing plays before that. */
+  var sfx = (function () {
+    var ctx = null, out = null, noiseBuf = null;
+    var on = true;
+    try { on = localStorage.getItem('ejr-sound') !== 'off'; } catch (e) {}
+    function init() {
+      if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return; }
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      ctx = new AC(); out = ctx.createGain(); out.gain.value = .5; out.connect(ctx.destination);
+      noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+      var d = noiseBuf.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    function env(g, t, a, peak, dec) {
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec);
+    }
+    function noise(t, dur, type, f, q, peak, a) {
+      var n = ctx.createBufferSource(); n.buffer = noiseBuf;
+      var bq = ctx.createBiquadFilter(); bq.type = type; bq.frequency.setValueAtTime(f, t); bq.Q.value = q || 1;
+      var g = ctx.createGain(); env(g, t, a || .002, peak, dur);
+      n.connect(bq); bq.connect(g); g.connect(out); n.start(t, Math.random() * .5); n.stop(t + dur + .05);
+      return bq;
+    }
+    function tone(t, type, f0, f1, dur, peak, a) {
+      var o = ctx.createOscillator(); o.type = type;
+      o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      var g = ctx.createGain(); env(g, t, a || .004, peak, dur);
+      o.connect(g); g.connect(out); o.start(t); o.stop(t + dur + .05);
+    }
+    var S = {
+      // VCR button: a plastic click with a little body under it
+      click: function (t) { noise(t, .025, 'highpass', 2200, .7, .35); tone(t, 'sine', 180, 70, .06, .25); },
+      // a step inside a chapter: the soft tick of a dial notch
+      step: function (t) { noise(t, .018, 'bandpass', 3200, 2, .22); tone(t, 'triangle', 900, 600, .03, .05); },
+      // chapter wipe: tape being fast-forwarded past the head
+      chapter: function (t) {
+        var bq = noise(t, .5, 'bandpass', 500, 1.6, .22, .08);
+        bq.frequency.exponentialRampToValueAtTime(2600, t + .22); bq.frequency.exponentialRampToValueAtTime(700, t + .55);
+        tone(t, 'sawtooth', 70, 110, .45, .025, .06);
+      },
+      // CRT switching off: the picture collapses with a falling whine, then a thunk
+      off: function (t) {
+        tone(t, 'sine', 1400, 90, .38, .08, .01);
+        var bq = noise(t, .3, 'lowpass', 6000, .7, .12, .01); bq.frequency.exponentialRampToValueAtTime(400, t + .3);
+        tone(t + .4, 'sine', 120, 45, .12, .3); noise(t + .4, .03, 'highpass', 1500, .7, .2);
+      },
+      // CRT coming back: relay thunk, static settling, a short rising hum
+      on: function (t) {
+        noise(t, .03, 'highpass', 1800, .7, .25); tone(t, 'sine', 55, 40, .2, .35);
+        var bq = noise(t + .03, .35, 'bandpass', 2400, .8, .1, .02); bq.frequency.exponentialRampToValueAtTime(900, t + .38);
+        tone(t + .05, 'triangle', 90, 240, .3, .04, .05);
+      }
+    };
+    function play(name, delay) {
+      if (!on || !ctx || ctx.state !== 'running' || !S[name]) return;
+      S[name](ctx.currentTime + .005 + (delay || 0) / 1000);
+    }
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { document.addEventListener(ev, init, { passive: true }); });
+    var btn = document.getElementById('soundBtn');
+    function paint() { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); btn.querySelector('.sound-label').textContent = on ? 'Sound on' : 'Sound off'; }
+    btn.addEventListener('click', function () {
+      on = !on; try { localStorage.setItem('ejr-sound', on ? 'on' : 'off'); } catch (e) {}
+      paint(); init(); if (on) setTimeout(function () { play('click'); }, 30);
+    });
+    paint();
+    return play;
+  })();
+  // every button or link press gets the VCR click
+  document.addEventListener('pointerdown', function (e) {
+    if (e.button === 0 && e.target.closest && e.target.closest('a, button') && !e.target.closest('#soundBtn')) sfx('click');
+  });
+
   /* ---------- tape wipe between chapters ---------- */
   var tapeBusy = false;
   var TAPE_IN = 230, TAPE_TOTAL = 620;           // keep in sync with the CSS keyframes
@@ -111,6 +185,7 @@
     if (reduce || !introDone) { if (underCover) underCover(); return; }
     if (tapeBusy) { if (underCover) underCover(); return; }   // never stack two wipes
     tapeBusy = true;
+    sfx('chapter');
     tapeEl.classList.remove('run'); void tapeEl.offsetWidth;
     tapeEl.classList.add('run');
     setTimeout(function () {                       // bars fully cover the screen now
@@ -128,6 +203,7 @@
   function crt(label, underCover) {
     if (reduce || !introDone || tapeBusy) { if (underCover) underCover(); return; }
     tapeBusy = true;
+    sfx('off'); sfx('on', CRT_SWAP + 40);
     crtOsd.innerHTML = label;
     crtEl.classList.remove('run'); void crtEl.offsetWidth;
     crtEl.classList.add('run');
@@ -147,6 +223,7 @@
   var SWITCH = [['book', 'Booking for yourself?'], ['book-studio', 'Booking for a team?'], ['book-uni', 'Booking for a university?']];
   var CAL_URL = 'https://calendar.google.com/'; // TODO: your Google Calendar appointment schedule link
   var EMAIL = 'eduardoj.reyes@hotmail.com';
+  var topBook = document.getElementById('topBook');
   var book = document.getElementById('book'), bookOpen = false, lastFocus = null;
 
   function openBook(key) {
@@ -161,6 +238,7 @@
       .map(function (s) { return '<a href="#' + s[0] + '">' + s[1] + ' &#8594;</a>'; }).join('');
     var show = function () {
       book.hidden = false;
+      topBook.textContent = 'Go back'; topBook.href = '#' + steps[Math.max(cur, 0)].id;
       scroller.inert = true; chaptersBar.inert = true;
       book.classList.remove('is-in', 'crt-in'); void book.offsetWidth;
       book.classList.add('crt-in');
@@ -180,6 +258,7 @@
     crt('&#9632; STOP', function () {
       book.classList.remove('is-in', 'crt-in');
       book.hidden = true;
+      topBook.textContent = 'Book session'; topBook.href = '#book';
       scroller.inert = false; chaptersBar.inert = false;
       if (typeof then === 'function') then();
       else {
