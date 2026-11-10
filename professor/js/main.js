@@ -215,7 +215,7 @@
   var BOOK = {
     'book': { title: 'First class<br><em>is free.</em>', text: "One session to see if it's a good fit, for both of us. No commitment, no sales call.",
               cal: 'Schedule a free first class', subject: 'Free first class', img: 'assets/render-01.jpg' },
-    'book-studio': { title: 'Unreal training<br><em>for your team.</em>', text: "Official Epic training through the Unreal Authorized Instructor programme, scoped to your pipeline and your team's level. On site or remote. Trained teams at Scopely.",
+    'book-studio': { title: 'Unreal training<br><em>for your team.</em>', text: "Tell me what your project needs. I plan the training around it and train the whole team, through Epic's Unreal Authorized Instructor programme. On site or remote. Trained teams at Scopely.",
               cal: 'Schedule a call', subject: 'UE5 team training', img: 'assets/render-02.jpg' },
     'book-uni': { title: 'Bring Unreal<br><em>to your programme.</em>', text: 'Two-hour seminars for masters and degree programmes across Europe: Technical Art with UE5, showreel and portfolio, Houdini tools with Claude. Currently teaching at La Salle URL.',
               cal: 'Schedule a call', subject: 'Seminar enquiry', img: 'assets/render-03.jpg' }
@@ -328,17 +328,23 @@
     photos[ph].classList.remove('is-on'); ph = (ph + 1) % photos.length; photos[ph].classList.add('is-on');
   }, 4500);
 
-  var slides = document.querySelectorAll('.work-slide'), dotsEl = document.getElementById('workDots');
+  var slides = document.querySelectorAll('.work-slide'), dotsEl = document.getElementById('workDots'), wk = 0, wkTimer = 0;
+  function showWork(i) {
+    wk = (i + slides.length) % slides.length;
+    slides.forEach(function (x, k) { x.classList.toggle('is-on', k === wk); });
+    dotsEl.querySelectorAll('button').forEach(function (d, k) { d.setAttribute('aria-pressed', k === wk ? 'true' : 'false'); });
+    document.getElementById('workWho').textContent = slides[wk].dataset.who;
+    document.getElementById('workWhat').textContent = slides[wk].dataset.what;
+  }
+  function autoWork() { clearInterval(wkTimer); if (!reduce) wkTimer = setInterval(function () { showWork(wk + 1); }, 6000); }
   slides.forEach(function (s, i) {
     var b = document.createElement('button');
     b.type = 'button'; b.setAttribute('aria-label', 'Show project ' + (i + 1)); b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
     b.innerHTML = '<span></span>';
-    b.addEventListener('click', function () {
-      slides.forEach(function (x, k) { x.classList.toggle('is-on', k === i); });
-      dotsEl.querySelectorAll('button').forEach(function (d, k) { d.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
-    });
+    b.addEventListener('click', function () { showWork(i); autoWork(); });
     dotsEl.appendChild(b);
   });
+  autoWork();
 
   var REVIEWS = [
     { q: 'Eduardo genuinely wants his students to grow and do their best. Even when we ask for feedback on personal projects outside class, he is always happy to help.',
