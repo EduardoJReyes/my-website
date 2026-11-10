@@ -334,7 +334,6 @@
     slides.forEach(function (x, k) { x.classList.toggle('is-on', k === wk); });
     dotsEl.querySelectorAll('button').forEach(function (d, k) { d.setAttribute('aria-pressed', k === wk ? 'true' : 'false'); });
     document.getElementById('workWho').textContent = slides[wk].dataset.who;
-    document.getElementById('workWhat').textContent = slides[wk].dataset.what;
   }
   function autoWork() { clearInterval(wkTimer); if (!reduce) wkTimer = setInterval(function () { showWork(wk + 1); }, 6000); }
   slides.forEach(function (s, i) {
