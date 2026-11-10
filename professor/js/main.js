@@ -346,12 +346,23 @@
   autoWork();
 
   var REVIEWS = [
-    { q: 'Eduardo genuinely wants his students to grow and do their best. Even when we ask for feedback on personal projects outside class, he is always happy to help.',
-      who: 'Naji', ini: 'N', role: 'Animation & VFX, La Salle URL', now: '[Now: where Naji is today]', lang: 'en', url: 'https://www.linkedin.com/in/naji-swabri-274b98386/' },
-    { q: 'Sus clases están muy bien organizadas, los materiales son claros y estructurados, y su feedback es siempre constructivo. Lo recomiendo totalmente.',
-      who: 'Marta', ini: 'M', role: 'Design & Interactive Products, La Salle URL', now: '[Now: where Marta is today]', lang: 'es', url: 'https://www.linkedin.com/in/marta-gras/' },
-    { q: 'He has helped me reach the right people in the industry and to this day remains a great inspiration. We really need more people like him.',
-      who: 'Demir Danışman', ini: 'DD', role: '[Class / year with Eduardo]', now: 'Now: Freelance Developer & Tech Artist', lang: 'en', url: 'https://www.linkedin.com/in/demir-dan%C4%B1%C5%9Fman-20231a222/' }
+    {"q": "What I value most about his teaching is the quality of his feedback. He genuinely wants his students to grow and do their best. Even when we ask him for feedback on our personal projects, he is always happy to help.", "who": "Naji Swabri", "role": "Animation & VFX Student", "url": "https://www.linkedin.com/in/naji-swabri-274b98386/", "lang": "en"},
+    {"q": "Eduardo has been a long term mentor and friend of mine ever since I was a student. He has helped me reach the right people in the industry and to this day remains a great inspiration.", "who": "Demir Danışman", "role": "Freelance Developer & Tech Artist", "url": "https://www.linkedin.com/in/demir-dan%C4%B1%C5%9Fman-20231a222/", "lang": "en"},
+    {"q": "Ha sido muy buen profesor de Unreal Engine, sabe mucho y es muy majo.", "who": "JG", "role": "Technical Artist | 3D Animator", "url": "https://www.linkedin.com/in/jg-hern%C3%A1ndez-208752258/", "lang": "es"},
+    {"q": "I remember asking him to check my portfolio during random times of the day whenever I found him and he always checked it and gave me good productive feedback. Great guy.", "who": "Pedro", "role": "3D Lighter and compositing, CFX and VFX Artist", "url": "https://www.linkedin.com/in/pedro-lopes-a68189250/", "lang": "en"},
+    {"q": "Sus clases están muy bien organizadas, los materiales son claros y estructurados, y su feedback es siempre constructivo y ayuda a avanzar. Lo recomiendo totalmente como profesor.", "who": "Marta Gras", "role": "Developer in Creative Tech", "url": "https://www.linkedin.com/in/marta-gras/", "lang": "es"},
+    {"q": "Gran profe, muy buena actitud y sus clases son muy chulas.", "who": "Nil", "role": "3D Generalist · Modeler | Texture Artist | Unreal Engine Dev", "url": "https://www.linkedin.com/in/nil-villaronga-56304123b/", "lang": "es"},
+    {"q": "Recuerdo cuando nos explicó conocimientos sobre planos de cámara con el software Unreal Engine de forma clara e interesante. En resumen, muy interesante y recomendable.", "who": "Josep", "role": "Design and Creation of Interactive Products | Motion Graphics, Videomapping, and VFX Compositing", "url": "https://www.linkedin.com/in/josep-medina-valderrama/", "lang": "es"},
+    {"q": "Sabe conectar muy bien con el alumnado, muestra mucha predisposición para resolver dudas, guiar individualmente y acompañar en el proceso de aprendizaje. Recomendado 100%.", "who": "Esther", "role": "3D Professor", "url": "https://www.linkedin.com/in/esther-g%C3%B3mez-portillo/", "lang": "es"},
+    {"q": "Nos aportaba con una extensa documentación para las clases que sigo consultando a este día. Revisaba nuestros trabajos de forma dedicada y se entregaba para ayudarnos con cualquier problema.", "who": "Jade", "role": "Game Designer | Character Concept Artist", "url": "https://www.linkedin.com/in/jade-d%C3%ADaz-fabregat-1a99a3361/", "lang": "es"},
+    {"q": "Edu me dio clases de animación y diseño de videojuegos, su forma de enseñar es entretenida pero efectiva. Siempre tuvo buen trato con los alumnos.", "who": "Andreas", "role": "Junior 3D Animator", "url": "https://www.linkedin.com/in/andreas-sundin-ortega-93a4092a6/", "lang": "es"},
+    {"q": "De todos los profesores que tuve, Edu fue siempre el más atento, más paciente y disponible. Siempre está dispuesto a ayudarte.", "who": "Ivonne", "role": "Animation & VFX Student", "url": null, "lang": "es"},
+    {"q": "A very dedicated teacher to his subjects! Respects how students have different ways of learning, and has always been kind to the english-only speakers at my university.", "who": "Mayo", "role": "Animation & VFX Student", "url": "https://www.linkedin.com/in/maja-katarzyna-jarzabek-974ab42b5/", "lang": "en"},
+    {"q": "He is a patient teacher who is generous with his time and approachable. He has consistent expectations, is easy to contact, and is overall a positive presence in the classroom.", "who": "Alex", "role": "Animation & VFX Student", "url": null, "lang": "en"},
+    {"q": "He understands what people are looking for in their projects and is able to instruct people in how to sweeten their projects both creatively and pitch-wise.", "who": "Ivy", "role": "Animation & VFX Student", "url": null, "lang": "en"},
+    {"q": "Siempre aclara dudas y hace lo posible para que todo esté claro. Es un profe muy creativo y justo, explica muy bien y de manera clara sin dar rodeos.", "who": "Yane", "role": "Animation & VFX Student", "url": "https://www.linkedin.com/in/yaneidys-longat-785b51355/", "lang": "es"},
+    {"q": "La asignatura que más me gustó fue la de project management, ya que todo lo que nos enseñó fue de ayuda para que mi interés se enfoque en esa área.", "who": "María", "role": "Animation & VFX Student", "url": null, "lang": "es"},
+    {"q": "Siempre se interesa en saber si lo has entendido bien mediante ejercicios prácticos que te pone para que luego tengas autodesarrollo.", "who": "Deivid", "role": "Superprof student", "url": null, "lang": "es"}
   ];
   var rv = 0, reviewEl = document.querySelector('.review'), rvTimer;
   function showReview(i) {
@@ -362,9 +373,9 @@
       var q = document.getElementById('rvQ'); q.textContent = '"' + r.q + '"'; q.lang = r.lang;
       document.getElementById('rvWho').textContent = r.who;
       document.getElementById('rvRole').textContent = r.role;
-      document.getElementById('rvNow').textContent = r.now;
-      document.getElementById('rvIni').textContent = r.ini;
-      var l = document.getElementById('rvLink'); l.href = r.url; l.setAttribute('aria-label', r.who + ' on LinkedIn');
+      var l = document.getElementById('rvNow');
+      if (r.url) { l.href = r.url; l.hidden = false; l.setAttribute('aria-label', r.who + ' on LinkedIn'); } else { l.hidden = true; l.removeAttribute('href'); }
+      document.getElementById('rvCount').textContent = (rv + 1) + ' / ' + REVIEWS.length;
       reviewEl.classList.remove('swap');
     }, reduce ? 0 : 300);
   }

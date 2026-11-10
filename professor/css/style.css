@@ -221,10 +221,14 @@ em { font-style: normal; color: var(--orange); }
 .review.swap blockquote, .review.swap figcaption { opacity: 0; transform: translateY(8px); }
 .review figcaption { flex: 1; display: flex; flex-direction: column; gap: 2px; transition: opacity .35s ease, transform .45s var(--ease); }
 .review-row { display: flex; align-items: center; gap: 14px; }
-.avatar { width: 56px; height: 56px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; border: 1px dashed var(--dim); background: repeating-linear-gradient(135deg, var(--surface) 0 6px, var(--surface2) 6px 12px); font: 700 20px var(--display); }
+.avatar { width: 56px; height: 56px; flex-shrink: 0; border-radius: 50%; overflow: hidden; display: block; }
+.avatar svg { width: 100%; height: 100%; display: block; }
 .who { font: 700 20px var(--display); text-transform: uppercase; }
-.role { font: 400 11px var(--mono); color: var(--muted); }
-.now { font: 400 12px var(--mono); color: var(--orange); }
+.role { font: 400 11px var(--mono); color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.now { align-self: flex-start; margin-top: 2px; font: 400 12px var(--mono); color: var(--orange); text-decoration: none; }
+.now:hover { text-decoration: underline; }
+.now[hidden] { display: none; }
+.rv-count { align-self: center; margin-right: 8px; font: 400 11px var(--mono); color: var(--muted); }
 .review-nav { display: flex; gap: 6px; }
 .review-nav button { width: 44px; height: 44px; border: 1px solid var(--rule); background: transparent; color: var(--cream); font: 18px var(--mono); cursor: pointer; }
 .review-nav button:hover { border-color: var(--sage); }
@@ -423,6 +427,9 @@ body::after { content: ''; position: fixed; inset: -100px; z-index: 91; pointer-
   .stu-title { left: 20px; top: 20px; }
   .review { left: 20px; right: 20px; width: auto; bottom: 60px; padding: 16px; }
   .review blockquote { font-size: 14px; }
+  .rv-count { display: none; }
+  .review-nav button { width: 38px; height: 38px; }
+  .avatar { width: 44px; height: 44px; }
   .dots { left: 20px; bottom: 12px; }
   .work-cap { left: 20px; bottom: 46px; font-size: 11px; }
   .book { grid-template-columns: 1fr; grid-template-rows: auto auto; overflow-y: auto; }
