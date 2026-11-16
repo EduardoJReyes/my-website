@@ -30,9 +30,11 @@ input,textarea{font:inherit}
 .vid{position:relative;aspect-ratio:16/9;background:#0d0e0f;overflow:hidden}
 .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .6s ease}
 .vid.ready iframe{opacity:1}
-.reel-box{position:relative;height:523px;background:#0d0e0f;overflow:hidden}
-.reel-box .vid{position:absolute;inset:0;aspect-ratio:auto}
-.reel-box .vid iframe{inset:auto;top:0;left:50%;height:100%;width:auto;min-width:100%;aspect-ratio:16/9;transform:translateX(-50%)}
+.hero{position:relative;z-index:1;min-height:calc(100vh - 61px);min-height:calc(100svh - 61px);display:flex;align-items:center;padding:96px 0;overflow:hidden;margin-bottom:24px}
+.hero-bg{position:absolute;inset:0;overflow:hidden;background:#0d0e0f}
+.hero-bg .vid{position:absolute;inset:0;aspect-ratio:auto;background:transparent}
+.hero-bg .vid iframe{inset:auto;top:50%;left:50%;width:max(100%,177.78vh);height:max(100%,56.25vw);transform:translate(-50%,-50%)}
+.hero-shade{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(18,20,20,.92) 0%,rgba(18,20,20,.7) 38%,rgba(18,20,20,.15) 75%),linear-gradient(0deg,#121414 0%,rgba(18,20,20,0) 30%)}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1)}
 .reveal.in{opacity:1;transform:none}
 .hero-in>*{opacity:0;transform:translateY(14px);animation:up .7s cubic-bezier(.4,0,.2,1) forwards}
@@ -41,7 +43,7 @@ input,textarea{font:inherit}
 #wires path.w{fill:none;stroke:#e66d45;stroke-width:2;stroke-opacity:.75}
 #wires circle{fill:#1f2020;stroke:#e66d45;stroke-width:2;opacity:0;transition:opacity .3s}
 #wires .on circle{opacity:1}
-@media (max-width:700px){h1{font-size:52px!important}.reel-box{height:auto;aspect-ratio:16/9}.reel-box .vid iframe{width:100%;height:100%;left:0;top:0;transform:none}}
+@media (max-width:700px){h1{font-size:52px!important}.hero{padding:72px 0}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal,.hero-in>*{opacity:1!important;transform:none!important;animation:none!important;transition:none!important}.vid iframe{transition:none}}
 </style>
 </head>
@@ -60,9 +62,11 @@ input,textarea{font:inherit}
 </div>
 </nav>
 
-<main style="max-width: 1280px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1">
-
-<section style="padding: 72px 0 72px; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 48px; align-items: center">
+<section class="hero" aria-label="Intro">
+<div class="hero-bg" aria-hidden="true"><div class="vid hero-vid" data-vimeo="1203903259" data-eager="1" data-title="Showreel"></div></div>
+<div class="hero-shade" aria-hidden="true"></div>
+<div style="position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; padding: 0 32px; width: 100%">
+<div style="max-width: 640px">
 <div class="hero-in" style="display: flex; flex-direction: column; gap: 22px">
 <p style="margin: 0; font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: #6ed5eb">Technical Artist · Barcelona · Open to full-time roles</p>
 <h1 style="margin: 0; font-size: 76px; line-height: .92; font-weight: 900; letter-spacing: -.02em; text-transform: uppercase">Technical Art<span style="display: block; color: #e66d45">for games and virtual production</span></h1>
@@ -72,12 +76,13 @@ input,textarea{font:inherit}
 <a href="https://eduardojreyes.com/CV2026_EduardoJReyes.pdf" style="font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #e3e2e2; border: 1px solid rgba(166,139,131,.45); padding: 14px 22px; border-radius: 4px">Download CV ↓</a>
 </div>
 </div>
-<div id="n-reel" class="reveal" style="background: #1f2020; border: 1px solid rgba(166,139,131,.25); border-radius: 4px; overflow: hidden; position: relative; z-index: 1">
-<div class="reel-box">
-<div class="vid" data-vimeo="1203903259" data-eager="1" data-title="Showreel"></div>
 </div>
 </div>
 </section>
+
+<main style="max-width: 1280px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1">
+
+
 
 <section id="work" style="padding: 0 0 72px">
 <div id="n-projects" class="reveal" style="background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; position: relative; z-index: 1">
@@ -281,6 +286,7 @@ input,textarea{font:inherit}
     }
   }
   var vids = [].slice.call(document.querySelectorAll('.vid'));
+  vids = vids.filter(function(el){ return !(reduce && el.classList.contains('hero-vid')); });
   vids.forEach(function(el){ if (el.dataset.eager) load(el); });
   if ('IntersectionObserver' in window) {
     var near = new IntersectionObserver(function(es){
@@ -294,7 +300,6 @@ input,textarea{font:inherit}
 
   /* ---------- node wires ---------- */
   var WIRES = [
-    ['n-reel','n-projects','right',0.5,'h'],
     ['n-projects','n-va','left','b','h'],
     ['n-va','n-vb','across','h','h'],
     ['n-vb','n-vc','across','h','h'],
