@@ -439,10 +439,35 @@ body::after { content: ''; position: fixed; inset: -100px; z-index: 91; pointer-
   .intro-c.tl, .intro-c.tr { top: 16px; } .intro-c.tl, .intro-c.bl { left: 20px; } .intro-c.tr, .intro-c.br { right: 20px; }
 }
 
+/* ---------- handoff to / from the Technical Art site ---------- */
+.handoff { position: fixed; inset: 0; z-index: 95; pointer-events: none; visibility: hidden; overflow: hidden; }
+.handoff i { position: absolute; left: 0; right: 0; height: 34%; transform: translateX(-102%); }
+.handoff i:nth-child(1) { top: 0; background: var(--orange); }
+.handoff i:nth-child(2) { top: 33%; background: var(--cream); }
+.handoff i:nth-child(3) { top: 66%; background: var(--ink); }
+.handoff-osd { position: absolute; top: 28px; left: 48px; z-index: 2; font: 500 15px/1 var(--mono); letter-spacing: .12em; color: var(--ink); opacity: 0; }
+/* arriving: start covered, then the bars run off to the right */
+.handoff-in .handoff { visibility: visible; }
+.handoff-in .handoff i { transform: none; }
+.handoff-in .handoff .handoff-osd { opacity: 1; animation: osdBlink .5s steps(1) infinite; }
+.handoff.go i { animation: handoffOut .5s cubic-bezier(.7,0,.2,1) both; }
+.handoff.go i:nth-child(2) { animation-delay: .05s; } .handoff.go i:nth-child(3) { animation-delay: .1s; }
+.handoff.go .handoff-osd { animation: none; opacity: 0; transition: opacity .1s; }
+/* leaving: the bars run in from the left and cover everything */
+.handoff.out { visibility: visible; }
+.handoff.out i { animation: handoffIn .42s cubic-bezier(.7,0,.2,1) both; }
+.handoff.out i:nth-child(2) { animation-delay: .05s; } .handoff.out i:nth-child(3) { animation-delay: .1s; }
+.handoff.out .handoff-osd { animation: osdShow .1s steps(1) .4s both; }
+@keyframes handoffIn { from { transform: translateX(-102%); } to { transform: none; } }
+@keyframes handoffOut { from { transform: none; } to { transform: translateX(102%); } }
+@keyframes osdBlink { 0% { opacity: 1; } 50% { opacity: .35; } }
+@keyframes osdShow { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 720px) { .handoff-osd { top: 16px; left: 20px; } }
+
 /* ---------- reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .intro, .tape, .crt, .vhs { display: none !important; }
+  .intro, .tape, .crt, .vhs, .handoff { display: none !important; }
   .js .ch-start .hero-title .ln > span, .js .ch-start .rise, .js .ch-start .badge, .js .panel .rise, .js .book .book-left > *, .js .book .big-btn { opacity: 1 !important; transform: none !important; }
   .js .ch-start .hero-photos { clip-path: none !important; }
   .scroller { scroll-behavior: auto; }

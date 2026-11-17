@@ -421,6 +421,27 @@
     at(total, endIntro);
   }
 
+  /* ---------- handoff to / from the Technical Art site ---------- */
+  var handoff = document.getElementById('handoff'), handoffOsd = document.getElementById('handoffOsd');
+  if (root.classList.contains('handoff-in')) {
+    // hold the PLAY frame for a beat, then run the tape off screen
+    setTimeout(function () {
+      handoff.classList.add('go'); sfx('chapter');
+      setTimeout(function () { root.classList.remove('handoff-in'); handoff.classList.remove('go'); }, 650);
+    }, 280);
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a.ta-link');
+    if (!a || reduce || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    try { sessionStorage.setItem('ejr-handoff', 'techart'); } catch (err) {}
+    handoffOsd.innerHTML = '&#9632; EJECT';
+    handoff.classList.remove('go'); handoff.classList.add('out'); sfx('chapter');
+    setTimeout(function () { location.href = a.href; }, 560);
+  });
+  // coming back with the browser's Back button restores the page as it was: clear the cover
+  window.addEventListener('pageshow', function (e) { if (e.persisted) { handoff.classList.remove('out', 'go'); root.classList.remove('handoff-in'); } });
+
   /* ---------- start ---------- */
   function init() {
     measure();

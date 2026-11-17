@@ -2,15 +2,25 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('ejr-handoff') === 'techart') {
+        sessionStorage.removeItem('ejr-handoff');
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('handoff-in');
+      }
+    } catch (e) {}
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Eduardo J. Reyes · Technical Artist</title>
-<meta name="description" content="Eduardo J. Reyes, Technical Artist for games and virtual production. Shaders, procedural systems and pipeline tools in UE5 and Houdini. Based in Barcelona.">
+<meta name="description" content="Eduardo J. Reyes, Technical Artist for games and virtual production. Shaders, procedural systems and pipeline tools in UE5, Unity and Houdini. Based in Barcelona.">
 <meta name="author" content="Eduardo J. Reyes">
 <link rel="canonical" href="https://eduardojreyes.com/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://eduardojreyes.com/">
 <meta property="og:title" content="Eduardo J. Reyes · Technical Artist">
-<meta property="og:description" content="Shaders, procedural systems and pipeline tools in UE5 and Houdini.">
+<meta property="og:description" content="Shaders, procedural systems and pipeline tools in UE5, Unity and Houdini.">
 <meta property="og:image" content="https://eduardojreyes.com/assets/Caratula.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#e66d45">
@@ -114,7 +124,7 @@ button{font:inherit;color:inherit}
 .reel .node{width:100%;max-width:1080px}
 .reel-frame{position:relative;aspect-ratio:16/9;max-height:calc(100dvh - 220px);margin:0 auto;background:var(--bg2)}
 .reel-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.reel-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;max-width:1080px;color:var(--muted);font-size:17px}
+.reel-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:12px;max-width:1080px;color:var(--muted);font-size:17px}
 
 /* projects */
 .projects{gap:16px;justify-content:center}
@@ -192,6 +202,16 @@ button{font:inherit;color:inherit}
 @keyframes tileHot{0%{background:#8a4129}100%{background:#2a1f1b}}
 .compile-osd{position:absolute;left:24px;bottom:22px;z-index:2;font:500 13px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cream);text-shadow:var(--ca);opacity:0}
 .compile.run .compile-osd{opacity:1}
+/* handoff to / from the teaching site: tiles cover the whole window, menu included */
+.compile.exit{inset:0!important;width:auto!important;height:auto!important;z-index:95}
+.compile.run.exit i{animation:tileIn .14s cubic-bezier(.5,0,.3,1) var(--d) both}
+.compile.run.exit i.hot{animation:tileIn .14s cubic-bezier(.5,0,.3,1) var(--d) both,tileHot .2s steps(2) calc(var(--d) + .14s) 1}
+.handoff-in .compile{visibility:visible;inset:0;z-index:95;background:#1a1c1c}
+.handoff-in .compile .compile-osd{opacity:1}
+.compile.enter{background:none}
+.compile.enter i{transform:scaleY(1);animation:tileOut .18s cubic-bezier(.6,0,.4,1) var(--d) forwards}
+.compile.enter i.hot{animation:tileHot .2s steps(2) 1,tileOut .18s cubic-bezier(.6,0,.4,1) var(--d) forwards}
+.compile.enter .compile-osd{opacity:0;transition:opacity .15s .15s}
 .stage.glitch .panel.on{animation:caShake .3s steps(2) 1}
 @keyframes caShake{0%{filter:drop-shadow(-3px 0 rgba(255,40,40,.5)) drop-shadow(3px 0 rgba(0,225,255,.45))}100%{filter:none}}
 .home-copy h1,.h2{text-shadow:var(--ca)}
@@ -275,7 +295,7 @@ body::after{content:'';position:fixed;inset:-100px;z-index:91;pointer-events:non
     <section class="panel home on" id="home" data-sec="home" aria-labelledby="t-home">
       <div class="home-copy rise">
         <h1 id="t-home">Technical Art<span>for games and virtual production</span></h1>
-        <p class="lead">Shaders, procedural systems and pipeline tools in UE5 and Houdini. I build the boring-but-crucial stuff that lets artists ship faster, plus the pretty stuff on top.</p>
+        <p class="lead">Shaders, procedural systems and pipeline tools in UE5, Unity and Houdini.</p>
         <div class="ctas">
           <a class="btn solid" href="#projects">See the work</a>
           <a class="btn" href="CV2026_EduardoJReyes.pdf" download>Download CV</a>
@@ -292,7 +312,7 @@ body::after{content:'';position:fixed;inset:-100px;z-index:91;pointer-events:non
           <div class="nh"><span class="d" style="background:var(--sand);box-shadow:0 0 6px var(--sand)"></span><span class="p">VISUAL_SEQUENCE</span><span class="s">::</span><span class="k">REEL_2025</span></div>
           <div class="reel-frame" id="reelFrame"></div>
         </div>
-        <div class="reel-row"><span>Shaders, procedural modeling, pipeline tools and real-time scenes.</span><a class="mono" href="https://vimeo.com/1203903259" target="_blank" rel="noopener" style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">Open on Vimeo</a></div>
+        <div class="reel-row"><a class="mono" href="https://vimeo.com/1203903259" target="_blank" rel="noopener" style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">Open on Vimeo</a></div>
       </div>
     </section>
 
@@ -452,7 +472,10 @@ body::after{content:'';position:fixed;inset:-100px;z-index:91;pointer-events:non
   var homeVid = document.getElementById('homeVid'), homePlayer = null;
   if (HOME_VIDEO && !reduce) homePlayer = player(makeFrame(homeVid, vimeoSrc(HOME_VIDEO, true, HOME_HASH), 'Background loop'));
   var reelFrame = document.getElementById('reelFrame'), reelPlayer = null;
-  function ensureReel() { if (!reelPlayer && !reelFrame.firstChild) reelPlayer = player(makeFrame(reelFrame, vimeoSrc(REEL_VIDEO, false), 'Showreel 2025')); }
+  function ensureReel() {
+    if (reelPlayer) { if (!reduce) reelPlayer.play().catch(function () {}); return; }
+    if (!reelFrame.firstChild) reelPlayer = player(makeFrame(reelFrame, vimeoSrc(REEL_VIDEO, false) + (reduce ? '' : '&autoplay=1&muted=1'), 'Showreel 2025'));
+  }
 
   /* ---------- projects carousel ---------- */
   var track = document.getElementById('track'), pinfo = document.getElementById('pinfo'), countEl = document.getElementById('count');
@@ -529,8 +552,8 @@ body::after{content:'';position:fixed;inset:-100px;z-index:91;pointer-events:non
   var current = null, busy = false;
   var compileEl = document.getElementById('compile'), compileOsd = document.getElementById('compileOsd');
   var COMPILE_WAVE = 180, COMPILE_IN = 140, COMPILE_SWAP = 335, COMPILE_OUT = 345, COMPILE_TOTAL = 700;
-  function buildTiles() {
-    var r = stage.getBoundingClientRect();
+  function buildTiles(full) {
+    var r = full ? { left: 0, top: 0, width: innerWidth, bottom: innerHeight } : stage.getBoundingClientRect();
     var top = Math.max(0, r.top), bottom = Math.min(innerHeight, r.bottom);
     var size = 80, cols = Math.max(1, Math.ceil(r.width / size)), rows = Math.max(1, Math.ceil((bottom - top) / size));
     compileEl.style.left = r.left + 'px'; compileEl.style.top = top + 'px';
@@ -614,18 +637,50 @@ body::after{content:'';position:fixed;inset:-100px;z-index:91;pointer-events:non
   });
 
   /* mouse wheel steps through sections on desktop (unless the section itself needs to scroll) */
-  var wheelLock = 0;
-  stage.addEventListener('wheel', function (e) {
-    if (matchMedia('(max-width: 900px)').matches) return;
+  /* One gesture moves one section. A gesture ends when the wheel has been still for 250ms,
+     so spinning the wheel or a long trackpad flick never skips through several sections. */
+  var lastWheel = 0, wheelReady = 0;
+  document.addEventListener('wheel', function (e) {
+    if (matchMedia('(max-width: 900px)').matches || e.ctrlKey) return;
+    var now = Date.now(), fresh = now - lastWheel > 250; lastWheel = now;
     var p = panels[current]; if (!p) return;
     var down = e.deltaY > 0;
     var canScroll = down ? p.scrollTop + p.clientHeight < p.scrollHeight - 2 : p.scrollTop > 2;
-    if (canScroll || Math.abs(e.deltaY) < 20) return;
+    if (canScroll || !e.deltaY) return;
     e.preventDefault();
-    var now = Date.now(); if (now < wheelLock) return; wheelLock = now + 900;
+    if (!fresh || busy || now < wheelReady) return;
+    wheelReady = now + COMPILE_TOTAL + 150;
     var i = SECTIONS.indexOf(current);
     goSection(SECTIONS[Math.max(0, Math.min(SECTIONS.length - 1, i + (down ? 1 : -1)))], true);
   }, { passive: false });
+
+  /* ---------- handoff to / from the teaching site ---------- */
+  var root = document.documentElement;
+  if (root.classList.contains('handoff-in')) {
+    // tiles start closed over the whole window, then flip open in a wave
+    buildTiles(true); compileOsd.textContent = 'Shaders compiled 100%';
+    setTimeout(function () {
+      compileEl.classList.add('enter'); sfx('compile');
+      setTimeout(function () {
+        root.classList.remove('handoff-in'); compileEl.classList.remove('enter');
+        [].slice.call(compileEl.querySelectorAll('i')).forEach(function (n) { n.remove(); });
+      }, COMPILE_WAVE + 260);
+    }, 260);
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href="/professor/"]');
+    if (!a || reduce || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    try { sessionStorage.setItem('ejr-handoff', 'professor'); } catch (err) {}
+    busy = true; sfx('compile');
+    buildTiles(true); compileOsd.textContent = 'Loading teaching website';
+    compileEl.classList.add('exit'); compileEl.classList.remove('run'); void compileEl.offsetWidth; compileEl.classList.add('run');
+    setTimeout(function () { location.href = a.href; }, COMPILE_WAVE + COMPILE_IN + 160);
+  });
+  // Back button restores this page from cache: open the tiles again
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) { compileEl.classList.remove('run', 'exit', 'enter'); root.classList.remove('handoff-in'); busy = false; }
+  });
 
   /* contact form */
   var cf = document.getElementById('contactForm');

@@ -4,8 +4,15 @@
 <script>
   (function () {
     var r = document.documentElement; r.classList.add('js');
-    var seen = false; try { seen = sessionStorage.getItem('ejr-intro') === '1'; } catch (e) {}
-    if (!seen && !matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('intro-on');
+    var seen = false, hand = false, still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      // arriving from the Technical Art site: skip the intro, play the tape handoff instead
+      hand = sessionStorage.getItem('ejr-handoff') === 'professor';
+      if (hand) { sessionStorage.removeItem('ejr-handoff'); sessionStorage.setItem('ejr-intro', '1'); }
+      seen = sessionStorage.getItem('ejr-intro') === '1';
+    } catch (e) {}
+    if (hand && !still) r.classList.add('handoff-in');
+    if (!seen && !still) r.classList.add('intro-on');
   })();
 </script>
 <meta charset="utf-8">
@@ -18,6 +25,8 @@
 </head>
 <body>
 <a class="skip" href="#start">Skip to content</a>
+<!-- handoff between the two websites: tape bars in (leaving) or out (arriving) -->
+<div class="handoff" id="handoff" aria-hidden="true"><i></i><i></i><i></i><span class="handoff-osd" id="handoffOsd">&#9654; PLAY</span></div>
 
 <!-- ===================== TOP BAR ===================== -->
 <header class="topbar">
