@@ -93,6 +93,10 @@ em { font-style: normal; color: var(--orange); }
 .backdrop img { width: 100%; height: 100%; object-fit: cover; opacity: .42; }
 .backdrop::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(31,29,26,.45) 0%, rgba(31,29,26,.88) 65%, var(--bg) 100%); }
 .backdrop.band { inset: 0 0 auto 0; height: 170px; }
+/* booking screens: 10s Vimeo loop as background, cropped to cover like an image */
+.book-video { container-type: size; }
+.book-video iframe { position: absolute; top: 50%; left: 50%; width: max(100cqw, 177.78cqh); height: max(100cqh, 56.25cqw); transform: translate(-50%, -50%); border: 0; pointer-events: none; opacity: 0; transition: opacity 1s ease; }
+.book-video iframe.ready { opacity: .5; }
 
 /* split chapters (Formats, Curriculum, FAQ) */
 .ch-split .stage { display: grid; }
