@@ -25,7 +25,7 @@
   var byId = {};
   steps.forEach(function (s, i) { byId[s.id] = i; });
 
-  var stageH = 0, cur = -1, curChapter = null;
+  var stageH = 0, cur = -1, curChapter = null, stuReel = null;
   function measure() {
     stageH = scroller.clientHeight;
     root.style.setProperty('--stage-h', stageH + 'px');
@@ -44,6 +44,7 @@
     if (chapterChanged && fromScroll) tape();
     else if (curChapter && !chapterChanged && sfx) sfx('step'); // notch tick between parts of a chapter
     curChapter = s.ch;
+    if (stuReel) stuReel(s.ch.dataset.chapter === 'students');
 
     // items + panels inside the chapter
     s.ch.querySelectorAll('[data-item]').forEach(function (el) {
@@ -349,10 +350,52 @@
     var b = document.createElement('button');
     b.type = 'button'; b.setAttribute('aria-label', 'Show project ' + (i + 1)); b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
     b.innerHTML = '<span></span>';
-    b.addEventListener('click', function () { showWork(i); autoWork(); });
+    b.addEventListener('click', function () { reelFinish(true); showWork(i); autoWork(); });
     dotsEl.appendChild(b);
   });
-  autoWork();
+
+  /* ---------- student showreel: loads with the page, plays only while Students is on screen,
+     then hands over to the images. Uses Vimeo's postMessage API, no extra script. ---------- */
+  var reel = document.getElementById('workReel'), reelF = document.getElementById('reelFrame');
+  var stuCh = document.querySelector('[data-chapter="students"]');
+  var reelReady = false, reelDone = false, reelWant = false, reelTimer = 0;
+  var VIMEO = 'https://player.vimeo.com';
+  function reelSend(method, value) {
+    if (!reelReady) return;
+    var m = { method: method }; if (value !== undefined) m.value = value;
+    reelF.contentWindow.postMessage(JSON.stringify(m), VIMEO);
+  }
+  function reelFinish(skipped) {
+    if (reelDone) return;
+    reelDone = true; clearTimeout(reelTimer);
+    reelSend('pause');
+    reel.classList.add('done'); stuCh.classList.remove('reel-on');
+    if (!skipped) { showWork(0); autoWork(); }
+  }
+  // if the player never answers (blocked, offline), don't keep people staring at a black box
+  function reelWatchdog() { clearTimeout(reelTimer); reelTimer = setTimeout(function () { if (!reel.classList.contains('playing')) reelFinish(); }, 6000); }
+  stuReel = function (on) {
+    reelWant = on;
+    if (reelDone) return;
+    if (on) { stuCh.classList.add('reel-on'); reelSend('play'); reelWatchdog(); }
+    else { clearTimeout(reelTimer); reelSend('pause'); }
+  };
+  window.addEventListener('message', function (e) {
+    if (e.origin !== VIMEO || e.source !== reelF.contentWindow) return;
+    var d; try { d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch (x) { return; }
+    if (!d) return;
+    if (d.event === 'ready') {
+      reelReady = true;
+      reelSend('addEventListener', 'play'); reelSend('addEventListener', 'ended');
+      if (reelWant && !reelDone) reelSend('play');
+    } else if (d.event === 'play') { reel.classList.add('playing'); clearTimeout(reelTimer); }
+    else if (d.event === 'ended') reelFinish();
+  });
+  if (reduce) { reelDone = true; reel.remove(); autoWork(); }
+  else {
+    reelF.src = VIMEO + '/video/1247757300?h=f509a9c01f&autoplay=0&loop=0&muted=1&controls=0&title=0&byline=0&portrait=0&playsinline=1&autopause=0&dnt=1&api=1';
+    if (curChapter && curChapter.dataset.chapter === 'students') stuReel(true);
+  }
 
   var REVIEWS = [
     {"q": "What I value most about his teaching is the quality of his feedback. He genuinely wants his students to grow and do their best. Even when we ask him for feedback on our personal projects, he is always happy to help.", "who": "Naji Swabri", "role": "Animation & VFX Student", "url": "https://www.linkedin.com/in/naji-swabri-274b98386/", "lang": "en"},
