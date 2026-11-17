@@ -209,7 +209,8 @@ em { font-style: normal; color: var(--orange); }
 .work-slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .8s ease; background: inherit; }
 .work-slide.is-on { opacity: 1; }
 .work-video { container-type: size; overflow: hidden; background: var(--ink); }
-.work-video iframe { position: absolute; top: 50%; left: 50%; width: max(100cqw, 177.78cqh); height: max(100cqh, 56.25cqw); transform: translate(-50%, -50%); border: 0; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
+/* the reel has black bars baked in (picture about 2.23:1 inside a 16:9 frame), so it is cropped past them */
+.work-video iframe { position: absolute; top: 50%; left: 50%; width: max(100cqw, 223cqh); height: max(56.25cqw, 125.4cqh); transform: translate(-50%, -50%); border: 0; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
 .work-video.playing iframe { opacity: 1; }
 .work-slide span { font: 400 13px var(--mono); color: var(--muted); }
 .work-slide img { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.04); transition: transform 7s linear; }
