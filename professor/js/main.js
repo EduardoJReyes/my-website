@@ -211,6 +211,14 @@
     setTimeout(function () { crtEl.classList.remove('run'); tapeBusy = false; }, CRT_TOTAL);
   }
 
+  /* ---------- booking background video: loads with the page so it is already playing when a booking screen opens ---------- */
+  (function () {
+    var vid = document.getElementById('bookVideo');
+    if (reduce || !vid) return;
+    vid.addEventListener('load', function () { setTimeout(function () { vid.classList.add('ready'); }, 600); }, { once: true });
+    vid.src = 'https://player.vimeo.com/video/1247683769?h=da64fe4d81&background=1&autoplay=1&loop=1&muted=1&autopause=0&dnt=1';
+  })();
+
   /* ---------- booking overlay ---------- */
   var BOOK = {
     'book': { title: 'First class<br><em>is free.</em>', text: "One session to see if it's a good fit, for both of us. No commitment, no sales call.",
@@ -231,12 +239,7 @@
     document.getElementById('bookTitle').innerHTML = v.title;
     document.getElementById('bookText').textContent = v.text;
     document.getElementById('bookImg').src = v.img;
-    // the background video only loads the first time a booking screen opens, and never with reduced motion
-    var vid = document.getElementById('bookVideo');
-    if (!reduce && !vid.src) {
-      vid.addEventListener('load', function () { setTimeout(function () { vid.classList.add('ready'); }, 600); }, { once: true });
-      vid.src = 'https://player.vimeo.com/video/1247683769?h=da64fe4d81&background=1&autoplay=1&loop=1&muted=1&autopause=0&dnt=1';
-    }
+
     document.getElementById('bookCalT').textContent = v.cal;
     document.getElementById('bookCal').href = CAL_URL;
     document.getElementById('bookMail').href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(v.subject);
