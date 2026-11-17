@@ -19,369 +19,626 @@
 <link rel="preconnect" href="https://player.vimeo.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700;800;900&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+:root{
+  --bg:#121414; --bg2:#0d0e0f; --surface:#1f2020; --surf-hi:#212323;
+  --orange:#e66d45; --orange-lo:#ffb59e; --sand:#e7c184; --teal:#6ed5eb; --cream:#ede4cf;
+  --text:#e3e2e2; --soft:#c4c2be; --muted:#b9b7b3; --dim:#a8a6a3; --label:#8f8580;
+  --line:rgba(166,139,131,.22); --line-hi:rgba(166,139,131,.45);
+  --mono:'Roboto Mono',ui-monospace,monospace; --display:'Roboto Condensed','Arial Narrow',sans-serif;
+  --ease:cubic-bezier(.16,.84,.24,1);
+  --ca:-1px 0 rgba(255,46,46,.32),1px 0 rgba(0,214,255,.28);
+  color-scheme:dark;
+}
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:#121414}
-a{color:#e66d45;text-decoration:none;transition:color .2s}
-a:hover{color:#ffb59e}
-input,textarea{font:inherit}
-.card{transition:border-color .25s,transform .25s}
-.card:hover{border-color:rgba(230,109,69,.55)}
-.vid{position:relative;aspect-ratio:16/9;background:#0d0e0f;overflow:hidden}
-.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .6s ease}
-.vid.ready iframe{opacity:1}
-.hero{position:relative;z-index:1;min-height:calc(100vh - 61px);min-height:calc(100svh - 61px);display:flex;align-items:center;padding:96px 0;overflow:hidden;margin-bottom:24px}
-.hero-bg{position:absolute;inset:0;overflow:hidden;background:#0d0e0f}
-.hero-bg .vid{position:absolute;inset:0;aspect-ratio:auto;background:transparent}
-.hero-bg .vid iframe{inset:auto;top:50%;left:50%;width:max(100%,177.78vh);height:max(100%,56.25vw);transform:translate(-50%,-50%)}
-.hero-shade{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(18,20,20,.92) 0%,rgba(18,20,20,.7) 38%,rgba(18,20,20,.15) 75%),linear-gradient(0deg,#121414 0%,rgba(18,20,20,0) 30%)}
-.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.4,0,.2,1),transform .6s cubic-bezier(.4,0,.2,1)}
-.reveal.in{opacity:1;transform:none}
-.hero-in>*{opacity:0;transform:translateY(14px);animation:up .7s cubic-bezier(.4,0,.2,1) forwards}
-.hero-in>*:nth-child(2){animation-delay:.08s}.hero-in>*:nth-child(3){animation-delay:.16s}.hero-in>*:nth-child(4){animation-delay:.24s}
-@keyframes up{to{opacity:1;transform:none}}
-#wires path.w{fill:none;stroke:#e66d45;stroke-width:2;stroke-opacity:.75}
-#wires circle{fill:#1f2020;stroke:#e66d45;stroke-width:2;opacity:0;transition:opacity .3s}
-#wires .on circle{opacity:1}
-@media (max-width:700px){h1{font-size:52px!important}.hero{padding:72px 0}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal,.hero-in>*{opacity:1!important;transform:none!important;animation:none!important;transition:none!important}.vid iframe{transition:none}}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--display);overflow:hidden;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:80px 80px}
+a{color:var(--orange);text-decoration:none;transition:color .2s}
+a:hover{color:var(--orange-lo)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mono{font-family:var(--mono)}
+
+/* ---------- app frame ---------- */
+.app{position:relative;height:100vh;height:100dvh;display:flex;gap:0}
+.home-bg{position:absolute;inset:0;z-index:0;overflow:hidden;opacity:0;transition:opacity .8s var(--ease);pointer-events:none}
+.app[data-sec="home"] .home-bg{opacity:1}
+.home-bg .vid{position:absolute;inset:0}
+.home-bg iframe{position:absolute;top:50%;left:50%;width:max(100%,177.78vh);height:max(100%,56.25vw);transform:translate(-50%,-50%);border:0;opacity:0;transition:opacity 1s}
+.home-bg .ready iframe{opacity:1}
+.home-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,20,20,.92) 0%,rgba(18,20,20,.7) 40%,rgba(18,20,20,.15) 82%)}
+
+/* ---------- glass menu ---------- */
+.menu{position:relative;z-index:60;flex:0 0 272px;margin:24px 0 24px 24px;padding:26px 16px 18px;display:flex;flex-direction:column;gap:26px;
+  background:rgba(31,32,32,.55);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.1);border-radius:12px}
+.brand{padding:0 10px;display:flex;flex-direction:column;gap:6px}
+.brand b{font:700 14px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--orange)}
+.brand span{font:400 12px/1.3 var(--mono);color:var(--dim)}
+.nav{position:relative;display:flex;flex-direction:column;gap:4px;list-style:none;margin:0;padding:0}
+.nav a{position:relative;display:flex;align-items:center;gap:14px;min-height:48px;padding:0 14px;border-radius:6px;border:1px solid transparent;
+  font:800 20px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;color:var(--text);transition:background .25s,color .25s,border-color .25s}
+.nav a .n{font:400 12px/1 var(--mono);color:var(--label);transition:color .25s}
+.nav a:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav a[aria-current="page"]{background:var(--orange);border-color:var(--orange);color:#121414}
+.nav a[aria-current="page"] .n{color:#121414}
+.wire{position:absolute;right:-68px;width:60px;height:2px;top:0;background:var(--orange);opacity:.85;transition:top .5s var(--ease);pointer-events:none}
+.wire::after{content:'';position:absolute;right:-9px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--surface);border:2px solid var(--orange)}
+.menu-foot{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:4px;cursor:pointer;
+  font:700 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line-hi);color:var(--text);background:transparent;transition:background .2s,color .2s,border-color .2s}
+.btn:hover{border-color:var(--orange);color:var(--orange)}
+.btn.solid{background:var(--orange);border-color:var(--orange);color:#121414}
+.btn.solid:hover{background:var(--orange-lo);border-color:var(--orange-lo);color:#121414}
+.foot-links{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:6px 4px 0;font:400 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.foot-links a,.sound{color:var(--dim)}
+.sound{background:none;border:0;padding:0;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit;display:inline-flex;align-items:center;gap:6px}
+.sound:hover{color:var(--orange)}
+.sound i{display:inline-flex;gap:2px;align-items:flex-end;height:10px}
+.sound i b{display:block;width:2px;background:currentColor;height:100%;transform-origin:bottom;animation:eq .5s ease-in-out infinite alternate}
+.sound i b:nth-child(2){animation-delay:.15s}.sound i b:nth-child(3){animation-delay:.3s}
+.sound[aria-pressed="false"] i b{animation:none;transform:scaleY(.3)}
+@keyframes eq{0%{transform:scaleY(.3)}100%{transform:scaleY(1)}}
+
+/* ---------- stage ---------- */
+.stage{position:relative;z-index:2;flex:1 1 auto;min-width:0;height:100%;overflow:hidden}
+.panel{position:absolute;inset:0;padding:28px 44px 28px 92px;display:flex;flex-direction:column;overflow-y:auto;visibility:hidden;opacity:0}
+.panel.on{visibility:visible;opacity:1}
+.panel.settle{animation:crtSettle .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes crtSettle{0%{transform:scale(1.025,.985);filter:brightness(1.12) contrast(1.05)}100%{transform:none;filter:none}}
+.panel.on .rise>*{animation:rise .6s var(--ease) both}
+.panel.on .rise>*:nth-child(2){animation-delay:.07s}.panel.on .rise>*:nth-child(3){animation-delay:.14s}.panel.on .rise>*:nth-child(4){animation-delay:.21s}.panel.on .rise>*:nth-child(5){animation-delay:.28s}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.eyebrow{margin:0;font:400 12px/1.4 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--label)}
+.h2{margin:0;font:900 44px/.95 var(--display);text-transform:uppercase;letter-spacing:-.01em}
+.h2 span{color:var(--orange)}
+
+.node{background:var(--surface);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.nh{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--surf-hi);border-bottom:1px solid rgba(255,255,255,.06);font:400 12px/1.2 var(--mono);letter-spacing:.07em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nh .d{flex:0 0 8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 6px var(--orange)}
+.nh .p{color:var(--label)} .nh .s{color:#6b5a56} .nh .k{color:#b0a8a4;overflow:hidden;text-overflow:ellipsis}
+
+/* home */
+.home{justify-content:center}
+.home-copy{max-width:660px;display:flex;flex-direction:column;gap:22px}
+.home-copy .tag{color:var(--teal)}
+.home-copy h1{margin:0;font:900 76px/.92 var(--display);letter-spacing:-.02em;text-transform:uppercase}
+.home-copy h1 span{display:block;color:var(--orange)}
+.home-copy p.lead{margin:0;font-size:19px;line-height:1.55;color:var(--muted);max-width:520px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;padding-top:6px}
+.ctas .btn{font-size:13px;min-height:48px;padding:0 22px}
+
+/* showreel */
+.reel{justify-content:center;gap:18px}
+.reel .node{width:100%;max-width:1080px}
+.reel-frame{position:relative;aspect-ratio:16/9;max-height:calc(100dvh - 220px);margin:0 auto;background:var(--bg2)}
+.reel-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.reel-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;max-width:1080px;color:var(--muted);font-size:17px}
+
+/* projects */
+.projects{gap:16px;justify-content:center}
+.proj-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.proj-ctrl{display:flex;align-items:center;gap:10px}
+.arrow{width:48px;height:48px;border-radius:50%;border:1px solid var(--line-hi);background:rgba(31,32,32,.6);display:grid;place-items:center;cursor:pointer;transition:border-color .2s,color .2s}
+.arrow:hover{border-color:var(--orange);color:var(--orange)}
+.count{min-width:64px;text-align:center;font:500 13px/1 var(--mono);letter-spacing:.1em;color:var(--dim)}
+.count b{color:var(--text);font-weight:700}
+.track-wrap{container-type:inline-size;position:relative;flex:0 0 auto}
+.track{--cw:min(780px,64cqw,calc((100dvh - 440px) * 1.7778));position:relative;height:calc(var(--cw) * 9 / 16 + 34px)}
+.pcard{position:absolute;top:0;left:50%;width:var(--cw);cursor:pointer;
+  transform:translateX(-50%) scale(.72);opacity:0;pointer-events:none;
+  transition:transform .65s var(--ease),opacity .5s var(--ease),filter .5s,border-color .3s;filter:saturate(.5) brightness(.8)}
+.pcard[data-o="0"]{transform:translateX(-50%);opacity:1;pointer-events:auto;cursor:default;z-index:3;filter:none;border-color:rgba(230,109,69,.45)}
+.pcard[data-o="-1"]{transform:translateX(calc(-50% - 62%)) scale(.82);opacity:.6;pointer-events:auto;z-index:2}
+.pcard[data-o="1"]{transform:translateX(calc(-50% + 62%)) scale(.82);opacity:.6;pointer-events:auto;z-index:2}
+.pcard[data-o="-1"]:hover,.pcard[data-o="1"]:hover{opacity:.85}
+.pmedia{position:relative;aspect-ratio:16/9;background:repeating-linear-gradient(45deg,#171919,#171919 12px,#1c1e1e 12px,#1c1e1e 24px)}
+.pmedia .ph{position:absolute;inset:0;display:grid;place-items:center;font:400 12px/1 var(--mono);letter-spacing:.1em;color:var(--label);text-transform:uppercase}
+.pmedia iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .6s}
+.pmedia.ready iframe{opacity:1}
+.pinfo{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px 32px;align-items:start;max-width:1100px;width:100%;margin:0 auto}
+.pinfo h3{margin:0 0 6px;font:800 28px/1.08 var(--display)}
+.pinfo .meta{margin:0 0 8px;font:400 12px/1.4 var(--mono);letter-spacing:.08em;color:var(--label)}
+.pinfo p.desc{margin:0;font-size:16px;line-height:1.5;color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.facts div{background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:5px}
+.facts span{font:400 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--label)}
+.facts b{font-size:16px;font-weight:700;line-height:1.25}
+.plinks{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}
+.plinks .btn.main{color:var(--orange);border-color:rgba(230,109,69,.5)}
+.pinfo.swap>*{animation:rise .45s var(--ease) both}
+
+/* skills */
+.skills{justify-content:center;gap:18px}
+.sk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:1200px){.sk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.sk-grid{grid-template-columns:1fr}}
+.sk-body{padding:14px 18px 16px;display:flex;flex-direction:column;gap:10px}
+.sk-body h3{margin:0;font:800 20px/1.1 var(--display)}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tags{gap:6px}.tags span{font:400 12px/1 var(--mono);color:#c9c7c4;border:1px solid rgba(166,139,131,.3);border-radius:3px;padding:7px 9px}
+.facts-row{display:flex;flex-wrap:wrap;gap:16px}
+.facts-row .node{flex:1 1 280px;padding:12px 18px;display:flex;flex-direction:column;gap:6px}
+.facts-row span{font:400 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
+.facts-row b{font-size:17px;line-height:1.3}
+
+/* about */
+.about{justify-content:center}
+.about-wrap{display:flex;flex-wrap:wrap;gap:32px;align-items:center}
+.about .photo{flex:0 1 340px}
+.about .photo img{display:block;width:100%;height:min(460px,56dvh);object-fit:cover;object-position:center 22%}
+.about-copy{flex:999 1 420px;min-width:0;max-width:720px;display:flex;flex-direction:column;gap:18px}
+.about-copy p{margin:0;font-size:17px;line-height:1.65;color:var(--soft)}
+.clients{font-size:18px;font-weight:700;color:#c9c7c4;line-height:1.5}
+.form{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding-top:4px}
+.form label{display:flex;flex-direction:column;gap:6px;font:400 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.form label.e{flex:1 1 220px}.form label.m{flex:2 1 320px}
+.form input{background:var(--bg);border:1px solid rgba(166,139,131,.35);border-radius:4px;color:var(--text);padding:13px 14px;font:400 15px/1.2 var(--display);letter-spacing:0;text-transform:none}
+.form input:focus{border-color:var(--orange);outline:none}
+.form .btn{min-height:46px}
+
+/* ---------- shader compile (section change) ----------
+   Tiles flip shut in a diagonal wave from the menu side, the new section is swapped in under them,
+   then they flip open again. Timings live in the script (COMPILE_*). */
+.compile{position:fixed;z-index:55;pointer-events:none;visibility:hidden;display:grid;overflow:hidden}
+.compile.run{visibility:visible}
+.compile i{display:block;background:#1a1c1c;border:1px solid rgba(230,109,69,.28);transform:scaleY(0);transform-origin:50% 50%}
+.compile i.hot{background:#2a1f1b;border-color:rgba(230,109,69,.6)}
+.compile.run i{animation:tileIn .14s cubic-bezier(.5,0,.3,1) var(--d) both,tileOut .16s cubic-bezier(.6,0,.4,1) calc(var(--d) + var(--o)) forwards}
+.compile.run i.hot{animation:tileIn .14s cubic-bezier(.5,0,.3,1) var(--d) both,tileHot .2s steps(2) calc(var(--d) + .14s) 1,tileOut .16s cubic-bezier(.6,0,.4,1) calc(var(--d) + var(--o)) forwards}
+@keyframes tileIn{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes tileOut{from{transform:scaleY(1)}to{transform:scaleY(0)}}
+@keyframes tileHot{0%{background:#8a4129}100%{background:#2a1f1b}}
+.compile-osd{position:absolute;left:24px;bottom:22px;z-index:2;font:500 13px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cream);text-shadow:var(--ca);opacity:0}
+.compile.run .compile-osd{opacity:1}
+.stage.glitch .panel.on{animation:caShake .3s steps(2) 1}
+@keyframes caShake{0%{filter:drop-shadow(-3px 0 rgba(255,40,40,.5)) drop-shadow(3px 0 rgba(0,225,255,.45))}100%{filter:none}}
+.home-copy h1,.h2{text-shadow:var(--ca)}
+
+/* ---------- vignette + scanlines + grain + VHS roll (same as the teaching site) ---------- */
+body::before{content:'';position:fixed;inset:0;z-index:90;pointer-events:none;
+  background:radial-gradient(115% 95% at 50% 45%,transparent 55%,rgba(0,0,0,.4) 100%),repeating-linear-gradient(to bottom,rgba(0,0,0,.07) 0 1px,transparent 1px 3px);
+  animation:crtPump 4.5s ease-in-out infinite alternate}
+@keyframes crtPump{0%{opacity:.82;transform:scale(1.012)}100%{opacity:1;transform:scale(1)}}
+.vhs{position:fixed;inset:0;z-index:89;pointer-events:none;overflow:hidden}
+.vhs::before{content:'';position:absolute;left:0;right:0;top:0;height:22vh;
+  background:linear-gradient(to bottom,transparent,rgba(255,240,220,.035) 45%,rgba(255,240,220,.045) 55%,transparent);
+  transform:translateY(-30vh);animation:vhsRoll 9s linear infinite}
+@keyframes vhsRoll{0%{transform:translateY(-30vh)}55%,100%{transform:translateY(110vh)}}
+body::after{content:'';position:fixed;inset:-100px;z-index:91;pointer-events:none;opacity:.11;mix-blend-mode:soft-light;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 2.2 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain .9s steps(5) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-30px,20px)}40%{transform:translate(25px,-35px)}60%{transform:translate(-15px,40px)}80%{transform:translate(35px,10px)}100%{transform:translate(0,0)}}
+
+/* ---------- small screens: menu on top, sections scroll inside ---------- */
+@media (max-width:900px){
+  body{overflow-x:hidden;overflow-y:auto}
+  .app{flex-direction:column;height:auto;min-height:100dvh}
+  .menu{flex:0 0 auto;margin:12px;padding:14px;gap:12px}
+  .brand{padding:0 4px}
+  .nav{flex-direction:row;overflow-x:auto;gap:6px;scrollbar-width:none}
+  .nav a{flex:0 0 auto;min-height:44px;font-size:16px;padding:0 12px;gap:8px}
+  .wire{display:none}
+  .menu-foot{flex-direction:row;flex-wrap:wrap;align-items:center}
+  .menu-foot .btn{flex:1 1 auto}
+  .foot-links{flex:1 1 100%}
+  .stage{height:auto;overflow:visible;overflow-x:clip}
+  .panel{position:relative;inset:auto;padding:20px 16px 48px;display:none;overflow:visible}
+  .panel.on{display:flex}
+  .home{min-height:70dvh}
+  .home-copy h1{font-size:52px}
+  .h2{font-size:36px}
+  .track{--cw:86cqw}
+  .pcard[data-o="-1"],.pcard[data-o="1"]{opacity:0;pointer-events:none}
+  .pinfo{grid-template-columns:1fr}
+  .reel-frame{max-height:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .compile,.vhs{display:none!important}
+}
 </style>
 </head>
 <body>
-<div id="root" style="position: relative; min-height: 100vh; background-color: #121414; background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px); background-size: 80px 80px; color: #e3e2e2; font-family: 'Roboto Condensed', sans-serif">
+<div class="vhs" aria-hidden="true"></div>
+<div class="compile" id="compile" aria-hidden="true"><span class="compile-osd" id="compileOsd">Compiling shaders 0%</span></div>
 
-<svg id="wires" aria-hidden="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: visible"></svg>
+<div class="app" id="app" data-sec="home">
+  <div class="home-bg" aria-hidden="true"><div class="vid" id="homeVid"></div></div>
 
-<nav style="position: sticky; top: 0; z-index: 10; background: rgba(13,14,15,.92); border-bottom: 1px solid rgba(166,139,131,.2)">
-<div style="max-width: 1280px; margin: 0 auto; padding: 0 32px; min-height: 60px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
-<a href="/" style="font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #e66d45">Eduardo J. Reyes</a>
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px; font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase">
-<a href="https://eduardojreyes.com/professor" style="color: #c9c7c4">Teaching ↗</a>
-<a href="mailto:eduardoj.reyes@hotmail.com?subject=Technical%20Art%20enquiry" style="background: #e66d45; color: #121414; font-weight: 700; padding: 10px 16px; border-radius: 4px">Hire me</a>
-</div>
-</div>
-</nav>
+  <aside class="menu" aria-label="Site">
+    <div class="brand"><b>Eduardo J. Reyes</b><span>Technical Artist · Europe / Remote</span></div>
+    <nav aria-label="Sections">
+      <ul class="nav" id="nav">
+        <li><a href="#home" data-sec="home"><span class="n">01</span>Home</a></li>
+        <li><a href="#showreel" data-sec="showreel"><span class="n">02</span>Showreel</a></li>
+        <li><a href="#projects" data-sec="projects"><span class="n">03</span>Projects</a></li>
+        <li><a href="#skills" data-sec="skills"><span class="n">04</span>Skills</a></li>
+        <li><a href="#about" data-sec="about"><span class="n">05</span>About</a></li>
+        <li class="wire" id="wire" aria-hidden="true"></li>
+      </ul>
+    </nav>
+    <div class="menu-foot">
+      <a class="btn solid" href="mailto:eduardoj.reyes@hotmail.com?subject=Technical%20Art%20enquiry">Hire me</a>
+      <a class="btn" href="CV2026_EduardoJReyes.pdf" download>Download CV</a>
+      <div class="foot-links">
+        <a href="https://www.linkedin.com/in/eduardojreyesdev" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="/professor/">Teaching website</a>
+        <button type="button" class="sound" id="soundBtn" aria-pressed="true"><i aria-hidden="true"><b></b><b></b><b></b></i><span class="sound-label">Sound on</span></button>
+      </div>
+    </div>
+  </aside>
 
-<section class="hero" aria-label="Intro">
-<div class="hero-bg" aria-hidden="true"><div class="vid hero-vid" data-vimeo="1203903259" data-eager="1" data-title="Showreel"></div></div>
-<div class="hero-shade" aria-hidden="true"></div>
-<div style="position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; padding: 0 32px; width: 100%">
-<div style="max-width: 640px">
-<div class="hero-in" style="display: flex; flex-direction: column; gap: 22px">
-<p style="margin: 0; font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: #6ed5eb">Technical Artist · Barcelona · Open to full-time roles</p>
-<h1 style="margin: 0; font-size: 76px; line-height: .92; font-weight: 900; letter-spacing: -.02em; text-transform: uppercase">Technical Art<span style="display: block; color: #e66d45">for games and virtual production</span></h1>
-<p style="margin: 0; font-size: 19px; line-height: 1.55; color: #b9b7b3; max-width: 520px">Shaders, procedural systems and pipeline tools in UE5 and Houdini. I build the boring-but-crucial stuff that lets artists ship faster, plus the pretty stuff on top.</p>
-<div style="display: flex; flex-wrap: wrap; gap: 12px; padding-top: 6px">
-<a href="#work" style="font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: #e66d45; color: #121414; padding: 15px 22px; border-radius: 4px">See the work</a>
-<a href="https://eduardojreyes.com/CV2026_EduardoJReyes.pdf" style="font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #e3e2e2; border: 1px solid rgba(166,139,131,.45); padding: 14px 22px; border-radius: 4px">Download CV ↓</a>
-</div>
-</div>
-</div>
-</div>
-</section>
+  <main class="stage" id="stage">
 
-<main style="max-width: 1280px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1">
+    <section class="panel home on" id="home" data-sec="home" aria-labelledby="t-home">
+      <div class="home-copy rise">
+        <h1 id="t-home">Technical Art<span>for games and virtual production</span></h1>
+        <p class="lead">Shaders, procedural systems and pipeline tools in UE5 and Houdini. I build the boring-but-crucial stuff that lets artists ship faster, plus the pretty stuff on top.</p>
+        <div class="ctas">
+          <a class="btn solid" href="#projects">See the work</a>
+          <a class="btn" href="CV2026_EduardoJReyes.pdf" download>Download CV</a>
+        </div>
+      </div>
+    </section>
 
+    <section class="panel reel" id="showreel" data-sec="showreel" aria-labelledby="t-reel">
+      <div class="rise" style="display:flex;flex-direction:column;gap:18px">
+        <div>
+          <h2 class="h2" id="t-reel">Show<span>reel</span></h2>
+        </div>
+        <div class="node">
+          <div class="nh"><span class="d" style="background:var(--sand);box-shadow:0 0 6px var(--sand)"></span><span class="p">VISUAL_SEQUENCE</span><span class="s">::</span><span class="k">REEL_2025</span></div>
+          <div class="reel-frame" id="reelFrame"></div>
+        </div>
+        <div class="reel-row"><span>Shaders, procedural modeling, pipeline tools and real-time scenes.</span><a class="mono" href="https://vimeo.com/1203903259" target="_blank" rel="noopener" style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">Open on Vimeo</a></div>
+      </div>
+    </section>
 
+    <section class="panel projects" id="projects" data-sec="projects" aria-labelledby="t-proj">
+      <div class="proj-head">
+        <div><h2 class="h2" id="t-proj">Selected <span>projects</span></h2></div>
+        <div class="proj-ctrl">
+          <button type="button" class="arrow" id="prev" aria-label="Previous project"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+          <span class="count" id="count" aria-live="polite"><b>1</b> / 7</span>
+          <button type="button" class="arrow" id="next" aria-label="Next project"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+        </div>
+      </div>
+      <div class="track-wrap"><div class="track" id="track" role="group" aria-roledescription="carousel" aria-label="Projects"></div></div>
+      <div class="pinfo" id="pinfo"></div>
+    </section>
 
-<section id="work" style="padding: 0 0 72px">
-<div id="n-projects" class="reveal" style="background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; position: relative; z-index: 1">
-<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #e66d45; box-shadow: 0 0 6px #e66d45"></span><span style="color: #8f8580">COLLECTION</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">ALL_PROJECTS</span></div>
-<div style="padding: 28px">
-<h2 style="margin: 0 0 24px; font-size: 46px; font-weight: 900; text-transform: uppercase; letter-spacing: -.01em">Pro<span style="color: #e66d45">jects</span></h2>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px">
-<div class="card reveal" style="display: flex; flex-direction: column; background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; overflow: hidden">
-<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #e66d45; box-shadow: 0 0 6px #e66d45"></span><span style="color: #8f8580">PROJECT</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">IMPALA_FILMS__VIRTUAL_PRODUCTION</span></div>
-<div class="vid card-vid" data-vimeo="1228743611" data-title="Impala Films virtual production"></div>
-<div style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1">
-<span style="font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .08em; color: #8f8580">IMPALA FILMS · TECHNICAL ARTIST</span>
-<span style="font-size: 26px; font-weight: 800; line-height: 1.1">Virtual production commercial</span>
-<span style="font-size: 16px; line-height: 1.55; color: #b9b7b3">Real-time UE5 city for an LED volume: custom shaders for the architecture, PCG graphs for the bridge and traffic, set dressing, and optimization passes to hold framerate on set.</span>
-<span style="display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 6px; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase">
-<span style="border: 1px solid rgba(230,109,69,.4); color: #e66d45; padding: 4px 9px; border-radius: 3px">Technical art</span>
-<span style="border: 1px solid rgba(166,139,131,.3); color: #a8a6a3; padding: 4px 9px; border-radius: 3px">UE5 · PCG · HLSL</span>
-</span>
-<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 18px; border-top: 1px solid rgba(166,139,131,.2)"><a href="https://youtu.be/kUeCIan6rvk" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #e66d45; border: 1px solid rgba(230,109,69,.45); padding: 0 14px; border-radius: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>Watch commercial</a></div>
-</div>
-</div>
-<div class="card reveal" style="display: flex; flex-direction: column; background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; overflow: hidden">
-<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #e7c184; box-shadow: 0 0 6px #e7c184"></span><span style="color: #8f8580">PROJECT</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">DJ_DOKKU__SALA_RAZZMATAZZ</span></div>
-<div class="vid card-vid" data-vimeo="1228743609" data-title="DJ Dokku live visuals"></div>
-<div style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1">
-<span style="font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .08em; color: #8f8580">SALA RAZZMATAZZ · TECHNICAL ARTIST</span>
-<span style="font-size: 26px; font-weight: 800; line-height: 1.1">DJ Dokku live performance visuals</span>
-<span style="font-size: 16px; line-height: 1.55; color: #b9b7b3">Full real-time pipeline for a live set: low-poly mascot rigged in Maya, PS1-style pixel shader with dithering, LUT and vertex wiggle, faces driven by texture swaps, three looped clips.</span>
-<span style="display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 6px; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase">
-<span style="border: 1px solid rgba(230,109,69,.4); color: #e66d45; padding: 4px 9px; border-radius: 3px">Technical art</span>
-<span style="border: 1px solid rgba(166,139,131,.3); color: #a8a6a3; padding: 4px 9px; border-radius: 3px">UE5 · Maya · HLSL</span>
-</span>
-<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 18px; border-top: 1px solid rgba(166,139,131,.2)"><a href="https://youtu.be/APET_m-ztyg" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #e66d45; border: 1px solid rgba(230,109,69,.45); padding: 0 14px; border-radius: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>Watch performance</a></div>
-</div>
-</div>
-<div class="card reveal" style="display: flex; flex-direction: column; background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; overflow: hidden">
-<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #e66d45; box-shadow: 0 0 6px #e66d45"></span><span style="color: #8f8580">PROJECT</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">SLUMBER_PARTY_GAMES</span></div>
-<div class="vid card-vid" data-vimeo="1228743625" data-title="Prime Video mini-games"></div>
-<div style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1">
-<span style="font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .08em; color: #8f8580">PRIME VIDEO SPAIN · GAME DESIGNER &amp; PROGRAMMER</span>
-<span style="font-size: 26px; font-weight: 800; line-height: 1.1">Prime Video mini-games</span>
-<span style="font-size: 16px; line-height: 1.55; color: #b9b7b3">The Boys, Invincible, El Internado and Fleabag. Four weeks each, built to hold 45+ minutes of live Twitch play, with custom level tools and all audio made in-house. Streamed by Mayichi.</span>
-<span style="display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 6px; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase">
-<span style="border: 1px solid rgba(231,193,132,.35); color: #e7c184; padding: 4px 9px; border-radius: 3px">Game dev</span>
-<span style="border: 1px solid rgba(166,139,131,.3); color: #a8a6a3; padding: 4px 9px; border-radius: 3px">GDevelop · Unity · C#</span>
-</span>
-<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 18px; border-top: 1px solid rgba(166,139,131,.2)"><a href="https://gd.games/SlumberParty_Games" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #e66d45; border: 1px solid rgba(230,109,69,.45); padding: 0 14px; border-radius: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>Play the games</a><a href="https://youtu.be/LPW5F-TkqDY?t=454" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #a8a6a3; border: 1px solid rgba(166,139,131,.3); padding: 0 14px; border-radius: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>Mayichi stream</a><a href="https://www.youtube.com/@PrimeVideoES" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #a8a6a3; border: 1px solid rgba(166,139,131,.3); padding: 0 14px; border-radius: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>Prime Video ES</a></div>
-</div>
-</div>
-<div class="card reveal" style="display: flex; flex-direction: column; background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; overflow: hidden">
-<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #e7c184; box-shadow: 0 0 6px #e7c184"></span><span style="color: #8f8580">PROJECT</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">PERE_TARRES_FOUNDATION</span></div>
-<div class="vid card-vid" data-vimeo="1228743628" data-title="3D immersive quiz"></div>
-<div style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1">
-<span style="font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .08em; color: #8f8580">FUNDACIÓ PERE TARRÉS · GAME DESIGNER &amp; PROGRAMMER</span>
-<span style="font-size: 26px; font-weight: 800; line-height: 1.1">3D immersive quiz</span>
-<span style="font-size: 16px; line-height: 1.55; color: #b9b7b3">Moodle learning module packaged as SCORM: students explore a 3D home and fix the hazards elderly people are likely to run into, with tracking built in.</span>
-<span style="display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 6px; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase">
-<span style="border: 1px solid rgba(231,193,132,.35); color: #e7c184; padding: 4px 9px; border-radius: 3px">Game dev</span>
-<span style="border: 1px solid rgba(166,139,131,.3); color: #a8a6a3; padding: 4px 9px; border-radius: 3px">Unity · C# · SCORM</span>
-</span>
-<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 18px; border-top: 1px solid rgba(166,139,131,.2)"><a href="https://www.youtube.com/watch?v=XRPxPH-1XAQ" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #e66d45; border: 1px solid rgba(230,109,69,.45); padding: 0 14px; border-radius: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>Watch demo</a></div>
-</div>
-</div>
-<div class="card reveal" style="display: flex; flex-direction: column; background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; overflow: hidden">
-<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #e66d45; box-shadow: 0 0 6px #e66d45"></span><span style="color: #8f8580">PROJECT</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">CHIRALITY_THE_FIRST_JOURNAL</span></div>
-<div class="vid card-vid" data-vimeo="1228747181" data-title="Chirality gameplay"></div>
-<div style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1">
-<span style="font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .08em; color: #8f8580">MASTER THESIS · UOC · GAME DESIGNER &amp; PROGRAMMER</span>
-<span style="font-size: 26px; font-weight: 800; line-height: 1.1">Chirality: the first journal</span>
-<span style="font-size: 16px; line-height: 1.55; color: #b9b7b3">Prototype for my thesis, Crafting Fear: Theories of Horror in Game Design. Each mechanic was picked from research and then tested across playtests with dozens of players.</span>
-<span style="display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 6px; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase">
-<span style="border: 1px solid rgba(231,193,132,.35); color: #e7c184; padding: 4px 9px; border-radius: 3px">Game dev</span>
-<span style="border: 1px solid rgba(166,139,131,.3); color: #a8a6a3; padding: 4px 9px; border-radius: 3px">Unity · C#</span>
-</span>
-<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 18px; border-top: 1px solid rgba(166,139,131,.2)"><a href="https://drive.google.com/drive/folders/1zYK_8UnCLvL6zsCubllLS57lA8xO0i6C" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #e66d45; border: 1px solid rgba(230,109,69,.45); padding: 0 14px; border-radius: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>Read the thesis</a></div>
-</div>
-</div>
-<div class="card reveal" style="display: flex; flex-direction: column; background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; overflow: hidden">
-<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #e7c184; box-shadow: 0 0 6px #e7c184"></span><span style="color: #8f8580">PROJECT</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">RISE_OF_DROIDS__BUCKY_AWAY</span></div>
-<div class="vid card-vid" data-vimeo="1228743610" data-title="Rise of Droids gameplay"></div>
-<div style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1">
-<span style="font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .08em; color: #8f8580">FREELANCE · GAME DESIGNER &amp; PROGRAMMER</span>
-<span style="font-size: 26px; font-weight: 800; line-height: 1.1">Rise of Droids and Bucky Away</span>
-<span style="font-size: 16px; line-height: 1.55; color: #b9b7b3">Core mechanics, enemy AI and rewards for a top-down shooter slice, plus a game-feel prototype built to teach La Salle students how to tune mechanics.</span>
-<span style="display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 6px; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase">
-<span style="border: 1px solid rgba(231,193,132,.35); color: #e7c184; padding: 4px 9px; border-radius: 3px">Game dev</span>
-<span style="border: 1px solid rgba(166,139,131,.3); color: #a8a6a3; padding: 4px 9px; border-radius: 3px">GDevelop</span>
-</span>
-<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 18px; border-top: 1px solid rgba(166,139,131,.2)"><a href="https://gd.games/barelyapes/rise-of-droids" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #e66d45; border: 1px solid rgba(230,109,69,.45); padding: 0 14px; border-radius: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>Rise of Droids</a><a href="https://gd.games/slumberparty_games/bucky-away" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #a8a6a3; border: 1px solid rgba(166,139,131,.3); padding: 0 14px; border-radius: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>Bucky Away</a></div>
-</div>
-</div>
-<div class="card reveal" style="display: flex; flex-direction: column; background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; overflow: hidden">
-<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #6ed5eb; box-shadow: 0 0 6px #6ed5eb"></span><span style="color: #8f8580">PROJECT</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">DIDDL__B-WATER_STUDIOS</span></div>
-<div class="vid card-vid" data-youtube="AJhZlGP9VkM" data-start="36" data-title="Diddl animation"></div>
-<div style="padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1">
-<span style="font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .08em; color: #8f8580">B-WATER STUDIOS · PRODUCTION COORDINATOR</span>
-<span style="font-size: 26px; font-weight: 800; line-height: 1.1">Diddl animation production</span>
-<span style="font-size: 16px; line-height: 1.55; color: #b9b7b3">Main contact between the client and internal departments on a multi-team series and film, keeping planning, communication and delivery aligned.</span>
-<span style="display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0 6px; font-family: 'Roboto Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase">
-<span style="border: 1px solid rgba(110,213,235,.3); color: #6ed5eb; padding: 4px 9px; border-radius: 3px">Production</span>
-<span style="border: 1px solid rgba(166,139,131,.3); color: #a8a6a3; padding: 4px 9px; border-radius: 3px">Animation pipeline</span>
-</span>
+    <section class="panel skills" id="skills" data-sec="skills" aria-labelledby="t-skills">
+      <div class="rise" style="display:flex;flex-direction:column;gap:22px">
+        <div><h2 class="h2" id="t-skills">Ski<span>lls</span></h2></div>
+        <div class="sk-grid">
+          <div class="node"><div class="nh"><span class="d"></span><span class="p">SKILL_GROUP</span><span class="s">::</span><span class="k">UNREAL_ENGINE_5</span></div>
+            <div class="sk-body"><h3>Unreal Engine 5</h3><div class="tags"><span>Shading / HLSL</span><span>Niagara VFX</span><span>PCG Framework</span><span>Chaos Simulation</span></div></div></div>
+          <div class="node"><div class="nh"><span class="d" style="background:var(--sand);box-shadow:0 0 6px var(--sand)"></span><span class="p">SKILL_GROUP</span><span class="s">::</span><span class="k">HOUDINI</span></div>
+            <div class="sk-body"><h3>Houdini</h3><div class="tags"><span>HDAs &amp; procedural tools</span><span>Destruction sim</span><span>Houdini Engine for UE5</span><span>Pipeline tools</span></div></div></div>
+          <div class="node"><div class="nh"><span class="d" style="background:var(--teal);box-shadow:0 0 6px var(--teal)"></span><span class="p">SKILL_GROUP</span><span class="s">::</span><span class="k">UNITY</span></div>
+            <div class="sk-body"><h3>Unity</h3><div class="tags"><span>C# scripting</span><span>Lighting &amp; optimization</span><span>SCORM builds for Moodle</span></div></div></div>
+          <div class="node"><div class="nh"><span class="d" style="background:var(--teal);box-shadow:0 0 6px var(--teal)"></span><span class="p">SKILL_GROUP</span><span class="s">::</span><span class="k">PIPELINE</span></div>
+            <div class="sk-body"><h3>Pipeline</h3><div class="tags"><span>Python</span><span>Asset validation &amp; QA</span><span>Editor utilities</span><span>Git</span></div></div></div>
+          <div class="node"><div class="nh"><span class="d"></span><span class="p">SKILL_GROUP</span><span class="s">::</span><span class="k">DESIGN_AND_PRODUCTION</span></div>
+            <div class="sk-body"><h3>Design &amp; production</h3><div class="tags"><span>Game design</span><span>Level design</span><span>Team coordination</span><span>Project management</span></div></div></div>
+          <div class="node"><div class="nh"><span class="d" style="background:#c9c7c4;box-shadow:0 0 6px #c9c7c4"></span><span class="p">SKILL_GROUP</span><span class="s">::</span><span class="k">ART</span></div>
+            <div class="sk-body"><h3>Art</h3><div class="tags"><span>Maya / Blender</span><span>Substance Designer</span><span>Lighting &amp; composition</span></div></div></div>
+        </div>
+        <div class="facts-row">
+          <div class="node"><span>Certification</span><b>Epic Games Authorized Instructor · since 2024</b></div>
+          <div class="node"><span>Languages</span><b>Spanish and Catalan native · English C1 · Swedish beginner</b></div>
+        </div>
+      </div>
+    </section>
 
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
+    <section class="panel about" id="about" data-sec="about" aria-labelledby="t-about">
+      <div class="about-wrap rise">
+        <div class="node photo">
+          <div class="nh"><span class="d" style="background:var(--sand);box-shadow:0 0 6px var(--sand)"></span><span class="p">PORTRAIT_INPUT</span><span class="s">::</span><span class="k">THIS_IS_ME!</span></div>
+          <img src="assets/eduardo-photo.jpg" alt="Eduardo J. Reyes" loading="lazy">
+        </div>
+        <div class="about-copy">
+          <div><h2 class="h2" id="t-about">About <span>me</span></h2></div>
+          <p>Technical Artist based in Barcelona, with a Master's in Technical Art and Procedural Generation and a background in 3D animation and VFX. I build shaders, procedural systems and tools in UE5 and Houdini, and I've spent the last five years teaching Unreal at La Salle URL and to studio teams like Scopely as an Epic Games Authorized Instructor.</p>
+          <div><p class="eyebrow" style="margin-bottom:8px">Worked with</p>
+            <div class="clients">Epic Games · Scopely · Amazon Prime Video · Impala Films · La Salle URL · Escape Studios · B-Water Studios · Packt · Razzmatazz · Fundació Pere Tarrés</div></div>
+          <div class="ctas"><a class="btn solid" href="mailto:eduardoj.reyes@hotmail.com?subject=Technical%20Art%20enquiry">Contact me</a></div>
+        </div>
+      </div>
+    </section>
 
-<section style="padding: 0 0 72px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px">
-<div id="n-va" class="reveal" style="background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; position: relative; z-index: 1; display: flex; flex-direction: column"><div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #e66d45; box-shadow: 0 0 6px #e66d45"></span><span style="color: #8f8580">ARCH_FUNCTION</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">OUTPUT_A</span></div><div style="padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 10px"><span style="font-size: 23px; font-weight: 800; line-height: 1.15">Environments ship faster. And look better.</span><span style="font-size: 16px; line-height: 1.6; color: #b9b7b3">From organic landscapes to artificial structures, I build the systems that make environments faster to produce and cheaper to iterate on.</span></div></div>
-<div id="n-vb" class="reveal" style="background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; position: relative; z-index: 1; display: flex; flex-direction: column"><div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #6ed5eb; box-shadow: 0 0 6px #6ed5eb"></span><span style="color: #8f8580">ARCH_FUNCTION</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">OUTPUT_B</span></div><div style="padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 10px"><span style="font-size: 23px; font-weight: 800; line-height: 1.15">Everything comes documented.</span><span style="font-size: 16px; line-height: 1.6; color: #b9b7b3">Every system is easy for artists to use, scales with the team and ships with the docs. Five years of teaching UE5 makes this the easy part.</span></div></div>
-<div id="n-vc" class="reveal" style="background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; position: relative; z-index: 1; display: flex; flex-direction: column"><div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #e7c184; box-shadow: 0 0 6px #e7c184"></span><span style="color: #8f8580">ARCH_FUNCTION</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">OUTPUT_C</span></div><div style="padding: 24px 26px 28px; display: flex; flex-direction: column; gap: 10px"><span style="font-size: 23px; font-weight: 800; line-height: 1.15">Your project runs fast and won&#39;t bottleneck.</span><span style="font-size: 16px; line-height: 1.6; color: #b9b7b3">Validation tools, project starters, engine optimization. Whatever keeps the build green and the framerate up.</span></div></div>
-</section>
-
-<section style="padding: 0 0 72px">
-<div id="n-trusted" class="reveal" style="background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; position: relative; z-index: 1">
-<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #6ed5eb; box-shadow: 0 0 6px #6ed5eb"></span><span style="color: #8f8580">EARLY_REFERENCES</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">TRUSTED_BY</span></div>
-<div style="padding: 26px 28px; display: flex; flex-wrap: wrap; gap: 12px 36px; font-size: 22px; font-weight: 700; color: #c9c7c4">
-<span>Epic Games</span><span>Scopely</span><span>Amazon Prime Video</span><span>Impala Films</span><span>La Salle URL</span><span>Escape Studios</span><span>B-Water Studios</span><span>Packt</span><span>Razzmatazz</span><span>Fundació Pere Tarrés</span>
-</div>
-</div>
-</section>
-
-<section style="padding: 0 0 96px; display: flex; flex-wrap: wrap; gap: 64px; align-items: stretch">
-<div id="n-photo" class="reveal" style="background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; position: relative; z-index: 1; overflow: hidden; display: flex; flex-direction: column; flex: 1 1 320px; max-width: 420px">
-<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #e7c184; box-shadow: 0 0 6px #e7c184"></span><span style="color: #8f8580">PORTRAIT_INPUT</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">THIS_IS_ME!</span></div>
-<img src="assets/eduardo-photo.jpg" alt="Eduardo J. Reyes" style="display: block; width: 100%; height: 560px; object-fit: cover; object-position: center 25%">
-<div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 6px">
-<span style="font-size: 20px; font-weight: 800">Eduardo J. Reyes</span>
-<span style="font-family: 'Roboto Mono', monospace; font-size: 12px; color: #8f8580">Technical Artist · Epic Games Authorized Instructor · Spain, Sweden or remote</span>
-</div>
-</div>
-<div id="n-contact" class="reveal" style="background: #1f2020; border: 1px solid rgba(166,139,131,.22); border-radius: 4px; position: relative; z-index: 1; display: flex; flex-direction: column; flex: 999 1 520px; min-width: 0">
-<div style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #212323; border-bottom: 1px solid rgba(255,255,255,.06); font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .07em; user-select: none"><span style="width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: #e66d45; box-shadow: 0 0 6px #e66d45"></span><span style="color: #8f8580">REEL_REQUEST</span><span style="color: #6b5a56">::</span><span style="color: #b0a8a4">HOW_CAN_I_HELP_YOU?</span></div>
-<div style="padding: 36px; display: flex; flex-direction: column; gap: 18px">
-<h2 style="margin: 0; font-size: 46px; font-weight: 900; text-transform: uppercase; line-height: .95">How can I <span style="color: #e66d45">help you?</span></h2>
-<p style="margin: 0; font-size: 17px; line-height: 1.6; color: #b9b7b3; max-width: 560px">Looking for full-time or freelance technical art roles. If you want to talk pipeline, Houdini, procedural worlds, or you have a problem that needs solving, send me a message.</p>
-<form id="contactForm" style="display: flex; flex-direction: column; gap: 14px">
-<label style="display: flex; flex-direction: column; gap: 6px; font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #a8a6a3">Email
-<input type="email" id="f-email" required placeholder="you@studio.com" style="background: #121414; border: 1px solid rgba(166,139,131,.35); border-radius: 4px; color: #e3e2e2; padding: 13px 14px; font-size: 15px; letter-spacing: 0; text-transform: none">
-</label>
-<label style="display: flex; flex-direction: column; gap: 6px; font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #a8a6a3">What do you need fixed?
-<textarea id="f-msg" required rows="5" placeholder="Describe the problem..." style="background: #121414; border: 1px solid rgba(166,139,131,.35); border-radius: 4px; color: #e3e2e2; padding: 13px 14px; font-size: 15px; letter-spacing: 0; text-transform: none; resize: vertical"></textarea>
-</label>
-<button type="submit" style="align-self: flex-start; font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: #e66d45; color: #121414; border: 0; padding: 15px 24px; border-radius: 4px; cursor: pointer">Send it</button>
-</form>
-</div>
-</div>
-</section>
-
-</main>
-
-<footer style="position: relative; z-index: 1; border-top: 1px solid rgba(166,139,131,.2)">
-<div style="max-width: 1280px; margin: 0 auto; padding: 26px 32px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'Roboto Mono', monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #8f8580">
-<span>© 2026 Eduardo J. Reyes · Barcelona</span>
-<span style="display: flex; gap: 22px"><a href="https://www.linkedin.com/in/eduardojreyesdev">LinkedIn</a><a href="mailto:eduardoj.reyes@hotmail.com">Email</a><a href="https://eduardojreyes.com/professor">Teaching</a></span>
-</div>
-</footer>
-
+  </main>
 </div>
 
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script>
-(function(){
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var root = document.getElementById('root');
-  var svg = document.getElementById('wires');
-  var NS = 'http://www.w3.org/2000/svg';
+(function () {
+  'use strict';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- videos: load near the viewport, play only while visible ---------- */
-  function src(el){
-    var auto = reduce ? 0 : 1;
-    if (el.dataset.vimeo) {
-      return 'https://player.vimeo.com/video/' + el.dataset.vimeo +
-        (reduce ? '?controls=1&muted=1&dnt=1' : '?background=1&autoplay=1&muted=1&loop=1&autopause=0&dnt=1');
-    }
-    var id = el.dataset.youtube, st = el.dataset.start || 0;
-    return 'https://www.youtube-nocookie.com/embed/' + id + '?enablejsapi=1&start=' + st + '&autoplay=' + auto +
-      '&mute=1&loop=1&playlist=' + id + '&controls=' + (reduce ? 1 : 0) + '&modestbranding=1&rel=0&playsinline=1&iv_load_policy=3&disablekb=1';
-  }
-  function load(el){
-    if (el._f) return;
-    var f = document.createElement('iframe');
-    f.src = src(el);
-    f.title = el.dataset.title || 'Video';
-    f.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
-    f.loading = 'lazy';
-    if (!reduce) { f.tabIndex = -1; f.setAttribute('aria-hidden', 'true'); }
-    f.addEventListener('load', function(){ el.classList.add('ready'); });
-    el.appendChild(f);
-    el._f = f;
-    if (el.dataset.vimeo && window.Vimeo) el._p = new Vimeo.Player(f);
-  }
-  function setPlaying(el, on){
-    if (reduce || !el._f) return;
-    if (el._p) { (on ? el._p.play() : el._p.pause()).catch(function(){}); return; }
-    if (el.dataset.youtube) {
-      el._f.contentWindow && el._f.contentWindow.postMessage(JSON.stringify({event:'command', func: on ? 'playVideo' : 'pauseVideo', args: []}), '*');
-    }
-  }
-  var vids = [].slice.call(document.querySelectorAll('.vid'));
-  vids = vids.filter(function(el){ return !(reduce && el.classList.contains('hero-vid')); });
-  vids.forEach(function(el){ if (el.dataset.eager) load(el); });
-  if ('IntersectionObserver' in window) {
-    var near = new IntersectionObserver(function(es){
-      es.forEach(function(e){ if (e.isIntersecting) { load(e.target); near.unobserve(e.target); } });
-    }, { rootMargin: '400px 0px' });
-    var seen = new IntersectionObserver(function(es){
-      es.forEach(function(e){ setPlaying(e.target, e.isIntersecting); });
-    }, { threshold: 0.15 });
-    vids.forEach(function(el){ near.observe(el); seen.observe(el); });
-  } else { vids.forEach(load); }
-
-  /* ---------- node wires ---------- */
-  var WIRES = [
-    ['n-projects','n-va','left','b','h'],
-    ['n-va','n-vb','across','h','h'],
-    ['n-vb','n-vc','across','h','h'],
-    ['n-vc','n-trusted','right','b','h'],
-    ['n-trusted','n-photo','left','b','h'],
-    ['n-photo','n-contact','across','h','h']
+  /* ---------- edit these ---------- */
+  var HOME_VIDEO = '1247683769';  // Vimeo ID of the 10-second loop behind the title (leave empty for none)
+  var HOME_HASH = 'da64fe4d81';    // privacy hash from the Vimeo embed link (the h= part)
+  var REEL_VIDEO = '1203903259';  // full showreel
+  var PROJECTS = [
+    { node: 'IMPALA_FILMS__VIRTUAL_PRODUCTION', title: 'Virtual production commercial', meta: 'IMPALA FILMS · TECHNICAL ARTIST', role: 'Technical Artist', client: 'Impala Films',
+      desc: 'Real-time UE5 city for an LED volume: custom shaders for the architecture, PCG graphs for the bridge and traffic, set dressing, and optimization passes to hold framerate on set.',
+      stack: 'UE5 · PCG · HLSL', type: 'Virtual production', vimeo: '1228743611', links: [['Watch commercial', 'https://youtu.be/kUeCIan6rvk']] },
+    { node: 'DJ_DOKKU__SALA_RAZZMATAZZ', title: 'DJ Dokku live visuals', meta: 'SALA RAZZMATAZZ · TECHNICAL ARTIST', role: 'Technical Artist', client: 'DJ Dokku · Razzmatazz',
+      desc: 'Full real-time pipeline for a live set: low-poly mascot rigged in Maya, PS1-style pixel shader with dithering, LUT and vertex wiggle, faces driven by texture swaps, three looped clips.',
+      stack: 'UE5 · Maya · HLSL', type: 'Live performance', vimeo: '1228743609', links: [['Watch performance', 'https://youtu.be/APET_m-ztyg']] },
+    { node: 'SLUMBER_PARTY_GAMES', title: 'Prime Video mini-games', meta: 'PRIME VIDEO SPAIN · GAME DESIGNER & PROGRAMMER', role: 'Game Designer & Programmer', client: 'Prime Video Spain',
+      desc: 'The Boys, Invincible, El Internado and Fleabag. Four weeks each, built to hold 45+ minutes of live Twitch play, with custom level tools and all audio made in-house. Streamed by Mayichi.',
+      stack: 'GDevelop · Unity · C#', type: 'Browser games', vimeo: '1228743625', links: [['Play the games', 'https://gd.games/SlumberParty_Games'], ['Mayichi stream', 'https://youtu.be/LPW5F-TkqDY?t=454'], ['Prime Video ES', 'https://www.youtube.com/@PrimeVideoES']] },
+    { node: 'PERE_TARRES_FOUNDATION', title: '3D immersive quiz', meta: 'FUNDACIÓ PERE TARRÉS · GAME DESIGNER & PROGRAMMER', role: 'Game Designer & Programmer', client: 'Fundació Pere Tarrés',
+      desc: 'Moodle learning module packaged as SCORM: students explore a 3D home and fix the hazards elderly people are likely to run into, with tracking built in.',
+      stack: 'Unity · C# · SCORM', type: 'E-learning', vimeo: '1228743628', links: [['Watch demo', 'https://www.youtube.com/watch?v=XRPxPH-1XAQ']] },
+    { node: 'CHIRALITY_THE_FIRST_JOURNAL', title: 'Chirality: the first journal', meta: 'MASTER THESIS · UOC · GAME DESIGNER & PROGRAMMER', role: 'Game Designer & Programmer', client: 'Universitat Oberta de Catalunya',
+      desc: 'Prototype for my thesis, Crafting Fear: Theories of Horror in Game Design. Each mechanic was picked from research and then tested across playtests with dozens of players.',
+      stack: 'Unity · C#', type: 'Research prototype', vimeo: '1228747181', links: [['Read the thesis', 'https://drive.google.com/drive/folders/1zYK_8UnCLvL6zsCubllLS57lA8xO0i6C']] },
+    { node: 'RISE_OF_DROIDS__BUCKY_AWAY', title: 'Rise of Droids and Bucky Away', meta: 'FREELANCE · GAME DESIGNER & PROGRAMMER', role: 'Game Designer & Programmer', client: 'Freelance · La Salle URL',
+      desc: 'Core mechanics, enemy AI and rewards for a top-down shooter slice, plus a game-feel prototype built to teach La Salle students how to tune mechanics.',
+      stack: 'GDevelop', type: 'Prototypes', vimeo: '1228743610', links: [['Rise of Droids', 'https://gd.games/barelyapes/rise-of-droids'], ['Bucky Away', 'https://gd.games/slumberparty_games/bucky-away']] },
+    { node: 'DIDDL__B-WATER_STUDIOS', title: 'Diddl animation production', meta: 'B-WATER STUDIOS · PRODUCTION COORDINATOR', role: 'Production Coordinator', client: 'B-Water Studios',
+      desc: 'Main contact between the client and internal departments on a multi-team series and film, keeping planning, communication and delivery aligned.',
+      stack: 'Animation pipeline', type: 'Series and film', youtube: 'AJhZlGP9VkM', start: 36, links: [] }
   ];
-  var drawn = {};
-  function box(id){
-    var el = document.getElementById(id); if (!el) return null;
-    var r = el.getBoundingClientRect(), R = root.getBoundingClientRect();
-    return { l: r.left - R.left, r: r.right - R.left, t: r.top - R.top, b: r.bottom - R.top };
+  var SECTIONS = ['home', 'showreel', 'projects', 'skills', 'about'];
+
+  /* ---------- sound: tiny synthesized effects (same as the teaching site) ---------- */
+  var sfx = (function () {
+    var ctx = null, out = null, noiseBuf = null, on = true;
+    try { on = localStorage.getItem('ejr-sound') !== 'off'; } catch (e) {}
+    function init() {
+      if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return; }
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      ctx = new AC(); out = ctx.createGain(); out.gain.value = .5; out.connect(ctx.destination);
+      noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+      var d = noiseBuf.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    function env(g, t, a, peak, dec) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec); }
+    function noise(t, dur, type, f, q, peak, a) {
+      var n = ctx.createBufferSource(); n.buffer = noiseBuf;
+      var bq = ctx.createBiquadFilter(); bq.type = type; bq.frequency.setValueAtTime(f, t); bq.Q.value = q || 1;
+      var g = ctx.createGain(); env(g, t, a || .002, peak, dur);
+      n.connect(bq); bq.connect(g); g.connect(out); n.start(t, Math.random() * .5); n.stop(t + dur + .05); return bq;
+    }
+    function tone(t, type, f0, f1, dur, peak, a) {
+      var o = ctx.createOscillator(); o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      var g = ctx.createGain(); env(g, t, a || .004, peak, dur); o.connect(g); g.connect(out); o.start(t); o.stop(t + dur + .05);
+    }
+    var S = {
+      click: function (t) { noise(t, .025, 'highpass', 2200, .7, .35); tone(t, 'sine', 180, 70, .06, .25); },
+      step: function (t) { noise(t, .018, 'bandpass', 3200, 2, .22); tone(t, 'triangle', 900, 600, .03, .05); },
+      compile: function (t) {
+        for (var k = 0; k < 8; k++) { noise(t + k * .03, .014, 'bandpass', 2200 + k * 260, 3, .14); }
+        tone(t + .3, 'sine', 140, 60, .1, .2); noise(t + .3, .02, 'highpass', 1600, .7, .16);
+      },
+      chapter: function (t) {
+        var bq = noise(t, .5, 'bandpass', 500, 1.6, .22, .08);
+        bq.frequency.exponentialRampToValueAtTime(2600, t + .22); bq.frequency.exponentialRampToValueAtTime(700, t + .55);
+        tone(t, 'sawtooth', 70, 110, .45, .025, .06);
+      }
+    };
+    function play(name) { if (!on || !ctx || ctx.state !== 'running' || !S[name]) return; S[name](ctx.currentTime + .005); }
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) { document.addEventListener(ev, init, { passive: true }); });
+    var btn = document.getElementById('soundBtn');
+    function paint() { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); btn.querySelector('.sound-label').textContent = on ? 'Sound on' : 'Sound off'; }
+    btn.addEventListener('click', function () {
+      on = !on; try { localStorage.setItem('ejr-sound', on ? 'on' : 'off'); } catch (e) {}
+      paint(); init(); if (on) setTimeout(function () { play('click'); }, 30);
+    });
+    paint();
+    return play;
+  })();
+  document.addEventListener('pointerdown', function (e) {
+    if (e.button === 0 && e.target.closest && e.target.closest('a, button') && !e.target.closest('#soundBtn')) sfx('click');
+  });
+
+  /* ---------- videos ---------- */
+  function vimeoSrc(id, bg, h) {
+    return 'https://player.vimeo.com/video/' + id + (h ? '?h=' + h + '&' : '?') + (bg ? 'background=1&autoplay=1&muted=1&loop=1&autopause=0&dnt=1' : 'title=0&byline=0&portrait=0&dnt=1');
   }
-  function Y(r, f){ return f === 'h' ? r.t + 17 : f === 'b' ? r.b - 48 : r.t + (r.b - r.t) * f; }
-  function draw(){
-    svg.innerHTML = '';
-    WIRES.forEach(function(w, i){
-      var a = box(w[0]), b = box(w[1]); if (!a || !b) return;
-      var sy = Y(a, w[3]), ey = Y(b, w[4]), sx, ex, bx;
-      if (w[2] === 'across') { sx = a.r; ex = b.l; if (ex < sx + 8) return; bx = sx + (ex - sx) / 2; }
-      else if (w[2] === 'right') { sx = a.r; ex = b.r; bx = Math.max(sx, ex) + 40; }
-      else { sx = a.l; ex = b.l; bx = Math.min(sx, ex) - 40; }
-      var g = document.createElementNS(NS, 'g');
-      var p = document.createElementNS(NS, 'path');
-      p.setAttribute('class', 'w');
-      p.setAttribute('d', 'M'+sx+' '+sy+'L'+bx+' '+sy+'L'+bx+' '+ey+'L'+ex+' '+ey);
-      g.appendChild(p);
-      [[sx,sy],[ex,ey]].forEach(function(c){
-        var k = document.createElementNS(NS, 'circle');
-        k.setAttribute('cx', c[0]); k.setAttribute('cy', c[1]); k.setAttribute('r', 5.5);
-        g.appendChild(k);
-      });
-      svg.appendChild(g);
-      var len = p.getTotalLength();
-      if (reduce || drawn[i]) { g.classList.add('on'); return; }
-      p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
-      g._go = function(){
-        drawn[i] = 1;
-        p.style.transition = 'stroke-dashoffset .7s cubic-bezier(.55,0,.45,1)';
-        p.style.strokeDashoffset = 0;
-        setTimeout(function(){ g.classList.add('on'); }, 250);
-      };
-      g._target = w[1];
-      if (document.getElementById(w[1]).classList.contains('in')) requestAnimationFrame(g._go);
+  function makeFrame(host, src, title, onReady) {
+    var f = document.createElement('iframe');
+    f.src = src; f.title = title; f.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media'; f.setAttribute('allowfullscreen', '');
+    f.addEventListener('load', function () { host.classList.add('ready'); if (onReady) onReady(f); });
+    host.appendChild(f); return f;
+  }
+  function player(f) { try { return window.Vimeo ? new Vimeo.Player(f) : null; } catch (e) { return null; } }
+
+  var homeVid = document.getElementById('homeVid'), homePlayer = null;
+  if (HOME_VIDEO && !reduce) homePlayer = player(makeFrame(homeVid, vimeoSrc(HOME_VIDEO, true, HOME_HASH), 'Background loop'));
+  var reelFrame = document.getElementById('reelFrame'), reelPlayer = null;
+  function ensureReel() { if (!reelPlayer && !reelFrame.firstChild) reelPlayer = player(makeFrame(reelFrame, vimeoSrc(REEL_VIDEO, false), 'Showreel 2025')); }
+
+  /* ---------- projects carousel ---------- */
+  var track = document.getElementById('track'), pinfo = document.getElementById('pinfo'), countEl = document.getElementById('count');
+  var N = PROJECTS.length, pi = 0;
+  var cards = PROJECTS.map(function (p, i) {
+    var a = document.createElement('article');
+    a.className = 'node pcard'; a.setAttribute('aria-roledescription', 'slide'); a.setAttribute('aria-label', (i + 1) + ' of ' + N + ': ' + p.title);
+    a.innerHTML = '<div class="nh"><span class="d"></span><span class="p">PROJECT</span><span class="s">::</span><span class="k">' + p.node + '</span></div>' +
+      '<div class="pmedia"><span class="ph">' + p.title + '</span></div>';
+    a.addEventListener('click', function () { var o = +a.dataset.o; if (o === -1) go(pi - 1); else if (o === 1) go(pi + 1); });
+    track.appendChild(a); return a;
+  });
+  function loadCard(i, bg) {
+    var p = PROJECTS[i], c = cards[i], m = c.querySelector('.pmedia');
+    if (c._f) return;
+    if (p.vimeo) { c._f = makeFrame(m, vimeoSrc(p.vimeo, !reduce), p.title); c._p = player(c._f); }
+    else if (p.youtube) {
+      c._f = makeFrame(m, 'https://www.youtube-nocookie.com/embed/' + p.youtube + '?enablejsapi=1&start=' + (p.start || 0) + '&autoplay=' + (reduce || bg ? 0 : 1) +
+        '&mute=1&loop=1&playlist=' + p.youtube + '&controls=' + (reduce ? 1 : 0) + '&modestbranding=1&rel=0&playsinline=1&iv_load_policy=3&disablekb=1', p.title);
+    }
+    if (!reduce) { c._f.tabIndex = -1; c._f.setAttribute('aria-hidden', 'true'); }
+  }
+  function loadNear() {
+    loadCard(pi);
+    if (matchMedia('(max-width: 900px)').matches) return;
+    [pi - 1, pi + 1].forEach(function (j) { j = (j + N) % N; if (!cards[j]._f) { loadCard(j, true); setPlay(j, false); } });
+  }
+  function setPlay(i, on) {
+    var c = cards[i]; if (!c || !c._f || reduce) return;
+    if (c._p) { (on ? c._p.play() : c._p.pause()).catch(function () {}); }
+    else if (c._f.contentWindow) c._f.contentWindow.postMessage(JSON.stringify({ event: 'command', func: on ? 'playVideo' : 'pauseVideo', args: [] }), '*');
+  }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function renderInfo() {
+    var p = PROJECTS[pi];
+    var links = p.links.map(function (l, k) {
+      return '<a class="btn' + (k === 0 ? ' main' : '') + '" href="' + l[1] + '" target="_blank" rel="noopener">' + esc(l[0]) + '</a>';
+    }).join('');
+    pinfo.innerHTML =
+      '<div><p class="meta">' + esc(p.meta) + '</p><h3>' + esc(p.title) + '</h3><p class="desc">' + esc(p.desc) + '</p></div>' +
+      '<div class="facts"><div><span>Role</span><b>' + esc(p.role) + '</b></div><div><span>Client</span><b>' + esc(p.client) + '</b></div>' +
+      '<div><span>Type</span><b>' + esc(p.type) + '</b></div><div><span>Built with</span><b>' + esc(p.stack) + '</b></div></div>' +
+      (links ? '<div class="plinks">' + links + '</div>' : '');
+    pinfo.classList.remove('swap'); void pinfo.offsetWidth; pinfo.classList.add('swap');
+    countEl.innerHTML = '<b>' + (pi + 1) + '</b> / ' + N;
+  }
+  function layout() {
+    cards.forEach(function (c, i) {
+      var o = i - pi; if (o > N / 2) o -= N; if (o < -N / 2) o += N;
+      c.dataset.o = Math.max(-2, Math.min(2, o));
+      c.setAttribute('aria-hidden', o === 0 ? 'false' : 'true');
     });
   }
-  function fire(id){
-    [].forEach.call(svg.children, function(g){ if (g._target === id && g._go) { var go = g._go; g._go = null; requestAnimationFrame(go); } });
+  function go(i, quiet) {
+    var prev = pi;
+    pi = (i + N) % N;
+    layout(); renderInfo();
+    if (current === 'projects') { loadNear(); setPlay(prev, false); setPlay(pi, true); }
+    if (!quiet && prev !== pi) sfx('step');
   }
-
-  /* ---------- reveal on scroll ---------- */
-  var nodes = [].slice.call(document.querySelectorAll('.reveal'));
-  if (reduce || !('IntersectionObserver' in window)) {
-    nodes.forEach(function(n){ n.classList.add('in'); });
-  } else {
-    var ro = new IntersectionObserver(function(es){
-      es.forEach(function(e){
-        if (!e.isIntersecting) return;
-        var el = e.target, delay = 0;
-        if (el.classList.contains('card')) delay = ([].indexOf.call(el.parentNode.children, el) % 2) * 90;
-        setTimeout(function(){ el.classList.add('in'); if (el.id) setTimeout(function(){ fire(el.id); }, 200); }, delay);
-        ro.unobserve(el);
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    nodes.forEach(function(n){ ro.observe(n); });
-  }
-
-  var t; function redraw(){ clearTimeout(t); t = setTimeout(draw, 120); }
-  window.addEventListener('resize', redraw);
-  window.addEventListener('load', draw);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
-  draw();
-
-  /* ---------- contact form ---------- */
-  document.getElementById('contactForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    var em = document.getElementById('f-email').value.trim();
-    var msg = document.getElementById('f-msg').value.trim();
-    if (!em || !msg) return;
-    location.href = 'mailto:eduardoj.reyes@hotmail.com?subject=' + encodeURIComponent('Technical Art enquiry') +
-      '&body=' + encodeURIComponent('From: ' + em + '\n\n' + msg);
+  document.getElementById('prev').addEventListener('click', function () { go(pi - 1); });
+  document.getElementById('next').addEventListener('click', function () { go(pi + 1); });
+  var tx = null;
+  track.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', function (e) {
+    if (tx === null) return; var dx = e.changedTouches[0].clientX - tx; tx = null;
+    if (Math.abs(dx) > 40) go(pi + (dx < 0 ? 1 : -1));
   });
+
+  /* ---------- sections + tape wipe ---------- */
+  var app = document.getElementById('app'), stage = document.getElementById('stage');
+  var navLinks = [].slice.call(document.querySelectorAll('#nav a')), wire = document.getElementById('wire');
+  var panels = {}; [].forEach.call(document.querySelectorAll('.panel'), function (p) { panels[p.dataset.sec] = p; });
+  var current = null, busy = false;
+  var compileEl = document.getElementById('compile'), compileOsd = document.getElementById('compileOsd');
+  var COMPILE_WAVE = 180, COMPILE_IN = 140, COMPILE_SWAP = 335, COMPILE_OUT = 345, COMPILE_TOTAL = 700;
+  function buildTiles() {
+    var r = stage.getBoundingClientRect();
+    var top = Math.max(0, r.top), bottom = Math.min(innerHeight, r.bottom);
+    var size = 80, cols = Math.max(1, Math.ceil(r.width / size)), rows = Math.max(1, Math.ceil((bottom - top) / size));
+    compileEl.style.left = r.left + 'px'; compileEl.style.top = top + 'px';
+    compileEl.style.width = r.width + 'px'; compileEl.style.height = (bottom - top) + 'px';
+    compileEl.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+    compileEl.style.gridTemplateRows = 'repeat(' + rows + ', 1fr)';
+    [].slice.call(compileEl.querySelectorAll('i')).forEach(function (n) { n.remove(); });
+    var maxSum = (cols - 1) + (rows - 1) * .6 || 1, frag = document.createDocumentFragment();
+    for (var y = 0; y < rows; y++) for (var x = 0; x < cols; x++) {
+      var t = document.createElement('i');
+      var d = Math.round((x + y * .6) / maxSum * COMPILE_WAVE);
+      t.style.setProperty('--d', d + 'ms'); t.style.setProperty('--o', COMPILE_OUT + 'ms');
+      if (Math.random() < .14) t.className = 'hot';
+      frag.appendChild(t);
+    }
+    compileEl.insertBefore(frag, compileOsd);
+  }
+  function countUp() {
+    var t0 = performance.now();
+    (function tick(now) {
+      var k = Math.min(1, (now - t0) / (COMPILE_SWAP + 120));
+      compileOsd.textContent = 'Compiling shaders ' + Math.round(k * 100) + '%';
+      if (k < 1 && compileEl.classList.contains('run')) requestAnimationFrame(tick);
+    })(t0);
+  }
+
+  function moveWire() {
+    var a = navLinks.filter(function (l) { return l.dataset.sec === current; })[0]; if (!a) return;
+    wire.style.top = (a.offsetTop + a.offsetHeight / 2 - 1) + 'px';
+  }
+  function show(sec) {
+    var prev = current; current = sec;
+    app.dataset.sec = sec;
+    Object.keys(panels).forEach(function (k) { panels[k].classList.toggle('on', k === sec); });
+    navLinks.forEach(function (l) { if (l.dataset.sec === sec) l.setAttribute('aria-current', 'page'); else l.removeAttribute('aria-current'); });
+    moveWire();
+    if (matchMedia('(max-width: 900px)').matches) { var al = navLinks.filter(function (l) { return l.dataset.sec === sec; })[0]; if (al && al.scrollIntoView) al.scrollIntoView({ block: 'nearest', inline: 'center' }); }
+    var p = panels[sec]; p.scrollTop = 0;
+    if (!reduce) { p.classList.remove('settle'); void p.offsetWidth; p.classList.add('settle'); }
+    // media: play what is on screen, pause the rest
+    if (homePlayer) (sec === 'home' ? homePlayer.play() : homePlayer.pause()).catch(function () {});
+    if (sec === 'showreel') ensureReel(); else if (reelPlayer && prev === 'showreel') reelPlayer.pause().catch(function () {});
+    if (sec === 'projects') { loadNear(); setPlay(pi, true); } else if (prev === 'projects') setPlay(pi, false);
+  }
+  function goSection(sec, push) {
+    if (SECTIONS.indexOf(sec) < 0) sec = 'home';
+    if (sec === current || busy) return;
+    if (push) { try { history.pushState(null, '', '#' + sec); } catch (e) {} }
+    if (reduce || current === null) { show(sec); return; }
+    busy = true; sfx('compile');
+    buildTiles();
+    compileEl.classList.remove('run'); void compileEl.offsetWidth; compileEl.classList.add('run');
+    countUp();
+    setTimeout(function () { show(sec); stage.classList.add('glitch'); }, COMPILE_SWAP);
+    setTimeout(function () { compileEl.classList.remove('run'); stage.classList.remove('glitch'); busy = false; }, COMPILE_TOTAL);
+  }
+  function fromHash() {
+    var h = (location.hash || '').replace('#', '');
+    if (h === 'work') h = 'projects';
+    return SECTIONS.indexOf(h) > -1 ? h : 'home';
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]'); if (!a) return;
+    var sec = a.getAttribute('href').slice(1); if (sec === 'work') sec = 'projects';
+    if (SECTIONS.indexOf(sec) < 0) return;
+    e.preventDefault(); goSection(sec, true);
+  });
+  window.addEventListener('popstate', function () { goSection(fromHash(), false); });
+  window.addEventListener('resize', moveWire);
+
+  /* keyboard: up/down or 1-5 change section, left/right change project */
+  document.addEventListener('keydown', function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+    var i = SECTIONS.indexOf(current);
+    if (e.key >= '1' && e.key <= '5') { goSection(SECTIONS[+e.key - 1], true); return; }
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); goSection(SECTIONS[Math.min(SECTIONS.length - 1, i + 1)], true); }
+    else if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); goSection(SECTIONS[Math.max(0, i - 1)], true); }
+    else if (current === 'projects' && e.key === 'ArrowRight') go(pi + 1);
+    else if (current === 'projects' && e.key === 'ArrowLeft') go(pi - 1);
+  });
+
+  /* mouse wheel steps through sections on desktop (unless the section itself needs to scroll) */
+  var wheelLock = 0;
+  stage.addEventListener('wheel', function (e) {
+    if (matchMedia('(max-width: 900px)').matches) return;
+    var p = panels[current]; if (!p) return;
+    var down = e.deltaY > 0;
+    var canScroll = down ? p.scrollTop + p.clientHeight < p.scrollHeight - 2 : p.scrollTop > 2;
+    if (canScroll || Math.abs(e.deltaY) < 20) return;
+    e.preventDefault();
+    var now = Date.now(); if (now < wheelLock) return; wheelLock = now + 900;
+    var i = SECTIONS.indexOf(current);
+    goSection(SECTIONS[Math.max(0, Math.min(SECTIONS.length - 1, i + (down ? 1 : -1)))], true);
+  }, { passive: false });
+
+  /* contact form */
+  var cf = document.getElementById('contactForm');
+  if (cf) cf.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var em = document.getElementById('f-email').value.trim(), msg = document.getElementById('f-msg').value.trim();
+    if (!em || !msg) return;
+    location.href = 'mailto:eduardoj.reyes@hotmail.com?subject=' + encodeURIComponent('Technical Art enquiry') + '&body=' + encodeURIComponent('From: ' + em + '\n\n' + msg);
+  });
+
+  go(0, true);
+  show(fromHash());
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveWire);
 })();
 </script>
 </body>
