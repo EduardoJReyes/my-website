@@ -231,6 +231,12 @@
     document.getElementById('bookTitle').innerHTML = v.title;
     document.getElementById('bookText').textContent = v.text;
     document.getElementById('bookImg').src = v.img;
+    // the background video only loads the first time a booking screen opens, and never with reduced motion
+    var vid = document.getElementById('bookVideo');
+    if (!reduce && !vid.src) {
+      vid.addEventListener('load', function () { setTimeout(function () { vid.classList.add('ready'); }, 600); }, { once: true });
+      vid.src = 'https://player.vimeo.com/video/1247683769?h=da64fe4d81&background=1&autoplay=1&loop=1&muted=1&autopause=0&dnt=1';
+    }
     document.getElementById('bookCalT').textContent = v.cal;
     document.getElementById('bookCal').href = CAL_URL;
     document.getElementById('bookMail').href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(v.subject);
