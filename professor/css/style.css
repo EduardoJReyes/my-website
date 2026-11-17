@@ -208,13 +208,9 @@ em { font-style: normal; color: var(--orange); }
 .work { position: absolute; inset: 0; background: repeating-linear-gradient(135deg, var(--surface) 0 10px, var(--surface2) 10px 20px); }
 .work-slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .8s ease; background: inherit; }
 .work-slide.is-on { opacity: 1; }
-/* student showreel: plays over the images the first time Students is on screen, then fades away */
-.work-reel { position: absolute; inset: 0; z-index: 2; container-type: size; overflow: hidden; background: var(--ink); transition: opacity .9s ease; }
-.work-reel iframe { position: absolute; top: 50%; left: 50%; width: max(100cqw, 177.78cqh); height: max(100cqh, 56.25cqw); transform: translate(-50%, -50%); border: 0; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
-.work-reel.playing iframe { opacity: 1; }
-.work-reel.done { opacity: 0; pointer-events: none; }
-.ch-students.reel-on .work-cap { opacity: 0; }
-.work-cap { transition: opacity .6s ease; }
+.work-video { container-type: size; overflow: hidden; background: var(--ink); }
+.work-video iframe { position: absolute; top: 50%; left: 50%; width: max(100cqw, 177.78cqh); height: max(100cqh, 56.25cqw); transform: translate(-50%, -50%); border: 0; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
+.work-video.playing iframe { opacity: 1; }
 .work-slide span { font: 400 13px var(--mono); color: var(--muted); }
 .work-slide img { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.04); transition: transform 7s linear; }
 .work-slide.is-on img { transform: scale(1); }
