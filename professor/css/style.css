@@ -365,6 +365,7 @@ body::after { content: ''; position: fixed; inset: -100px; z-index: 91; pointer-
 .intro.done { clip-path: inset(0 0 100% 0); }
 .intro-word { font: 900 clamp(30px, 10vw, 180px)/.86 var(--display); text-transform: uppercase; text-align: center; animation: caJit .16s steps(2) infinite; }
 .intro-word .w { display: block; white-space: nowrap; }
+.intro-word.long { font-size: clamp(26px, 7.4vw, 134px); } /* 'Game Development?' has to fit on a phone */
 .intro-word .w2 { color: var(--cream); }
 .intro.flip .intro-word .w2 { color: var(--ink); }
 .intro-word .ch { display: inline-block; transform-origin: 50% 100%; animation: chIn .44s cubic-bezier(.2,.9,.25,1.25) both; animation-delay: calc(var(--d) * 26ms); }

@@ -456,7 +456,7 @@
   if (introRunning) {
     intro.addEventListener('click', endIntro); // click anywhere (or Esc) skips it
     var word = document.getElementById('introWord'), pct = document.getElementById('introPct');
-    var WORDS = [['Lost in', 'Unreal Engine?'], ['Me too,', 'once.'], ["Let's fix", 'that.']];
+    var WORDS = [['Lost in', 'Game Development?'], ['Me too,', 'once.'], ["Let's fix", 'that.']];
     var at = function (ms, fn) { timers.push(setTimeout(fn, ms)); };
     var render = function (w) {
       var d = 0; word.className = 'intro-word';
@@ -470,7 +470,7 @@
     WORDS.forEach(function (w, i) {
       var s = T0 + i * STEP;
       // the middle sentence is shown inverted (black on orange): one hard cut, no flashing
-      at(s, function () { intro.classList.toggle('flip', i === 1); render(w); });
+      at(s, function () { intro.classList.toggle('flip', i === 1); render(w); word.classList.toggle('long', Math.max(w[0].length, w[1].length) > 14); });
       if (i < WORDS.length - 1) at(s + STEP - 200, function () { word.classList.add('out'); });
     });
     var total = T0 + WORDS.length * STEP + 250, p0 = performance.now();
